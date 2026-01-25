@@ -4,6 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.altosheeve.tracking.client.Render.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -33,10 +34,10 @@ public class Rendering {
 
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
 
-    /*public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
+    public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
         float originalScale = scale * Values.scaleRegistry(type);
         return originalScale * (float) (0.005f * (Rendering.client.player.getEyePos().distanceTo(new Vec3d(x + .5, y - .5, z + .5)) / (Math.E)));
-    }*/
+    }
 
     public static void render3d(WorldRenderContext context) {
         ClientPlayerEntity player = client.player;
@@ -99,6 +100,12 @@ public class Rendering {
             textBuffer.draw();
 
         }*/
+
+        if (!Waypoint.waypoints.isEmpty()) {
+
+            BufferBuilder waypointBuffer = new BufferBuilder(allocator, Unoccluded.getVertexFormatMode(), Unoccluded.getVertexFormat());
+
+        }
 
 
         //clear view matrix stack
