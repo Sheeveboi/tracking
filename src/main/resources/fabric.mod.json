@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "tracking",
+  "version": "${version}",
+  "name": "tracking",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/tracking/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "net.altosheeve.tracking.client.TrackingDataGenerator"
+    ],
+    "client": [
+      "net.altosheeve.tracking.client.TrackingClient"
+    ],
+    "main": [
+      "net.altosheeve.tracking.Tracking"
+    ]
+  },
+  "mixins": [
+    "tracking.mixins.json",
+    {
+      "config": "tracking.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
