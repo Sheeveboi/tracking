@@ -11,10 +11,9 @@
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
-      "net.altosheeve.tracking.client.TrackingDataGenerator"
     ],
     "client": [
-      "net.altosheeve.tracking.client.TrackingClient"
+      "net.altosheeve.tracking.client.Core.SopranoClient"
     ],
     "main": [
       "net.altosheeve.tracking.Tracking"

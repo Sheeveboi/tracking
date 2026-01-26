@@ -10,8 +10,8 @@ public class Values {
     public static float[] blueColor         = {.145f, .427f, .917f};
     public static float[] purpleColor       = {.749f, .145f, .917f};
 
-    public static float globalSpriteDistance = 1f;
-    public static float shaftScale = 3f;
+    public static float globalSpriteDistance = 2f;
+    public static float shaftScale = .5f;
 
     public static float waypointScale = .02f;
     public static float goodGuyScale = 1f;

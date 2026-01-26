@@ -1,13 +1,9 @@
 package net.altosheeve.tracking.client.Core;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.MinecraftClient;
 
-import java.io.IOException;
-
-public class TrackingClient implements ClientModInitializer {
+public class SopranoClient implements ClientModInitializer {
 
     private static int tick = 0;
     private static boolean init = true;
@@ -49,7 +45,7 @@ public class TrackingClient implements ClientModInitializer {
             if (MinecraftClient.getInstance().player != null) Navigation.playerPrev = MinecraftClient.getInstance().player.getPos().toVector3f();
         });*/
 
-        WorldRenderEvents.LAST.register(Rendering::render3d);
+        WorldRenderEvents.AFTER_TRANSLUCENT.register(Rendering::render3d);
         //HudRenderCallback.EVENT.register(Rendering::render2d);
     }
 }
