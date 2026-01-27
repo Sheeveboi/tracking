@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.altosheeve.tracking.mixin.client",
+  "package": "net.altosheeve.tracking.client.Mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

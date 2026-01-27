@@ -120,7 +120,6 @@ public class Rendering {
         builtBuffer.close();
     }
 
-
     public static void renderWaypoints(@SuppressWarnings("SameParameterValue") RenderPipeline pipeline) {
 
         // TODO: do not construct all of this every frame! that's wasteful..

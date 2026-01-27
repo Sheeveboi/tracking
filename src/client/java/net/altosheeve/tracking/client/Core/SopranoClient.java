@@ -1,7 +1,12 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Networking.Verification;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class SopranoClient implements ClientModInitializer {
 
@@ -10,7 +15,6 @@ public class SopranoClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Keys.registerKeys();
 
         /*try { NodeCreation.loadNodes(); }
         catch (IOException e) { throw new RuntimeException(e); }
@@ -45,7 +49,25 @@ public class SopranoClient implements ClientModInitializer {
             if (MinecraftClient.getInstance().player != null) Navigation.playerPrev = MinecraftClient.getInstance().player.getPos().toVector3f();
         });*/
 
+        Keys.registerKeys();
+
+        try {
+            Relaying.startStream();
+        } catch (IOException e) {
+            System.out.println("whatT???");
+            throw new RuntimeException(e);
+        }
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            try {
+                Relaying.relayInfo();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         WorldRenderEvents.AFTER_TRANSLUCENT.register(Rendering::render3d);
+
         //HudRenderCallback.EVENT.register(Rendering::render2d);
     }
 }
