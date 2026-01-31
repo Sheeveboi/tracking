@@ -1,4 +1,4 @@
-package net.altosheeve.tracking.client.Core;
+package net.altosheeve.tracking.client.Render;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -8,8 +8,8 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.altosheeve.tracking.client.Render.Util.RenderBox;
-import net.altosheeve.tracking.client.Render.Waypoint;
+import net.altosheeve.tracking.client.Core.Values;
+import net.altosheeve.tracking.client.Shapes.Shape;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.MappableRingBuffer;
@@ -26,8 +26,6 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import java.util.ArrayList;
-import java.util.OptionalInt;
-import java.util.UUID;
 
 public class Rendering {
 
@@ -37,8 +35,8 @@ public class Rendering {
     public static int renderTick = 0;
     public static int maxRenderTick = 100000;
 
-    private static final RenderPipeline Unoccluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
-            .withLocation(Identifier.of("tracking", "pipeline/unoccluded"))
+    public static final RenderPipeline Positive = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+            .withLocation(Identifier.of("tracking", "pipeline/positive"))
             .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.QUADS)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .withCull(false)
@@ -127,9 +125,7 @@ public class Rendering {
 
         if (!Waypoint.waypoints.isEmpty()) {
 
-            BufferBuilder waypointBuffer = null;
-
-            waypointBuffer = new BufferBuilder(allocator, Unoccluded.getVertexFormatMode(), Unoccluded.getVertexFormat());
+            BufferBuilder waypointBuffer = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
             VertexConsumerProvider.Immediate textBuffer = client.getBufferBuilders().getEntityVertexConsumers();
 
             for (Waypoint waypoint : new ArrayList<>(Waypoint.waypoints)) {
@@ -152,6 +148,33 @@ public class Rendering {
 
             vertexBuffer.rotate();
             waypointBuffer = null;
+
+        }
+
+    }
+
+    public static void renderShapes() {
+
+        //TODO: Move waypoint rendering into more general Shapes
+        //TODO: Implement Positive and Negative drawing modes
+
+        if (!Shape.shapes.isEmpty()) {
+
+            BufferBuilder positiveShapeBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
+
+            for (Shape shape : Shape.shapes) shape.draw(positiveShapeBuffer, Transforms.getHud3dTransform());
+
+            BuiltBuffer builtPositiveBuffer = positiveShapeBuffer.end();
+
+            BuiltBuffer.DrawParameters positiveParameters = builtPositiveBuffer.getDrawParameters();
+            VertexFormat positiveFormat = positiveParameters.format();
+
+            GpuBuffer vertices = upload3d(positiveParameters, positiveFormat, builtPositiveBuffer);
+
+            draw3d(client, Rendering.Positive, builtPositiveBuffer, positiveParameters, vertices, positiveFormat);
+
+            vertexBuffer.rotate();
+            positiveShapeBuffer = null;
 
         }
 
@@ -229,18 +252,21 @@ public class Rendering {
         if (player == null) return;
         if (client.world == null) return;
 
-        renderContext = context;
-
         renderTick ++;
         renderTick %= maxRenderTick;
 
+        renderContext = context;
+        modelViewStack = RenderSystem.getModelViewStack();
+
         //create view matrix stack
         Vec3d camPos = renderContext.camera().getPos();
-        modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
-        renderWaypoints(Unoccluded);
+        Waypoint.updateWaypoint(0, -60, 0, Waypoint.Type.GOOD_GUY, "testuuid", "testusername");
+
+        renderWaypoints(Positive);
+        renderShapes();
 
         modelViewStack.popMatrix();
 

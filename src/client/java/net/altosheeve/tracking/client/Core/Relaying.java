@@ -3,12 +3,11 @@ package net.altosheeve.tracking.client.Core;
 import net.altosheeve.tracking.client.Networking.TypeGenerators;
 import net.altosheeve.tracking.client.Networking.UDPClient;
 import net.altosheeve.tracking.client.Networking.UDPObject;
-import net.altosheeve.tracking.client.Networking.Verification;
+import net.altosheeve.tracking.client.Render.Rendering;
 import net.altosheeve.tracking.client.Render.Waypoint;
 import net.minecraft.entity.Entity;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -59,7 +58,7 @@ public class Relaying {
 
     public static void gatherTelemetry(UDPObject udpObject) {
 
-        //if (Rendering.client.player == null) return;
+        if (Rendering.client.player == null) return;
 
         Iterator<Byte> buffer = udpObject.data.iterator();
 
@@ -68,8 +67,6 @@ public class Relaying {
 
         if (!buffer.hasNext()) return;
         String username = TypeGenerators.decodeString(buffer);
-
-        System.out.println(username);
 
         float x = 0;
         float y = 0;
@@ -91,7 +88,7 @@ public class Relaying {
 
         int threat = buffer.next();
 
-        //Waypoint.updateWaypoint(x, (float) Rendering.client.player.getY() + 1.5f, z, Waypoint.Type.values()[threat], UUID, username);
+        Waypoint.updateWaypoint(x, (float) Rendering.client.player.getY() + 1.5f, z, Waypoint.Type.values()[threat], UUID, username);
 
     }
 

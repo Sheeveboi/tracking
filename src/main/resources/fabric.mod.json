@@ -13,7 +13,7 @@
     "fabric-datagen": [
     ],
     "client": [
-      "net.altosheeve.tracking.client.Core.SopranoClient"
+      "net.altosheeve.tracking.client.Core.TrackingClient"
     ],
     "main": [
       "net.altosheeve.tracking.Tracking"

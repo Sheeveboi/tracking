@@ -4,14 +4,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import net.altosheeve.tracking.client.Core.Relaying;
-import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Render.Rendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;

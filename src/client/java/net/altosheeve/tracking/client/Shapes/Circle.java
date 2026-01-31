@@ -1,9 +1,9 @@
-package net.altosheeve.tracking.client.Render.Util;
+package net.altosheeve.tracking.client.Shapes;
 
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.Matrix4f;
 
-public class RenderCircle {
+public class Circle {
     public int x;
     public int y;
     public int z;
@@ -16,7 +16,7 @@ public class RenderCircle {
     public float b;
     public float a;
 
-    public RenderCircle(int x, int y, int z, float innerRadius, float outerRadius) {
+    public Circle(int x, int y, int z, float innerRadius, float outerRadius) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,7 +30,7 @@ public class RenderCircle {
         this.a = 1f;
     }
 
-    public RenderCircle(int x, int y, int z, float r, float g, float b, float a, float innerRadius, float outerRadius) {
+    public Circle(int x, int y, int z, float r, float g, float b, float a, float innerRadius, float outerRadius) {
         this.x = x;
         this.y = y;
         this.z = z;

@@ -1,10 +1,7 @@
 package net.altosheeve.tracking.client.Render;
 
-import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
-import net.altosheeve.tracking.client.Render.Util.RenderBox;
-import net.altosheeve.tracking.client.Render.Util.RenderCircle;
-import net.altosheeve.tracking.client.Render.Util.Transforms;
+import net.altosheeve.tracking.client.Shapes.Circle;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.text.Text;
@@ -28,7 +25,6 @@ public class Waypoint {
     }
 
     public static ArrayList<Waypoint> waypoints = new ArrayList<>();
-    public static Map<String, String> uuidToUsernameCache = new HashMap<>();
 
     public float x;
     public float y;
@@ -104,29 +100,29 @@ public class Waypoint {
     }
 
     public void drawGoodGuy(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle outerOutline = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .8f, 1);
-        RenderCircle innerCircle  = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, .6f);
+        Circle outerOutline = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .8f, 1);
+        Circle innerCircle  = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, .6f);
 
         outerOutline.draw(buffer, spriteTransform);
         innerCircle.draw(buffer, spriteTransform);
     }
 
     public void drawNormal(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle outerOutline = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .9f, 1);
-        RenderCircle innerCircle  = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, .4f);
+        Circle outerOutline = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .9f, 1);
+        Circle innerCircle  = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, .4f);
 
         outerOutline.draw(buffer, spriteTransform);
         innerCircle.draw(buffer, spriteTransform);
     }
 
     public void drawShitter(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle outerOutline = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .5f, 1);
+        Circle outerOutline = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, .5f, 1);
 
         outerOutline.draw(buffer, spriteTransform);
     }
 
     public void drawHitler(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle outerOutline = new RenderCircle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, 1);
+        Circle outerOutline = new Circle(0,0,0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance, 0, 1);
 
         outerOutline.draw(buffer, spriteTransform);
     }
@@ -146,17 +142,17 @@ public class Waypoint {
     }
 
     public void drawPing(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle firstRing  = new RenderCircle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, 1, .80f);
-        RenderCircle secondRing = new RenderCircle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .60f, .40f);
+        Circle firstRing  = new Circle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, 1, .80f);
+        Circle secondRing = new Circle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .60f, .40f);
 
         firstRing.draw(buffer, spriteTransform);
         secondRing.draw(buffer, spriteTransform);
     }
 
     public void drawAlert(BufferBuilder buffer, Matrix4f spriteTransform) {
-        RenderCircle firstRing  = new RenderCircle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, 1, .80f);
-        RenderCircle secondRing = new RenderCircle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .60f, .40f);
-        RenderCircle thirdRing  = new RenderCircle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .20f, 0);
+        Circle firstRing  = new Circle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, 1, .80f);
+        Circle secondRing = new Circle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .60f, .40f);
+        Circle thirdRing  = new Circle(0, 0, 0, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], 1, .20f, 0);
 
         firstRing.draw(buffer, spriteTransform);
         secondRing.draw(buffer, spriteTransform);
@@ -186,16 +182,16 @@ public class Waypoint {
     }
 
     public void drawShaft(BufferBuilder buffer, Matrix4f shaftTransform) {
-        RenderBox shaft = new RenderBox(0, -500, 0, 1, 9000, 1, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], this.importance / 2);
-        shaft.draw(buffer, shaftTransform);
+        //Box shaft = new Box(0, -500, 0, 1, 9000, 1, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], this.importance / 2);
+        //shaft.draw(buffer, shaftTransform);
     }
 
     public void drawPoint(BufferBuilder buffer) {
 
         this.importance -= decayRate;
 
-        Matrix4f spriteTransform = Transforms.getSpriteTransform(this.x, this.y, this.z, Values.waypointScale, Values.waypointScale, Values.waypointScale);
-        Matrix4f shaftTransform = Transforms.getShaftTransform(this.x, this.y, this.z, Values.shaftScale, this.type);
+        Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.waypointScale, Values.waypointScale, Values.waypointScale);
+        Matrix4f shaftTransform = Transforms.getWorld3dTransform(this.x, this.y, this.z, Values.shaftScale, this.type);
 
         drawShaft(buffer, shaftTransform);
 
@@ -225,7 +221,7 @@ public class Waypoint {
         waypointsCopy.sort((a, b) -> Float.compare(Transforms.facingValue(b.x, b.y, b.z), Transforms.facingValue(a.x, a.y, a.z)));
 
         float scale = Values.textSizeRegistry(waypointsCopy.getFirst().type);
-        Matrix4f spriteTransform = Transforms.getSpriteTransform(waypointsCopy.getFirst().x, waypointsCopy.getFirst().y, waypointsCopy.getFirst().z, scale, -scale, scale);
+        Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(waypointsCopy.getFirst().x, waypointsCopy.getFirst().y, waypointsCopy.getFirst().z, scale, -scale, scale);
 
         int y = 5;
 
@@ -241,7 +237,7 @@ public class Waypoint {
 
             float distanceStringWidth = -Rendering.client.textRenderer.getWidth(waypointInfo.toString()) / 2f;
 
-            Rendering.client.textRenderer.draw(Text.literal(waypointInfo.toString()), distanceStringWidth, y, 0xffffff, true, spriteTransform, provider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
+            Rendering.client.advanceValidatingTextRenderer.draw(Text.literal(waypointInfo.toString()), distanceStringWidth, y, 0xffffffff, true, spriteTransform, provider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
 
             y += 10;
 

@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Render.Map;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -84,6 +85,8 @@ public class Keys {
     }
 
     public static void handleKeys() throws IOException {
+
+        while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Map(Text.of("Civ Map")));
 
         /*while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new CivMap(Text.of("Civ Map")));
         while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Civ Map")));

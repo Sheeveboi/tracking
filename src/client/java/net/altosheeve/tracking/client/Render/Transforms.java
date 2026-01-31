@@ -1,8 +1,6 @@
-package net.altosheeve.tracking.client.Render.Util;
+package net.altosheeve.tracking.client.Render;
 
-import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
-import net.altosheeve.tracking.client.Render.Waypoint;
 import net.minecraft.client.render.Camera;
 import org.joml.*;
 
@@ -34,7 +32,7 @@ public class Transforms {
         return directionalVector.dot(cameraVector);
     }
 
-    public static Matrix4f getSpriteTransform(float x, float y, float z, float scaleX, float scaleY, float scaleZ) {
+    public static Matrix4f getWorld3dSpriteTransform(float x, float y, float z, float scaleX, float scaleY, float scaleZ) {
         Camera camera = Rendering.client.gameRenderer.getCamera();
 
         Vector3f directionalVector = new Vector3f(x + .5f, y - .5f, z + .5f);
@@ -60,7 +58,7 @@ public class Transforms {
         return spriteTransform;
     }
 
-    public static Matrix4f getShaftTransform(float x, float y, float z, float scale, Waypoint.Type type) {
+    public static Matrix4f getWorld3dTransform(float x, float y, float z, float scale, Waypoint.Type type) {
 
         float shaftScale = Rendering.scalingFunction(scale, type, x + .5f, y - .5f, z + .5f);
 
@@ -71,16 +69,24 @@ public class Transforms {
 
     }
 
-    public static Matrix4f getMapTransform(float x, float y, float scale) {
+    public static Matrix4f getHud3dTransform() {
 
-        Matrix4f mapTransform = new Matrix4f();
+        Camera camera = Rendering.client.gameRenderer.getCamera();
 
-        Vector3f panVector = new Vector3f(x, y, 0);
+        float pitchRad = (float) (((Rendering.client.player.getPitch() + 90) * Math.PI) / 180);
+        float yawRad = (float) (((Rendering.client.player.getYaw() + 90) * Math.PI) / 180);
 
-        mapTransform.translation(panVector);
-        mapTransform.scale(scale, scale, 0);
+        Matrix4f hudTransform = new Matrix4f();
 
-        return mapTransform;
+        Vector3f startLine    = camera.getPos().toVector3f();
+        Vector3f cameraVector = new Vector3f((float) (Math.sin(pitchRad) * Math.cos(yawRad)), (float) Math.cos(pitchRad),  (float) (Math.sin(pitchRad) * Math.sin(yawRad)));
+
+        Vector3f endLine = startLine.add(cameraVector.normalize().mul(Values.globalSpriteDistance)); //get position out in front of the player based on where the player is facing
+
+        hudTransform.translationRotateScale(endLine, camera.getRotation(), new Vector3f(1, 1, 1));
+
+        return hudTransform;
+
     }
 
 }

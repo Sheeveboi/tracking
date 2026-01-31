@@ -1,14 +1,13 @@
 package net.altosheeve.tracking.client.Core;
 
-import net.altosheeve.tracking.client.Networking.Verification;
+import net.altosheeve.tracking.client.Render.Rendering;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
-public class SopranoClient implements ClientModInitializer {
+public class TrackingClient implements ClientModInitializer {
 
     private static int tick = 0;
     private static boolean init = true;
@@ -61,6 +60,7 @@ public class SopranoClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             try {
                 Relaying.relayInfo();
+                Keys.handleKeys();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
