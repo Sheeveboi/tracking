@@ -4,8 +4,10 @@
   "package": "net.altosheeve.tracking.client.Mixins",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "TitleScreenMixin",
-    "ScreenUnblurMapMixin"
+    "HeldItemRemover",
+    "HudRemover",
+    "ScreenUnblurMixin",
+    "TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

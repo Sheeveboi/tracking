@@ -65,6 +65,7 @@ public class Map extends Screen {
 
         mapContainer.addShape(testBox1);
         mapContainer.addShape(map);
+
     }
 
     public Map(Text title) {
