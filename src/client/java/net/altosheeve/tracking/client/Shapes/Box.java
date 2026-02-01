@@ -11,14 +11,6 @@ public class Box extends Shape{
         super(x, y, z, method);
     }
 
-    public Box(float x, float y, float z, float w, float h, float d, RenderPipeline method) {
-        super(x, y, z, w, h, d, method);
-    }
-
-    public Box(float x, float y, float z, float w, float h, float d, float r, float g, float b, float a, RenderPipeline method) {
-        super(x, y, z, w, h, d, r, g, b, a, method);
-    }
-
     @Override
     public void draw(BufferBuilder buffer, Matrix4f transform) {
 
