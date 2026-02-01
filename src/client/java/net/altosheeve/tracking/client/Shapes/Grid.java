@@ -16,7 +16,7 @@ public class Grid extends Shape {
 
     public Grid(float x, float y, float z, RenderPipeline method) {
         super(x, y, z, method);
-        initYLevels();
+        this.initYLevels();
     }
 
     public Grid cellsize(float xScale, float zScale) {
@@ -48,51 +48,6 @@ public class Grid extends Shape {
 
         }
 
-    }
-
-    public Grid(float x, float y, float z, float xScale, float zScale, RenderPipeline method) {
-        super(x, y, z, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-    }
-
-    public Grid(float x, float y, float z, float w, float h, float d, float xScale, float zScale, RenderPipeline method) {
-        super(x, y, z, w, h, d, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-    }
-
-    public Grid(float x, float y, float z, float w, float h, float d, float r, float g, float b, float a, float xScale, float zScale, RenderPipeline method) {
-        super(x, y, z, w, h, d, r, g, b, a, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-    }
-
-    public Grid(float x, float y, float z, float xScale, float zScale, float margins, RenderPipeline method) {
-        super(x, y, z, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-        this.margins = margins;
-    }
-
-    public Grid(float x, float y, float z, float w, float h, float d, float xScale, float zScale, float margins, RenderPipeline method) {
-        super(x, y, z, w, h, d, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-        this.margins = margins;
-    }
-
-    public Grid(float x, float y, float z, float w, float h, float d, float r, float g, float b, float a, float xScale, float zScale, float margins, RenderPipeline method) {
-        super(x, y, z, w, h, d, r, g, b, a, method);
-        this.initYLevels();
-        this.xScale = xScale;
-        this.zScale = zScale;
-        this.margins = margins;
     }
 
     public void addYLevel(int x, int z, float y) {
