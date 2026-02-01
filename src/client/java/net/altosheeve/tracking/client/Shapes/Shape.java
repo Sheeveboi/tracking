@@ -92,9 +92,9 @@ public class Shape {
 
         if (this.parent != null) {
 
-            this.finalX = this.x + this.parent.x;
-            this.finalY = this.y + this.parent.y;
-            this.finalZ = this.z + this.parent.z;
+            this.finalX = this.x + this.parent.finalX;
+            this.finalY = this.y + this.parent.finalY;
+            this.finalZ = this.z + this.parent.finalZ;
 
         }
 
