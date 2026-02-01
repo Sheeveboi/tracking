@@ -49,38 +49,45 @@ public class Shape {
         this.method = method;
     }
 
-    public Shape(float x, float y, float z, float w, float h, float d, RenderPipeline method) {
+    public void position(float x, float y, float z) {
+
         this.x = x;
         this.y = y;
         this.z = z;
 
-        this.w = w;
-        this.h = h;
-        this.d = d;
-
-        this.r = 1f;
-        this.g = 0f;
-        this.b = 1f;
-        this.a = 1f;
-
-        this.method = method;
     }
 
-    public Shape(float x, float y, float z, float w, float h, float d, float r, float g, float b, float a, RenderPipeline method) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public void size(float w, float h, float d) {
 
         this.w = w;
         this.h = h;
         this.d = d;
+
+    }
+
+    public void color(float r, float g, float b, float a) {
 
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
 
-        this.method = method;
+    }
+
+    public void rotation(float rx, float ry, float rz) {
+
+        this.rotationX.angle = rx;
+        this.rotationY.angle = ry;
+        this.rotationZ.angle = rz;
+
+    }
+
+    public void scale(float x, float y, float z) {
+
+        this.scalex = x;
+        this.scaley = y;
+        this.scalez = z;
+
     }
 
     public void addShape(Shape shape) {
