@@ -263,7 +263,7 @@ public class Rendering {
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
-        Waypoint.updateWaypoint(0, -60, 0, Waypoint.Type.GOOD_GUY, "testuuid", "testusername");
+        Waypoint.updateWaypoint(0, -59, 0, Waypoint.Type.GOOD_GUY, "testuuid", "testusername");
 
         renderWaypoints(Positive);
         renderShapes();

@@ -29,13 +29,33 @@ public class Map extends Screen {
     public static float zoom = 1f;
     public static float zoomPower = .1f;
 
-    private static Shape mapContainer = new Shape (-2.5f,-3,-10f, Rendering.Positive);
+    private static Shape mapContainer = new Shape (-8,-8f,-31f, Rendering.Positive);
     private static Box   testBox1     = new Box   (0,0,0, Rendering.Positive);
-    private static Grid  testGrid1    = new Grid  (0,0,0f, 5, 5, 0,1, 1, .1f, Rendering.Positive);
+    //private static Grid  testGrid1    = new Grid  (0,0,0f, 5, 5, 0,1, 1, .1f, Rendering.Positive);
+
+    private static Shape groundPlane  = new Shape(0, 0, 0, Rendering.Positive);
+
+    private static Grid  bottomLayer  = new Grid(
+            0,0,0,
+            2, 2, 0,
+            0, 0, 1, 1,
+            8, 8,
+            Rendering.Positive);
+
+    private static Grid  topLayer     = new Grid(
+            0,.01f,0,
+            2, 2, 0,
+            0, 0, 0, 1,
+            8, 8, 0.05f,
+            Rendering.Positive);
 
     static {
-        mapContainer.addShape(testBox1);
-        mapContainer.addShape(testGrid1);
+
+        groundPlane.addShape(testBox1);
+        groundPlane.addShape(bottomLayer);
+        groundPlane.addShape(topLayer);
+
+        mapContainer.addShape(groundPlane);
     }
 
     public Map(Text title) {
