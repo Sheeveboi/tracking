@@ -38,13 +38,13 @@ public class Grid extends Shape {
 
     private void initYLevels() {
 
-        for (int z = 0; z < this.h; z++) {
+        for (int iz = 0; iz < this.h; iz++) {
 
             ArrayList<Float> zLevel = new ArrayList<>();
 
-            for (int x = 0; x < this.w; x++) zLevel.add(0f);
+            for (int ix = 0; ix < this.w; ix++) zLevel.add(0f);
 
-            yLevels.add(zLevel);
+            this.yLevels.add(zLevel);
 
         }
 
