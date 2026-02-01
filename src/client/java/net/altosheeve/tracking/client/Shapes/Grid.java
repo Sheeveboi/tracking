@@ -108,7 +108,9 @@ public class Grid extends Shape {
 
             for (int squareX = 0; squareX < this.w; squareX++) {
 
-                float gridY = this.finalY + this.yLevels.get(squareZ).get(squareX);
+                //TODO: worry about this later
+                //float gridY = this.finalY + this.yLevels.get(squareZ).get(squareX);
+                float gridY = this.finalY;
 
                 float gridX = this.finalX + squareX * this.xScale;
                 float gridZ = this.finalZ + squareZ * this.zScale;
