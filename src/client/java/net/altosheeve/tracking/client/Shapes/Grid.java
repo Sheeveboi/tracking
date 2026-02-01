@@ -14,6 +14,28 @@ public class Grid extends Shape {
 
     ArrayList<ArrayList<Float>> yLevels = new ArrayList<>();
 
+    public Grid(float x, float y, float z, RenderPipeline method) {
+        super(x, y, z, method);
+        initYLevels();
+    }
+
+    public Grid cellsize(float xScale, float zScale) {
+
+        this.xScale = xScale;
+        this.zScale = zScale;
+
+        return this;
+
+    }
+
+    public Grid margins(float margins) {
+
+        this.margins = margins;
+
+        return this;
+
+    }
+
     private void initYLevels() {
 
         for (int z = 0; z < this.h; z++) {
