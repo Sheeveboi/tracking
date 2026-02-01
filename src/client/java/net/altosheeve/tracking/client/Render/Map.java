@@ -3,8 +3,10 @@ package net.altosheeve.tracking.client.Render;
 import net.altosheeve.tracking.client.Shapes.Box;
 import net.altosheeve.tracking.client.Shapes.Grid;
 import net.altosheeve.tracking.client.Shapes.Shape;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
@@ -26,36 +28,43 @@ public class Map extends Screen {
 
     public static float panX = 0;
     public static float panY = 0;
+    public static float panZ = 0;
     public static float zoom = 1f;
     public static float zoomPower = .1f;
 
-    private static Shape mapContainer = new Shape (-8,-8f,-31f, Rendering.Positive);
-    private static Box   testBox1     = new Box   (0,0,0, Rendering.Positive);
-    //private static Grid  testGrid1    = new Grid  (0,0,0f, 5, 5, 0,1, 1, .1f, Rendering.Positive);
+    public static float mapRotationX = 0;
+    public static float mapRotationY = 0;
+    public static float mapRotationZ = 0;
 
-    private static Shape groundPlane  = new Shape(0, 0, 0, Rendering.Positive);
-
-    private static Grid  bottomLayer  = new Grid(
-            0,0,0,
-            2, 2, 0,
-            0, 0, 1, 1,
-            8, 8,
-            Rendering.Positive);
-
-    private static Grid  topLayer     = new Grid(
-            0,.01f,0,
-            2, 2, 0,
-            0, 0, 0, 1,
-            8, 8, 0.05f,
-            Rendering.Positive);
+    static Shape mapContainer = new Shape (-8,-8f,-31f, Rendering.Positive);
+    static Shape map          = new Shape (0, 0, 0, Rendering.Positive);
 
     static {
 
-        groundPlane.addShape(testBox1);
+        Box   testBox1    = new Box   (0,.1f,0, Rendering.Positive);
+
+        Shape groundPlane = new Shape(0, 0, 0, Rendering.Positive);
+        Grid  bottomLayer = new Grid(0, 0, 0, Rendering.Positive);
+        Grid  topLayer    = new Grid(0, .0001f, 0, Rendering.Positive);
+
+        map.color(0,0,0,0);
+
+        bottomLayer.size(2, 2, 0);
+        bottomLayer.cellsize(8, 8);
+        bottomLayer.color(0, 0, 1, 1);
+
+        topLayer.size(2, 2, 0);
+        topLayer.cellsize(8, 8);
+        topLayer.margins(.05f);
+        topLayer.color(0, 0, 0, 1);
+
         groundPlane.addShape(bottomLayer);
         groundPlane.addShape(topLayer);
 
-        mapContainer.addShape(groundPlane);
+        map.addShape(groundPlane);
+
+        mapContainer.addShape(testBox1);
+        mapContainer.addShape(map);
     }
 
     public Map(Text title) {
@@ -66,6 +75,134 @@ public class Map extends Screen {
     public void init() {
         Shape.shapes.add(mapContainer);
         renderMap = true;
+
+        SliderWidget xWidget = new SliderWidget(
+                0,
+                0,
+                100,
+                20,
+                Text.literal("Rot X"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                mapRotationX = (float) this.value;
+                mapContainer.rotation(mapRotationX, mapRotationY, mapRotationZ);
+            }
+        };
+
+        SliderWidget yWidget = new SliderWidget(
+                0,
+                20,
+                100,
+                20,
+                Text.literal("Rot Y"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                mapRotationY = (float) this.value;
+                mapContainer.rotation(mapRotationX, mapRotationY, mapRotationZ);
+            }
+        };
+
+        SliderWidget zWidget = new SliderWidget(
+                0,
+                40,
+                100,
+                20,
+                Text.literal("Rot Z"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                mapRotationZ = (float) this.value;
+                mapContainer.rotation(mapRotationX, mapRotationY, mapRotationZ);
+            }
+        };
+
+        SliderWidget pxWidget = new SliderWidget(
+                0,
+                60,
+                100,
+                20,
+                Text.literal("Pan X"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                panX = (float) this.value * 3;
+                map.position(panX, panY, panZ);
+            }
+        };
+
+        SliderWidget pyWidget = new SliderWidget(
+                0,
+                80,
+                100,
+                20,
+                Text.literal("Pan Y"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                panY = (float) this.value * 3;
+                map.position(panX, panY, panZ);
+            }
+        };
+
+        SliderWidget pzWidget = new SliderWidget(
+                0,
+                100,
+                100,
+                20,
+                Text.literal("Pan Z"),
+                0
+        ) {
+            @Override
+            protected void updateMessage() {
+
+            }
+
+            @Override
+            protected void applyValue() {
+                panZ = (float) this.value * 3;
+                map.position(panX, panY, panZ);
+            }
+        };
+
+        this.addDrawableChild(xWidget);
+        this.addDrawableChild(yWidget);
+        this.addDrawableChild(zWidget);
+        this.addDrawableChild(pxWidget);
+        this.addDrawableChild(pyWidget);
+        this.addDrawableChild(pzWidget);
+
     }
 
     @Override
