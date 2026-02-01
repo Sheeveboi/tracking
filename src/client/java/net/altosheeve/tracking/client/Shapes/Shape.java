@@ -2,7 +2,10 @@ package net.altosheeve.tracking.client.Shapes;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.render.BufferBuilder;
+import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 
 import java.util.ArrayList;
 
@@ -16,9 +19,17 @@ public class Shape {
     public float finalY = 0;
     public float finalZ = 0;
 
+    public AxisAngle4f rotationX = new AxisAngle4f(0, 1, 0, 0);
+    public AxisAngle4f rotationY = new AxisAngle4f(0, 0, 1, 0);
+    public AxisAngle4f rotationZ = new AxisAngle4f(0, 0, 0, 1);
+
     public float w;
     public float h;
     public float d;
+
+    public float scalex = 1;
+    public float scaley = 1;
+    public float scalez = 1;
 
     public float r;
     public float g;
@@ -112,6 +123,14 @@ public class Shape {
             this.finalZ = this.z;
 
         }
+
+        //TODO: set translation to be carried through the transform as well
+
+        transform = transform.rotateAround(new Quaternionf(this.rotationX), this.finalX, this.finalY, this.finalZ);
+        transform = transform.rotateAround(new Quaternionf(this.rotationY), this.finalX, this.finalY, this.finalZ);
+        transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.finalX, this.finalY, this.finalZ);
+
+        transform = transform.scaleAround(scalex, scaley, scalez, this.finalX, this.finalY, this.finalZ);
 
         for (Shape shape : this.children) shape.draw(buffer, transform);
     }
