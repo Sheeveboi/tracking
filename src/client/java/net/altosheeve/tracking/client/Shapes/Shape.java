@@ -119,30 +119,13 @@ public class Shape {
     }
 
     public void draw(BufferBuilder buffer, Matrix4f transform) {
+        transform = transform.translate(this.x, this.y, this.z);
 
-        if (this.parent != null) {
+        transform = transform.scaleAround(scalex, 1, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
-            this.finalX = this.x + this.parent.finalX;
-            this.finalY = this.y + this.parent.finalY;
-            this.finalZ = this.z + this.parent.finalZ;
-
-        }
-
-        else {
-
-            this.finalX = this.x;
-            this.finalY = this.y;
-            this.finalZ = this.z;
-
-        }
-
-        //TODO: set translation to be carried through the transform as well
-
-        transform = transform.rotateAround(new Quaternionf(this.rotationX), this.finalX, this.finalY, this.finalZ);
-        transform = transform.rotateAround(new Quaternionf(this.rotationY), this.finalX, this.finalY, this.finalZ);
-        transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.finalX, this.finalY, this.finalZ);
-
-        transform = transform.scaleAround(scalex, scaley, scalez, this.finalX, this.finalY, this.finalZ);
+        transform = transform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        transform = transform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
         for (Shape shape : this.children) shape.draw(buffer, transform);
     }
