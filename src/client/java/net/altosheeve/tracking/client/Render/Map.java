@@ -6,10 +6,14 @@ import net.altosheeve.tracking.client.Shapes.Shape;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
+import static java.lang.Math.log;
 import static java.lang.Math.pow;
 
 public class Map extends Screen {
@@ -26,9 +30,12 @@ public class Map extends Screen {
     public static float mouseDeltaX = 0;
     public static float mouseDeltaY = 0;
 
-    public static float panX = 0;
-    public static float panY = 0;
-    public static float panZ = 0;
+    public static float panX = -8f;
+    public static float panY = -8f;
+    public static float panZ = -31f;
+    public static float panSlow = .5f;
+    public static float panFast = 3;
+    public static float panSpeed = panSlow;
     public static float zoom = 1f;
     public static float zoomPower = .1f;
 
@@ -36,7 +43,7 @@ public class Map extends Screen {
     public static float mapRotationY = 0;
     public static float mapRotationZ = 0;
 
-    static Shape mapContainer = new Shape (-8,-8f,-31f, Rendering.Positive);
+    static Shape mapContainer = new Shape (panX,panY,panZ, Rendering.Positive);
     static Shape map          = new Shape (0, 0, 0, Rendering.Positive);
 
     static {
@@ -137,65 +144,55 @@ public class Map extends Screen {
             }
         };
 
-        SliderWidget pxWidget = new SliderWidget(
-                0,
-                60,
-                100,
-                20,
-                Text.literal("Pan X"),
-                0
+        ScrollableWidget clickRegion = new ScrollableWidget(
+                0, 0,
+                this.client.getWindow().getWidth(), this.client.getWindow().getHeight(),
+                Text.of("")
         ) {
             @Override
-            protected void updateMessage() {
+            protected int getContentsHeightWithPadding() {
+                return 0;
+            }
+
+            @Override
+            protected double getDeltaYPerScroll() {
+                return zoomPower;
+            }
+
+            @Override
+            protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+                context.fillGradient(this.getX(), this.getY(), this.width, this.height, 0x00000011, 0x00000011);
+            }
+
+            @Override
+            protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
             }
 
             @Override
-            protected void applyValue() {
-                panX = (float) this.value * 3;
-                map.position(panX, panY, panZ);
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                System.out.println(button);
+                return false;
+            }
+
+            @Override
+            public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+                if (!hasShiftDown() && !hasAltDown() && !hasControlDown()) {
+
+                    zoom += (float) (zoomPower * log(zoom + 1) * verticalAmount);
+
+                    System.out.println();
+
+                    mapContainer.scale(zoom, zoom, zoom);
+
+                    System.out.println(zoom);
+
+                }
+                return true;
             }
         };
 
-        SliderWidget pyWidget = new SliderWidget(
-                0,
-                80,
-                100,
-                20,
-                Text.literal("Pan Y"),
-                0
-        ) {
-            @Override
-            protected void updateMessage() {
-
-            }
-
-            @Override
-            protected void applyValue() {
-                panY = (float) this.value * 3;
-                map.position(panX, panY, panZ);
-            }
-        };
-
-        SliderWidget pzWidget = new SliderWidget(
-                0,
-                100,
-                100,
-                20,
-                Text.literal("Pan Z"),
-                0
-        ) {
-            @Override
-            protected void updateMessage() {
-
-            }
-
-            @Override
-            protected void applyValue() {
-                panZ = (float) this.value * 3;
-                map.position(panX, panY, panZ);
-            }
-        };
+        this.addDrawableChild(clickRegion);
 
         this.addDrawableChild(xWidget);
         this.addDrawableChild(yWidget);
@@ -207,10 +204,49 @@ public class Map extends Screen {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        super.keyPressed(keyCode, scanCode, modifiers);
+
+        switch (keyCode) {
+
+            case 87 : //w
+                panZ += panSpeed / zoom;
+                mapContainer.origin(panX, panY, panZ);
+                break;
+
+            case 83 : //s
+                panZ -= panSpeed / zoom;
+                mapContainer.origin(panX, panY, panZ);
+                break;
+
+            case 68 : //d
+                panX -= panSpeed / zoom;
+                mapContainer.origin(panX, panY, panZ);
+                break;
+
+            case 65 : //a
+                panX += panSpeed / zoom;
+                mapContainer.origin(panX, panY, panZ);
+                break;
+        }
+
+        return false;
+    }
+
+    @Override
     public void close() {
         super.close();
         Shape.shapes.clear();
         renderMap = false;
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        super.render(context, mouseX, mouseY, deltaTicks);
+
+        if (hasShiftDown()) panSpeed = panFast;
+        else                panSpeed = panSlow;
+
     }
 
 }
