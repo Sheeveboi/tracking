@@ -31,6 +31,10 @@ public class Shape {
     public float scaley = 1;
     public float scalez = 1;
 
+    public float ox;
+    public float oy;
+    public float oz;
+
     public float r;
     public float g;
     public float b;
@@ -98,6 +102,14 @@ public class Shape {
         this.scalex = x;
         this.scaley = y;
         this.scalez = z;
+
+    }
+
+    public void origin(float x, float y, float z) {
+
+        this.ox = x;
+        this.oy = y;
+        this.oz = z;
 
     }
 
