@@ -197,9 +197,6 @@ public class Map extends Screen {
         this.addDrawableChild(xWidget);
         this.addDrawableChild(yWidget);
         this.addDrawableChild(zWidget);
-        this.addDrawableChild(pxWidget);
-        this.addDrawableChild(pyWidget);
-        this.addDrawableChild(pzWidget);
 
     }
 
