@@ -19,7 +19,6 @@ import static java.lang.Math.pow;
 public class Map extends Screen {
 
     public static boolean renderMap = false;
-    public static boolean panning = false;
 
     public static int staticWidth = 0;
     public static int staticHeight = 0;
@@ -48,13 +47,14 @@ public class Map extends Screen {
 
     static {
 
+        mapContainer.transform = Transforms.getHud3dTransform();
+        map.color(0,0,0,0);
+
         Box   testBox1    = new Box   (0,.1f,0, Rendering.Positive);
 
         Shape groundPlane = new Shape(0, 0, 0, Rendering.Positive);
         Grid  bottomLayer = new Grid(0, 0, 0, Rendering.Positive);
         Grid  topLayer    = new Grid(0, .0001f, 0, Rendering.Positive);
-
-        map.color(0,0,0,0);
 
         bottomLayer.size(2, 2, 0);
         bottomLayer.cellsize(8, 8);

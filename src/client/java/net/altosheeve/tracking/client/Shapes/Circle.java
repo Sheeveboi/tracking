@@ -44,7 +44,10 @@ public class Circle {
         this.a = a;
     }
 
+    //TODO: these draw statements are woefully inefficient. Implement triangle strip buffers to save on verts
+
     public void draw(BufferBuilder buffer) {
+
         for (int i = 0; i <= 359; i++) {
 
             float innerLeftX = (float) Math.sin(i * Math.PI / 180.0D) * this.innerRadius;

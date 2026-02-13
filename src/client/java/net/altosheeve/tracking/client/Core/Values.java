@@ -3,6 +3,9 @@ package net.altosheeve.tracking.client.Core;
 import net.altosheeve.tracking.client.Render.Waypoint;
 
 public class Values {
+
+    //TODO: MAKE THIS ALL CONFIG STUFF INSTEAD OH MY GOD
+
     public static float[] greenColor        = {.145f, .917f, .364f};
     public static float[] whiteColor        = {.900f, .900f, .900f};
     public static float[] yellowColor       = {.917f, .815f, .145f};

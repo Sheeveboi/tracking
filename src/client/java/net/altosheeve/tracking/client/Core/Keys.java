@@ -108,12 +108,31 @@ public class Keys {
             ClientPlayerEntity player = client.player;
             assert player != null;
 
-            for (int slot = 0; slot < 36; slot++) {
-                if (Objects.equals(player.getInventory().getStack(slot).getItemName().getString(), "Baked Potato")) {
-                    player.getInventory().swapSlotWithHotbar(slot);
-                }
-            }
-        }*/
+        while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
+
+//        while(connectNode.wasPressed()) NodeCreation.connectNode();
+//        while(selectNode.wasPressed()) NodeCreation.selectNode();
+//        while(enableExec.wasPressed()) Execution.toggle();
+//        while(loadTestProgram.wasPressed()) Execution.setProgram(TestProgram.getProgram());
+//        while(outputDistancesKey.wasPressed()) {
+//            for (Node node : Navigation.nodes) {
+//                node.calculateDistances();
+//                for (int distanceKey : node.distanceMap.keySet()) {
+//                    System.out.println(node.tag + "'s distance to " + Navigation.nodes.get(distanceKey).tag + ": " + node.distanceMap.get(distanceKey));
+//                }
+//            }
+//        }
+//        while(testKey.wasPressed()) {
+//            MinecraftClient client = MinecraftClient.getInstance();
+//            ClientPlayerEntity player = client.player;
+//            assert player != null;
+//
+//            for (int slot = 0; slot < 36; slot++) {
+//                if (Objects.equals(player.getInventory().getStack(slot).getItemName().getString(), "Baked Potato")) {
+//                    player.getInventory().swapSlotWithHotbar(slot);
+//                }
+//            }
+//        }
     }
 
 }
