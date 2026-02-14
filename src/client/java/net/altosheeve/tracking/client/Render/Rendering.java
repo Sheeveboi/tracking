@@ -160,21 +160,22 @@ public class Rendering {
 
         if (!Shape.shapes.isEmpty()) {
 
-            BufferBuilder positiveShapeBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
+            BufferBuilder shapesBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
 
-            for (Shape shape : Shape.shapes) shape.draw(positiveShapeBuffer, Transforms.getHud3dTransform());
+            for (Shape shape : Shape.shapes) shape.set(shapesBuffer);
 
-            BuiltBuffer builtPositiveBuffer = positiveShapeBuffer.end();
+            //TODO: map all these values to an object and have draw3d accept the object
+            BuiltBuffer builtMapBuffer = shapesBuffer.end();
 
-            BuiltBuffer.DrawParameters positiveParameters = builtPositiveBuffer.getDrawParameters();
-            VertexFormat positiveFormat = positiveParameters.format();
+            BuiltBuffer.DrawParameters shapesParameters = builtMapBuffer.getDrawParameters();
+            VertexFormat shapesFormat = shapesParameters.format();
 
-            GpuBuffer vertices = upload3d(positiveParameters, positiveFormat, builtPositiveBuffer);
+            GpuBuffer vertices = upload3d(shapesParameters, shapesFormat, builtMapBuffer);
 
-            draw3d(client, Rendering.Positive, builtPositiveBuffer, positiveParameters, vertices, positiveFormat);
+            draw3d(client, Rendering.Positive, builtMapBuffer, shapesParameters, vertices, shapesFormat);
 
             vertexBuffer.rotate();
-            positiveShapeBuffer = null;
+            shapesBuffer = null;
 
         }
 
@@ -265,6 +266,7 @@ public class Rendering {
 
         Waypoint.updateWaypoint(0, -59, 0, Waypoint.Type.GOOD_GUY, "testuuid", "testusername");
 
+        //TODO: all rendering should be through shapes
         renderWaypoints(Positive);
         renderShapes();
 
