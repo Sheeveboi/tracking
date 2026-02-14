@@ -1,8 +1,8 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Mapping.Mapping;
 import net.altosheeve.tracking.client.Navigation.EditNodeScreen;
 import net.altosheeve.tracking.client.Navigation.NodeCreation;
-import net.altosheeve.tracking.client.Render.Map;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;

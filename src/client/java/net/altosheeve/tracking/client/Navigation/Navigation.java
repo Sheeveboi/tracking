@@ -1,6 +1,7 @@
 package net.altosheeve.tracking.client.Navigation;
 
-import net.altosheeve.tracking.client.Render.Rendering;
+import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Shapes.Layer;
 import net.altosheeve.tracking.client.Shapes.Shape;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

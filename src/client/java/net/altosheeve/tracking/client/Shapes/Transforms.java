@@ -1,6 +1,8 @@
-package net.altosheeve.tracking.client.Render;
+package net.altosheeve.tracking.client.Shapes;
 
+import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
+import net.altosheeve.tracking.client.Mapping.Waypoint;
 import net.minecraft.client.render.Camera;
 import org.joml.*;
 

@@ -1,6 +1,6 @@
 package net.altosheeve.tracking.client.Mixins;
 
-import net.altosheeve.tracking.client.Render.Map;
+import net.altosheeve.tracking.client.Mapping.Mapping;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Final;
@@ -18,11 +18,11 @@ public class ScreenUnblurMixin {
 
     @Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
     public void renderBackground(CallbackInfo ci) {
-        if (Map.renderMap) ci.cancel();
+        if (Mapping.renderMap) ci.cancel();
     }
 
     @Inject(method = "setInitialFocus()V", at = @At("HEAD"), cancellable = true)
     public void setInitialFocus(CallbackInfo ci) {
-        if (Map.renderMap) ci.cancel();
+        if (Mapping.renderMap) ci.cancel();
     }
 }

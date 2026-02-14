@@ -1,6 +1,6 @@
 package net.altosheeve.tracking.client.Mixins;
 
-import net.altosheeve.tracking.client.Render.Map;
+import net.altosheeve.tracking.client.Mapping.Mapping;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Final;
@@ -18,6 +18,6 @@ public class HudRemover {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void renderBackground(CallbackInfo ci) {
-        if (Map.renderMap) ci.cancel();
+        if (Mapping.renderMap) ci.cancel();
     }
 }

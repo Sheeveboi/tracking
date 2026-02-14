@@ -1,7 +1,9 @@
-package net.altosheeve.tracking.client.Render;
+package net.altosheeve.tracking.client.Mapping;
 
+import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
 import net.altosheeve.tracking.client.Shapes.Circle;
+import net.altosheeve.tracking.client.Shapes.Transforms;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.text.Text;

@@ -1,4 +1,4 @@
-package net.altosheeve.tracking.client.Render;
+package net.altosheeve.tracking.client.Core;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -8,7 +8,8 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.altosheeve.tracking.client.Core.Values;
+import net.altosheeve.tracking.client.Mapping.Waypoint;
+import net.altosheeve.tracking.client.Shapes.Layer;
 import net.altosheeve.tracking.client.Shapes.Shape;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;

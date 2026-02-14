@@ -1,31 +1,17 @@
-package net.altosheeve.tracking.client.Render;
+package net.altosheeve.tracking.client.Mapping;
 
-import net.altosheeve.tracking.client.Shapes.Box;
-import net.altosheeve.tracking.client.Shapes.Grid;
-import net.altosheeve.tracking.client.Shapes.Shape;
-import net.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Shapes.*;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
-import org.joml.Matrix4f;
 
 import static java.lang.Math.log;
-import static java.lang.Math.pow;
-
-public class Map extends Screen {
-
-    //TODO: make implementation of custom transforms easier than this!!
-    public static class MapContainer extends Shape {
-
-        public MapContainer(float x, float y, float z, RenderPipeline method) {
-            super(x, y, z, method);
-        }
 
         @Override
         public void set(BufferBuilder buffer) {

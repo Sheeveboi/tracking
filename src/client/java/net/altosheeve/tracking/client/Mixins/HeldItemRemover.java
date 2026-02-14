@@ -1,8 +1,7 @@
 package net.altosheeve.tracking.client.Mixins;
 
-import net.altosheeve.tracking.client.Render.Map;
+import net.altosheeve.tracking.client.Mapping.Mapping;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +18,6 @@ public class HeldItemRemover {
 
     @Inject(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At("HEAD"), cancellable = true)
     public void renderBackground(CallbackInfo ci) {
-        if (Map.renderMap) ci.cancel();
+        if (Mapping.renderMap) ci.cancel();
     }
 }
