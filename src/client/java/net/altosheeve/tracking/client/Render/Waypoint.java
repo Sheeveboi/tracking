@@ -161,23 +161,23 @@ public class Waypoint {
 
     public void drawPermanent(BufferBuilder buffer, Matrix4f spriteTransform) {
         buffer.vertex(spriteTransform, 1, 1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, .8f, .8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, -.8f, .8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, .65f, .65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, -.65f, .65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
         buffer.vertex(spriteTransform, -1, 1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
 
         buffer.vertex(spriteTransform, 1, 1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, .8f, .8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, .8f, -.8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, .65f, .65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, .65f, -.65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
         buffer.vertex(spriteTransform, 1, -1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
 
         buffer.vertex(spriteTransform, -1, 1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, -.8f, .8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, -.8f, -.8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, -.65f, .65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, -.65f, -.65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
         buffer.vertex(spriteTransform, -1, -1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
 
         buffer.vertex(spriteTransform, 1, -1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, .8f, -.8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
-        buffer.vertex(spriteTransform, -.8f, -.8f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, .65f, -.65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
+        buffer.vertex(spriteTransform, -.65f, -.65f, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
         buffer.vertex(spriteTransform, -1, -1, 0).color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], importance);
     }
 
