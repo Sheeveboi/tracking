@@ -1,6 +1,6 @@
 package net.altosheeve.tracking.client.Navigation;
 
-import net.altosheeve.tracking.client.Render.Rendering;
+import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.Box;
 
 import java.util.ArrayList;
@@ -52,19 +52,19 @@ public class Node extends Box {
     }
 
     public Node(int x, int y, int z) {
-        super(x, y, z, Rendering.Positive);
+        super(x, y, z);
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type) {
-        super(x, y, z, Rendering.Positive);
+        super(x, y, z);
         this.type = type;
         this.setColor();
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type, String tag) {
-        super(x, y, z, Rendering.Positive);
+        super(x, y, z);
         this.type = type;
         this.setColor();
         this.tag = tag;

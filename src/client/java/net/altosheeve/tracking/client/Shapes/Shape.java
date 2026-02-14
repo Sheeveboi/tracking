@@ -5,7 +5,6 @@ import net.minecraft.client.render.BufferBuilder;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
 
 import java.util.ArrayList;
 
@@ -50,7 +49,7 @@ public class Shape {
     public Matrix4f startingTransform;
     public Matrix4f activeTransform;
 
-    public Shape(float x, float y, float z, RenderPipeline method) {
+    public Shape(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;

@@ -14,8 +14,8 @@ public class Grid extends Shape {
 
     ArrayList<ArrayList<Float>> yLevels = new ArrayList<>();
 
-    public Grid(float x, float y, float z, RenderPipeline method) {
-        super(x, y, z, method);
+    public Grid(float x, float y, float z) {
+        super(x, y, z);
         this.initYLevels();
     }
 

@@ -7,8 +7,8 @@ import org.joml.Matrix4f;
 public class Box extends Shape{
 
 
-    public Box(float x, float y, float z, RenderPipeline method) {
-        super(x, y, z, method);
+    public Box(float x, float y, float z) {
+        super(x, y, z);
     }
 
     @Override
