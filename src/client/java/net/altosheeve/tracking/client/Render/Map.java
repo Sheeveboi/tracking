@@ -233,7 +233,7 @@ public class Map extends Screen {
     @Override
     public void close() {
         super.close();
-        Shape.shapes.clear();
+        Shape.shapes.remove(mapContainer);
         renderMap = false;
     }
 
