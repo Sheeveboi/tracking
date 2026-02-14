@@ -58,7 +58,7 @@ public class Transforms {
         return spriteTransform;
     }
 
-    public static Matrix4f getWorld3dTransform(float x, float y, float z, float scale, Waypoint.Type type) {
+    public static Matrix4f getShaftTransform(float x, float y, float z, float scale, Waypoint.Type type) {
 
         float shaftScale = Rendering.scalingFunction(scale, type, x + .5f, y - .5f, z + .5f);
 

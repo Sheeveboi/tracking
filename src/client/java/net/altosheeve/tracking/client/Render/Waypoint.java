@@ -190,8 +190,8 @@ public class Waypoint {
 
         this.importance -= decayRate;
 
-        Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.waypointScale, Values.waypointScale, Values.waypointScale);
-        Matrix4f shaftTransform = Transforms.getWorld3dTransform(this.x, this.y, this.z, Values.shaftScale, this.type);
+        Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
+        Matrix4f shaftTransform = Transforms.getShaftTransform(this.x, this.y, this.z, Values.shaftScale, this.type);
 
         drawShaft(buffer, shaftTransform);
 
