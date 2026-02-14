@@ -39,7 +39,7 @@ public class Shape {
     public float b;
     public float a;
 
-    public RenderPipeline method;
+    public boolean visible = true;
 
     public Shape parentShape;
     public Layer parentLayer;
@@ -119,8 +119,16 @@ public class Shape {
         this.startingTransform = transform;
     }
 
+    public void invisible() {
+        this.visible = false;
+    }
+
+    public void visible() {
+        this.visible = true;
+    }
+
     public void addShape(Shape shape) {
-        shape.parent = this;
+        shape.parentShape = this;
         this.children.add(shape);
     }
 
@@ -138,6 +146,8 @@ public class Shape {
 
         for (Shape shape : this.children) shape.set(buffer, transform);
 
+        if (!this.visible) return;
+
         this.draw(buffer);
 
     }
@@ -149,8 +159,8 @@ public class Shape {
         if (this.startingTransform != null)
             this.activeTransform = this.startingTransform;
 
-        else if (this.parent != null && this.parent.activeTransform != null)
-            this.activeTransform = this.parent.activeTransform;
+        else if (this.parentShape != null && this.parentShape.activeTransform != null)
+            this.activeTransform = this.parentShape.activeTransform;
 
         this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
 
@@ -160,9 +170,9 @@ public class Shape {
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
-        System.out.println(activeTransform);
-
         for (Shape shape : this.children) shape.set(buffer);
+
+        if (!this.visible) return;
 
         this.draw(buffer);
 
