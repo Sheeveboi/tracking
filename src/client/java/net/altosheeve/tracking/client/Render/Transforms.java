@@ -20,8 +20,13 @@ public class Transforms {
     public static float facingValue(float x, float y, float z) {
         Camera camera = Rendering.client.gameRenderer.getCamera();
 
-        float pitchRad = (float) (((Rendering.client.player.getPitch() + 90) * Math.PI) / 180);
-        float yawRad = (float) (((Rendering.client.player.getYaw() + 90) * Math.PI) / 180);
+        float pitchRad = 0;
+        float yawRad = 0;
+
+        if (Rendering.client.player != null) {
+            pitchRad = (float) (((Rendering.client.player.getPitch() + 90) * Math.PI) / 180);
+            yawRad = (float) (((Rendering.client.player.getYaw() + 90) * Math.PI) / 180);
+        }
 
         Vector3f directionalVector = new Vector3f(x + .5f, y - .5f, z + .5f);
         Vector3f playerPos         = camera.getPos().toVector3f();
@@ -73,8 +78,13 @@ public class Transforms {
 
         Camera camera = Rendering.client.gameRenderer.getCamera();
 
-        float pitchRad = (float) (((Rendering.client.player.getPitch() + 90) * Math.PI) / 180);
-        float yawRad = (float) (((Rendering.client.player.getYaw() + 90) * Math.PI) / 180);
+        float pitchRad = 0;
+        float yawRad = 0;
+
+        if (Rendering.client.player != null) {
+            pitchRad = (float) (((Rendering.client.player.getPitch() + 90) * Math.PI) / 180);
+            yawRad = (float) (((Rendering.client.player.getYaw() + 90) * Math.PI) / 180);
+        }
 
         Matrix4f hudTransform = new Matrix4f();
 
