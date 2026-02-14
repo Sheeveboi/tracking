@@ -45,7 +45,6 @@ public class Shape {
     public Layer parentLayer;
 
     public ArrayList<Shape> children = new ArrayList<>();
-    public static ArrayList<Shape> shapes = new ArrayList<>();
     public Matrix4f startingTransform;
     public Matrix4f activeTransform;
 
@@ -63,7 +62,6 @@ public class Shape {
         this.b = 1f;
         this.a = 1f;
 
-        this.method = method;
     }
 
     public void position(float x, float y, float z) {

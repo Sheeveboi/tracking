@@ -77,7 +77,7 @@ public class Mapping extends Screen {
 
     }
 
-    public Map(Text title) {
+    public Mapping(Text title) {
         super(title);
     }
 

@@ -60,7 +60,7 @@ public class Keys {
 
         mapKey = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
-                        "Map Key",
+                        "Mapping Key",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_SEMICOLON,
                         "Soprano"
@@ -88,7 +88,7 @@ public class Keys {
 
     public static void handleKeys() throws IOException {
 
-        while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Map(Text.of("Civ Map")));
+        while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Mapping(Text.of("Civ Mapping")));
 
         while(connectNode.wasPressed()) NodeCreation.connectNode();
         while(selectNode.wasPressed())  NodeCreation.selectNode();
