@@ -47,11 +47,6 @@ public class Rendering {
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
     private static MappableRingBuffer vertexBuffer;
 
-    public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
-        float originalScale = scale * Values.scaleRegistry(type);
-        return originalScale * (float) (0.005f * (Rendering.client.player.getEyePos().distanceTo(new Vec3d(x + .5, y - .5, z + .5)) / (Math.E)));
-    }
-
     private static GpuBuffer upload3d(BuiltBuffer.DrawParameters drawParameters, VertexFormat format, BuiltBuffer builtBuffer) {
         // Calculate the size needed for the vertex buffer
         int vertexBufferSize = drawParameters.vertexCount() * format.getVertexSize();
@@ -120,9 +115,6 @@ public class Rendering {
 
     public static void renderWaypoints(@SuppressWarnings("SameParameterValue") RenderPipeline pipeline) {
 
-        // TODO: do not construct all of this every frame! that's wasteful..
-        // TODO: Implement dynamic reconstruction so the buffer is only rebuilt when a change is made. this is here because its easy
-
         if (!Waypoint.waypoints.isEmpty()) {
 
             BufferBuilder waypointBuffer = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
@@ -153,34 +145,6 @@ public class Rendering {
 
     }
 
-//    public static void renderShapes() {
-//
-//        //TODO: Move waypoint rendering into more general Shapes
-//        //TODO: Implement Positive and Negative drawing modes
-//
-//        if (!Shape.shapes.isEmpty()) {
-//
-//            BufferBuilder shapesBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
-//
-//            for (Shape shape : Shape.shapes) shape.set(shapesBuffer);
-//
-//            //TODO: map all these values to an object and have draw3d accept the object
-//            BuiltBuffer builtMapBuffer = shapesBuffer.end();
-//
-//            BuiltBuffer.DrawParameters shapesParameters = builtMapBuffer.getDrawParameters();
-//            VertexFormat shapesFormat = shapesParameters.format();
-//
-//            GpuBuffer vertices = upload3d(shapesParameters, shapesFormat, builtMapBuffer);
-//
-//            draw3d(client, Rendering.Positive, builtMapBuffer, shapesParameters, vertices, shapesFormat);
-//
-//            vertexBuffer.rotate();
-//            shapesBuffer = null;
-//
-//        }
-//
-//    }
-
     public static void render3d(WorldRenderContext context) {
 
         ClientPlayerEntity player = client.player;
@@ -209,9 +173,10 @@ public class Rendering {
         Waypoint.updateWaypoint(8, -58, 0, Waypoint.Type.PERMANENT,   "uuid 18","permanent");
 
         //TODO: all rendering should be through shapes
-        renderWaypoints(Positive);
-        //renderShapes();
 
+        renderWaypoints(Positive);
+
+        //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();
         for (Layer layer : Layer.layers) layer.render();
 

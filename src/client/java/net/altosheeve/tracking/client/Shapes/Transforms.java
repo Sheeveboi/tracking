@@ -4,11 +4,17 @@ import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
 import net.altosheeve.tracking.client.Mapping.Waypoint;
 import net.minecraft.client.render.Camera;
+import net.minecraft.util.math.Vec3d;
 import org.joml.*;
 
 import java.lang.Math;
 
 public class Transforms {
+
+    public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
+        float originalScale = scale * Values.scaleRegistry(type);
+        return originalScale * (float) (0.005f * (Rendering.client.player.getEyePos().distanceTo(new Vec3d(x + .5, y - .5, z + .5)) / (Math.E)));
+    }
 
     public static float distanceValue(float x, float y, float z) {
         Camera camera = Rendering.client.gameRenderer.getCamera();
@@ -67,7 +73,7 @@ public class Transforms {
 
     public static Matrix4f getShaftTransform(float x, float y, float z, float scale, Waypoint.Type type) {
 
-        float shaftScale = Rendering.scalingFunction(scale, type, x + .5f, y - .5f, z + .5f);
+        float shaftScale = scalingFunction(scale, type, x + .5f, y - .5f, z + .5f);
 
         Matrix4f shaftTransform = new Matrix4f();
         shaftTransform.translationRotateScale(new Vector3f(x + .5f - shaftScale / 2, y - .5f, z + .5f - shaftScale / 2), new Quaternionf(), new Vector3f(shaftScale, 1, shaftScale));
