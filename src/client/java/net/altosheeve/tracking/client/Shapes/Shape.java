@@ -46,6 +46,8 @@ public class Shape {
 
     public ArrayList<Shape> children = new ArrayList<>();
     public static ArrayList<Shape> shapes = new ArrayList<>();
+    public Matrix4f startingTransform;
+    public Matrix4f activeTransform;
 
     public Shape(float x, float y, float z, RenderPipeline method) {
         this.x = x;
@@ -113,12 +115,17 @@ public class Shape {
 
     }
 
+    public void transform(Matrix4f transform) {
+        this.startingTransform = transform;
+    }
+
     public void addShape(Shape shape) {
         shape.parent = this;
         this.children.add(shape);
     }
 
-    public void draw(BufferBuilder buffer, Matrix4f transform) {
+    public void set(BufferBuilder buffer, Matrix4f transform) {
+
         transform = transform.translate(this.x, this.y, this.z);
 
         transform = transform.scaleAround(scalex, 1, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
@@ -127,6 +134,41 @@ public class Shape {
         transform = transform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
         transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
-        for (Shape shape : this.children) shape.draw(buffer, transform);
+        this.activeTransform = transform;
+
+        for (Shape shape : this.children) shape.set(buffer, transform);
+
+        this.draw(buffer);
+
     }
+
+    public void set(BufferBuilder buffer) {
+
+        this.activeTransform = new Matrix4f();
+
+        if (this.startingTransform != null)
+            this.activeTransform = this.startingTransform;
+
+        else if (this.parent != null && this.parent.activeTransform != null)
+            this.activeTransform = this.parent.activeTransform;
+
+        this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
+
+        this.activeTransform = this.activeTransform.scaleAround(scalex, 1, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+
+        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+
+        System.out.println(activeTransform);
+
+        for (Shape shape : this.children) shape.set(buffer);
+
+        this.draw(buffer);
+
+        this.activeTransform = null;
+
+    }
+
+    public void draw(BufferBuilder buffer) {};
 }

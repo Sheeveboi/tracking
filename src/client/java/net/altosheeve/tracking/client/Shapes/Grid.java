@@ -55,9 +55,7 @@ public class Grid extends Shape {
     }
 
     @Override
-    public void draw(BufferBuilder buffer, Matrix4f transform) {
-
-        super.draw(buffer, transform);
+    public void draw(BufferBuilder buffer) {
 
         for (int squareZ = 0; squareZ < this.h; squareZ++) {
 
@@ -70,10 +68,10 @@ public class Grid extends Shape {
                 float gridX = this.finalX + squareX * this.xScale;
                 float gridZ = this.finalZ + squareZ * this.zScale;
 
-                buffer.vertex(transform, this.margins + gridX,               gridY, gridZ + this.margins         ).color(this.r, this.g, this.b, this.a); //bottom left corner
-                buffer.vertex(transform, gridX + this.xScale - this.margins, gridY, gridZ + this.margins         ).color(this.r, this.g, this.b, this.a); //bottom right corner
-                buffer.vertex(transform, gridX + this.xScale - this.margins, gridY, gridZ + this.zScale - margins).color(this.r, this.g, this.b, this.a); //top right corner
-                buffer.vertex(transform, this.margins + gridX,               gridY, gridZ + this.zScale - margins).color(this.r, this.g, this.b, this.a); //top left corner
+                buffer.vertex(this.activeTransform, this.margins + gridX,               gridY, gridZ + this.margins         ).color(this.r, this.g, this.b, this.a); //bottom left corner
+                buffer.vertex(this.activeTransform, gridX + this.xScale - this.margins, gridY, gridZ + this.margins         ).color(this.r, this.g, this.b, this.a); //bottom right corner
+                buffer.vertex(this.activeTransform, gridX + this.xScale - this.margins, gridY, gridZ + this.zScale - margins).color(this.r, this.g, this.b, this.a); //top right corner
+                buffer.vertex(this.activeTransform, this.margins + gridX,               gridY, gridZ + this.zScale - margins).color(this.r, this.g, this.b, this.a); //top left corner
 
             }
 

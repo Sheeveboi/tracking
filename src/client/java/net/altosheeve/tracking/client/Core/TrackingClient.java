@@ -1,5 +1,7 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Navigation.Navigation;
+import net.altosheeve.tracking.client.Navigation.NodeCreation;
 import net.altosheeve.tracking.client.Render.Rendering;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -50,6 +52,9 @@ public class TrackingClient implements ClientModInitializer {
 
         Keys.registerKeys();
 
+        try                   { NodeCreation.loadNodes(); }
+        catch (IOException e) { throw new RuntimeException(e); }
+
         try {
             Relaying.startStream();
         } catch (IOException e) {
@@ -58,9 +63,16 @@ public class TrackingClient implements ClientModInitializer {
         }
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
+            tick ++;
+            tick = tick % 100;
+            Navigation.tick = tick;
+
             try {
+
                 Relaying.relayInfo();
                 Keys.handleKeys();
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
