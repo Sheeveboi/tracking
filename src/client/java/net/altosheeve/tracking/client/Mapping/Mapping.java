@@ -39,8 +39,22 @@ public class Mapping extends Screen {
     public static float mapRotationY = 0;
     public static float mapRotationZ = 0;
 
-    static Shape mapContainer = new MapContainer (panX, panY, panZ, Rendering.Positive);
-    static Shape map          = new Shape        (0, 0, 0, Rendering.Positive);
+    //TODO: make implementation of custom transforms easier than this!!
+    public static class MapContainer extends Shape {
+
+        public MapContainer(float x, float y, float z) {
+            super(x, y, z);
+        }
+
+        @Override
+        public void set(BufferBuilder buffer) {
+            super.set(buffer, Transforms.getHud3dTransform());
+        }
+
+    }
+
+    static Shape mapContainer = new MapContainer (panX, panY, panZ);
+    static Layer mapLayer = new Layer("Map Layer", Rendering.Positive);
 
     static {
 
