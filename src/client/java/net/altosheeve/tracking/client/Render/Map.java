@@ -10,6 +10,8 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
@@ -17,6 +19,20 @@ import static java.lang.Math.log;
 import static java.lang.Math.pow;
 
 public class Map extends Screen {
+
+    //TODO: make implementation of custom transforms easier than this!!
+    public static class MapContainer extends Shape {
+
+        public MapContainer(float x, float y, float z, RenderPipeline method) {
+            super(x, y, z, method);
+        }
+
+        @Override
+        public void set(BufferBuilder buffer) {
+            super.set(buffer, Transforms.getHud3dTransform());
+        }
+
+    }
 
     public static boolean renderMap = false;
 
@@ -42,8 +58,8 @@ public class Map extends Screen {
     public static float mapRotationY = 0;
     public static float mapRotationZ = 0;
 
-    static Shape mapContainer = new Shape (panX,panY,panZ, Rendering.Positive);
-    static Shape map          = new Shape (0, 0, 0, Rendering.Positive);
+    static Shape mapContainer = new MapContainer (panX, panY, panZ, Rendering.Positive);
+    static Shape map          = new Shape        (0, 0, 0, Rendering.Positive);
 
     static {
 
