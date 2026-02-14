@@ -47,7 +47,7 @@ public class Map extends Screen {
 
     static {
 
-        mapContainer.transform = Transforms.getHud3dTransform();
+        mapContainer.transform(Transforms.getHud3dTransform());
         map.color(0,0,0,0);
 
         Box   testBox1    = new Box   (0,.1f,0, Rendering.Positive);
