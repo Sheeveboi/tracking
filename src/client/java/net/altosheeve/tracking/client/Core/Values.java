@@ -7,7 +7,7 @@ public class Values {
     //TODO: MAKE THIS ALL CONFIG STUFF INSTEAD OH MY GOD
 
     public static float[] greenColor        = {.145f, .917f, .364f};
-    public static float[] whiteColor        = {.900f, .900f, .900f};
+    public static float[] whiteColor        = {.900f, .800f, .900f};
     public static float[] yellowColor       = {.917f, .815f, .145f};
     public static float[] redColor          = {.917f, .145f, .364f};
     public static float[] blueColor         = {.145f, .427f, .917f};
@@ -16,7 +16,7 @@ public class Values {
     public static float globalSpriteDistance = 1f;
     public static float shaftScale = .5f;
 
-    public static float waypointScale = .01f;
+    public static float waypointScale = .03f;
     public static float goodGuyScale = 1f;
     public static float normalScale = 1f;
     public static float shitterScale = 1f;
@@ -29,10 +29,10 @@ public class Values {
 
     public static float waypointImportance = .8f;
     public static float goodGuyImportance = 1f;
-    public static float normalImportance = .5f;
-    public static float shitterImportance = .7f;
+    public static float normalImportance = .6f;
+    public static float shitterImportance = .8f;
     public static float hitlerImportance = 1f;
-    public static float snitchImportance = .25f;
+    public static float snitchImportance = .4f;
     public static float snitchAlertImportance = .8f;
     public static float pingImportance = 1f;
     public static float alertImportance = 1f;
