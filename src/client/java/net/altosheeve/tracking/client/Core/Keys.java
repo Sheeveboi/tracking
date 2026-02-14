@@ -1,5 +1,7 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Navigation.EditNodeScreen;
+import net.altosheeve.tracking.client.Navigation.NodeCreation;
 import net.altosheeve.tracking.client.Render.Map;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
@@ -88,25 +90,8 @@ public class Keys {
 
         while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Map(Text.of("Civ Map")));
 
-        /*while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new CivMap(Text.of("Civ Map")));
-        while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Civ Map")));
-
         while(connectNode.wasPressed()) NodeCreation.connectNode();
-        while(selectNode.wasPressed()) NodeCreation.selectNode();
-        while(enableExec.wasPressed()) Execution.toggle();
-        while(loadTestProgram.wasPressed()) Execution.setProgram(TestProgram.getProgram());
-        while(outputDistancesKey.wasPressed()) {
-            for (Node node : Navigation.nodes) {
-                node.calculateDistances();
-                for (int distanceKey : node.distanceMap.keySet()) {
-                    System.out.println(node.tag + "'s distance to " + Navigation.nodes.get(distanceKey).tag + ": " + node.distanceMap.get(distanceKey));
-                }
-            }
-        }
-        while(testKey.wasPressed()) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            ClientPlayerEntity player = client.player;
-            assert player != null;
+        while(selectNode.wasPressed())  NodeCreation.selectNode();
 
         while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
 
