@@ -72,7 +72,7 @@ public class Node extends Box {
     }
 
     public Node(int x, int y, int z, NodeType type, String tag, ArrayList<Integer> connections) {
-        super(x, y, z, Rendering.Positive);
+        super(x, y, z);
         this.type = type;
         this.setColor();
         this.tag = tag;

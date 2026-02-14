@@ -58,17 +58,17 @@ public class Mapping extends Screen {
 
     static {
 
+        Shape map         = new Shape (0, 0, 0);
+        Box   testBox1    = new Box   (0,.1f,0);
+        Shape groundPlane = new Shape (0, 0, 0);
+        Grid  bottomLayer = new Grid  (0, 0, 0);
+        Grid  topLayer    = new Grid  (0, .0001f, 0);
+
         mapContainer.transform(Transforms.getHud3dTransform());
         mapLayer.invisible();
         mapLayer.setDrawPriority(1f);
 
         map.color(0,0,0,0);
-
-        Box   testBox1    = new Box   (0,.1f,0, Rendering.Positive);
-
-        Shape groundPlane = new Shape(0, 0, 0, Rendering.Positive);
-        Grid  bottomLayer = new Grid(0, 0, 0, Rendering.Positive);
-        Grid  topLayer    = new Grid(0, .0001f, 0, Rendering.Positive);
 
         bottomLayer.size(2, 2, 0);
         bottomLayer.cellsize(8, 8);

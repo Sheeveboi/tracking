@@ -46,7 +46,6 @@ public class Rendering {
 
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
     private static MappableRingBuffer vertexBuffer;
-    private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
 
     public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
         float originalScale = scale * Values.scaleRegistry(type);
@@ -76,7 +75,7 @@ public class Rendering {
         return vertexBuffer.getBlocking();
     }
 
-    private static void draw3d(MinecraftClient client, RenderPipeline pipeline, BuiltBuffer builtBuffer, BuiltBuffer.DrawParameters drawParameters, GpuBuffer vertices, VertexFormat format) {
+    public static void draw3d(MinecraftClient client, RenderPipeline pipeline, BuiltBuffer builtBuffer, BuiltBuffer.DrawParameters drawParameters, GpuBuffer vertices, VertexFormat format) {
         GpuBuffer indices;
         VertexFormat.IndexType indexType;
 
@@ -95,7 +94,7 @@ public class Rendering {
 
         // Actually execute the draw
         GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
-                .write(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), 1f);
+                .write(RenderSystem.getModelViewMatrix(), new Vector4f(1f, 1f, 1f, 1f), RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), 1f);
         try (RenderPass renderPass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> "tracking unoccluded pipeline", client.getFramebuffer().getColorAttachmentView(), OptionalInt.empty(), client.getFramebuffer().getDepthAttachmentView(), OptionalDouble.empty())) {
@@ -199,7 +198,15 @@ public class Rendering {
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
-        Waypoint.updateWaypoint(0, -59, 0, Waypoint.Type.GOOD_GUY, "testuuid", "testusername");
+        Waypoint.updateWaypoint(0, -58, 0, Waypoint.Type.GOOD_GUY,    "uuid 1", "good guy");
+        Waypoint.updateWaypoint(1, -58, 0, Waypoint.Type.NORMAL,      "uuid 2", "normal");
+        Waypoint.updateWaypoint(2, -58, 0, Waypoint.Type.SHITTER,     "uuid 3", "shitter");
+        Waypoint.updateWaypoint(3, -58, 0, Waypoint.Type.HITLER,      "uuid 4", "hitler");
+        Waypoint.updateWaypoint(4, -58, 0, Waypoint.Type.SNITCH,      "uuid 5", "snitch");
+        Waypoint.updateWaypoint(5, -58, 0, Waypoint.Type.SNITCH_ALERT,"uuid 6", "snitch alert");
+        Waypoint.updateWaypoint(6, -58, 0, Waypoint.Type.PING,        "uuid 7", "ping");
+        Waypoint.updateWaypoint(7, -58, 0, Waypoint.Type.ALERT,       "uuid 8", "panic");
+        Waypoint.updateWaypoint(8, -58, 0, Waypoint.Type.PERMANENT,   "uuid 18","permanent");
 
         //TODO: all rendering should be through shapes
         renderWaypoints(Positive);

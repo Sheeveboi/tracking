@@ -14,16 +14,17 @@ import java.util.*;
 import static java.lang.Math.abs;
 
 public class Navigation {
-    public static ArrayList<Node> nodes = new ArrayList<>();
+
     public static Node currentNode;
     public static Node targetNode;
+
     public static double velocityThreshold;
     public static double interactionThreshold;
+
     public static int tick;
     public static int deepThreshold = 3;
     public static int maxDeepSearchDistance = 5;
     public static Vector3f playerPrev = new Vector3f();
-
     public static Handler handler;
 
     public static ArrayList<Node> nodes = new ArrayList<>();
