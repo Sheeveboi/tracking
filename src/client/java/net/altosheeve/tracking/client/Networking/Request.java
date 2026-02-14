@@ -181,5 +181,4 @@ public class Request extends Thread {
 
         return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
-
 }

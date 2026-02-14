@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import net.altosheeve.tracking.client.Core.Relaying;
-import net.altosheeve.tracking.client.Render.Rendering;
+import net.altosheeve.tracking.client.Core.Rendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;

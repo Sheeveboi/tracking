@@ -154,99 +154,33 @@ public class Rendering {
 
     }
 
-    public static void renderShapes() {
-
-        //TODO: Move waypoint rendering into more general Shapes
-        //TODO: Implement Positive and Negative drawing modes
-
-        if (!Shape.shapes.isEmpty()) {
-
-            BufferBuilder shapesBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
-
-            for (Shape shape : Shape.shapes) shape.set(shapesBuffer);
-
-            //TODO: map all these values to an object and have draw3d accept the object
-            BuiltBuffer builtMapBuffer = shapesBuffer.end();
-
-            BuiltBuffer.DrawParameters shapesParameters = builtMapBuffer.getDrawParameters();
-            VertexFormat shapesFormat = shapesParameters.format();
-
-            GpuBuffer vertices = upload3d(shapesParameters, shapesFormat, builtMapBuffer);
-
-            draw3d(client, Rendering.Positive, builtMapBuffer, shapesParameters, vertices, shapesFormat);
-
-            vertexBuffer.rotate();
-            shapesBuffer = null;
-
-        }
-
-    }
-
-    public static void whatever(WorldRenderContext context) {
-        ClientPlayerEntity player = client.player;
-        if (player == null) return;
-        if (client.world == null) return;
-
-        renderContext = context;
-
-        renderTick ++;
-        renderTick %= maxRenderTick;
-
-        //initialize rendering system
-
-        //create view matrix stack
-        Vec3d camPos = client.gameRenderer.getCamera().getPos();
-        modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushMatrix();
-        modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
-
-        //Soprano macro nodes
-        /*if (!Navigation.nodes.isEmpty()) {
-            BufferBuilder boxBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
-            for (Node node : Navigation.nodes) node.draw(boxBuffer);
-            BufferRenderer.drawWithGlobalProgram(boxBuffer.end());
-
-            BufferBuilder lineBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-            GL11.glEnable(GL11.GL_LINE_SMOOTH);
-
-            for (Node node : Navigation.nodes) {
-                for (int i : node.connections) {
-                    lineBuffer.vertex(node.x + .5f, node.y + .5f, node.z + .5f).color(1f, 0f, 0f, 1f);
-                    lineBuffer.vertex(Navigation.nodes.get(i).x + .5f, Navigation.nodes.get(i).y + .5f, Navigation.nodes.get(i).z + .5f).color(1f, 0f, 0f, 1f);
-                }
-            }
-
-            if (Navigation.currentNode != null) {
-                lineBuffer.vertex((float) client.player.getX(), (float) client.player.getY(), (float) client.player.getZ()).color(1f, 0f, 0f, 1f);
-                lineBuffer.vertex(Navigation.currentNode.x + .5f, Navigation.currentNode.y + .5f, Navigation.currentNode.z + .5f).color(1f, 0f, 0f, 1f);
-            }
-
-            BufferRenderer.drawWithGlobalProgram(lineBuffer.end());
-        }
-
-        if (!Waypoint.waypoints.isEmpty()) {
-
-            RenderSystem.disableDepthTest();
-
-            BufferBuilder waypointBuffer = RenderSystem.renderThreadTesselator().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-            VertexConsumerProvider.Immediate textBuffer = client.getBufferBuilders().getEntityVertexConsumers();
-
-            for (Waypoint waypoint : new ArrayList<>(Waypoint.waypoints)) {
-                waypoint.drawPoint(waypointBuffer);
-                if (waypoint.importance <= 0) Waypoint.waypoints.remove(waypoint);
-            }
-
-            Waypoint.drawText(textBuffer);
-
-            BufferRenderer.drawWithGlobalProgram(waypointBuffer.end());
-            textBuffer.draw();
-
-        }*/
-
-        //clear view matrix stack
-        modelViewStack.popMatrix();
-    }
+//    public static void renderShapes() {
+//
+//        //TODO: Move waypoint rendering into more general Shapes
+//        //TODO: Implement Positive and Negative drawing modes
+//
+//        if (!Shape.shapes.isEmpty()) {
+//
+//            BufferBuilder shapesBuffer = new BufferBuilder(allocator, Positive.getVertexFormatMode(), Positive.getVertexFormat());
+//
+//            for (Shape shape : Shape.shapes) shape.set(shapesBuffer);
+//
+//            //TODO: map all these values to an object and have draw3d accept the object
+//            BuiltBuffer builtMapBuffer = shapesBuffer.end();
+//
+//            BuiltBuffer.DrawParameters shapesParameters = builtMapBuffer.getDrawParameters();
+//            VertexFormat shapesFormat = shapesParameters.format();
+//
+//            GpuBuffer vertices = upload3d(shapesParameters, shapesFormat, builtMapBuffer);
+//
+//            draw3d(client, Rendering.Positive, builtMapBuffer, shapesParameters, vertices, shapesFormat);
+//
+//            vertexBuffer.rotate();
+//            shapesBuffer = null;
+//
+//        }
+//
+//    }
 
     public static void render3d(WorldRenderContext context) {
 
@@ -269,7 +203,10 @@ public class Rendering {
 
         //TODO: all rendering should be through shapes
         renderWaypoints(Positive);
-        renderShapes();
+        //renderShapes();
+
+        for (Layer layer : Layer.layers) layer.prepare();
+        for (Layer layer : Layer.layers) layer.render();
 
         modelViewStack.popMatrix();
 

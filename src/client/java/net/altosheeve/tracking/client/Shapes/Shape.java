@@ -42,7 +42,8 @@ public class Shape {
 
     public RenderPipeline method;
 
-    public Shape parent;
+    public Shape parentShape;
+    public Layer parentLayer;
 
     public ArrayList<Shape> children = new ArrayList<>();
     public static ArrayList<Shape> shapes = new ArrayList<>();

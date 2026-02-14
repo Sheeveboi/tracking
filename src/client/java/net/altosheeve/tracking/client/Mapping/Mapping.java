@@ -13,12 +13,7 @@ import net.minecraft.text.Text;
 
 import static java.lang.Math.log;
 
-        @Override
-        public void set(BufferBuilder buffer) {
-            super.set(buffer, Transforms.getHud3dTransform());
-        }
-
-    }
+public class Mapping extends Screen {
 
     public static boolean renderMap = false;
 
@@ -50,6 +45,9 @@ import static java.lang.Math.log;
     static {
 
         mapContainer.transform(Transforms.getHud3dTransform());
+        mapLayer.invisible();
+        mapLayer.setDrawPriority(1f);
+
         map.color(0,0,0,0);
 
         Box   testBox1    = new Box   (0,.1f,0, Rendering.Positive);
@@ -75,6 +73,8 @@ import static java.lang.Math.log;
         mapContainer.addShape(testBox1);
         mapContainer.addShape(map);
 
+        mapLayer.addShape(mapContainer);
+
     }
 
     public Map(Text title) {
@@ -83,7 +83,7 @@ import static java.lang.Math.log;
 
     @Override
     public void init() {
-        Shape.shapes.add(mapContainer);
+        mapLayer.visible();
         renderMap = true;
 
         SliderWidget xWidget = new SliderWidget(
@@ -235,8 +235,8 @@ import static java.lang.Math.log;
     @Override
     public void close() {
         super.close();
-        Shape.shapes.remove(mapContainer);
         renderMap = false;
+        mapLayer.invisible();
     }
 
     @Override
