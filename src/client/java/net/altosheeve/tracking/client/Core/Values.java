@@ -21,7 +21,7 @@ public class Values {
     public static float normalScale = 1f;
     public static float shitterScale = 1f;
     public static float hitlerScale = 1f;
-    public static float snitchScale = 1f;
+    public static float snitchScale = 2f;
     public static float snitchAlertScale = 1f;
     public static float pingScale = 1f;
     public static float alertScale = 1f;
@@ -29,10 +29,10 @@ public class Values {
 
     public static float waypointImportance = .8f;
     public static float goodGuyImportance = 1f;
-    public static float normalImportance = .3f;
+    public static float normalImportance = .5f;
     public static float shitterImportance = .7f;
     public static float hitlerImportance = 1f;
-    public static float snitchImportance = .2f;
+    public static float snitchImportance = .25f;
     public static float snitchAlertImportance = .8f;
     public static float pingImportance = 1f;
     public static float alertImportance = 1f;
@@ -50,9 +50,9 @@ public class Values {
     public static float permanentDecayRate = 0f;
 
     public static float waypointFocusThreshold = .01f;
-    public static float goodGuyFocusThreshold = .05f;
-    public static float normalFocusThreshold = .001f;
-    public static float shitterFocusThreshold = .01f;
+    public static float goodGuyFocusThreshold = .02f;
+    public static float normalFocusThreshold = .01f;
+    public static float shitterFocusThreshold = .05f;
     public static float hitlerFocusThreshold = .05f;
     public static float snitchFocusThreshold = .001f;
     public static float snitchAlertFocusThreshold = .01f;
