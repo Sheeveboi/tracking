@@ -35,6 +35,7 @@ public class Layer {
 
     private final String name;
     public float drawPriority = 0;
+    public float lineWidth = 1;
     private boolean visible = true;
 
     public RenderPipeline pipeline;
