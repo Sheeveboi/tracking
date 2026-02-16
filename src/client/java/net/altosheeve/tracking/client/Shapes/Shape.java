@@ -39,7 +39,8 @@ public class Shape {
     public float b;
     public float a;
 
-    public boolean visible = true;
+    public boolean fillVisible = true;
+    public boolean lineVisible = true;
 
     public Shape parentShape;
     public Layer parentLayer;
@@ -117,12 +118,25 @@ public class Shape {
         this.startingTransform = transform;
     }
 
-    public void invisible() {
-        this.visible = false;
+    public void setFillInvisible() {
+        this.fillVisible = false;
     }
 
-    public void visible() {
-        this.visible = true;
+    public void setFillVisible() {
+        this.fillVisible = true;
+    }
+
+    public void setLineInvisible() {
+        this.lineVisible = false;
+    }
+
+    public void setLineVisible() {
+        this.lineVisible = true;
+    }
+
+    public void setParentLayer(Layer layer) {
+        this.parentLayer = layer;
+        for (Shape child : this.children) child.setParentLayer(layer);
     }
 
     public void addShape(Shape shape) {
@@ -144,7 +158,8 @@ public class Shape {
 
         for (Shape shape : this.children) shape.set(buffer, transform);
 
-        if (!this.visible) return;
+        if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
+        if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
         this.draw(buffer);
 
@@ -170,13 +185,13 @@ public class Shape {
 
         for (Shape shape : this.children) shape.set(buffer);
 
-        if (!this.visible) return;
-
-        this.draw(buffer);
+        if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
+        if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
         this.activeTransform = null;
 
     }
 
-    public void draw(BufferBuilder buffer) {};
+    public void fill(BufferBuilder buffer) {};
+    public void line(BufferBuilder buffer) {};
 }

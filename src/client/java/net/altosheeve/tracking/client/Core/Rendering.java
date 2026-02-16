@@ -36,10 +36,34 @@ public class Rendering {
     public static int renderTick = 0;
     public static int maxRenderTick = 100000;
 
-    public static final RenderPipeline Positive = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+    public static final RenderPipeline fillUnnocluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
             .withLocation(Identifier.of("tracking", "pipeline/positive"))
             .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.QUADS)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withCull(false)
+            .build()
+    );
+
+    public static final RenderPipeline fillOccluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+            .withLocation(Identifier.of("tracking", "pipeline/positive"))
+            .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.QUADS)
+            .withDepthTestFunction(DepthTestFunction.LESS_DEPTH_TEST)
+            .withCull(false)
+            .build()
+    );
+
+    public static final RenderPipeline lineUnoccluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+            .withLocation(Identifier.of("tracking", "pipeline/line"))
+            .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.DEBUG_LINES)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withCull(false)
+            .build()
+    );
+
+    public static final RenderPipeline lineOccluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
+            .withLocation(Identifier.of("tracking", "pipeline/line"))
+            .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.DEBUG_LINES)
+            .withDepthTestFunction(DepthTestFunction.GREATER_DEPTH_TEST)
             .withCull(false)
             .build()
     );

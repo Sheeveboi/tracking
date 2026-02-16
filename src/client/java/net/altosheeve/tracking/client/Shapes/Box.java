@@ -12,7 +12,7 @@ public class Box extends Shape{
     }
 
     @Override
-    public void draw(BufferBuilder buffer) {
+    public void fill(BufferBuilder buffer) {
 
         //left face
         buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
@@ -49,6 +49,53 @@ public class Box extends Shape{
         buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
         buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
         buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+    }
+
+    @Override
+    public void line(BufferBuilder buffer) {
+
+        //bottom face
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+
+        //top face
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+
+        //0 0 corner
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        //0 1 corner
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+
+        //1 0 corner
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ).color(this.r, this.g, this.b, this.a);
+
+        //1 1 corner
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
+        buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY + this.h, this.finalZ + this.d).color(this.r, this.g, this.b, this.a);
 
     }
 }

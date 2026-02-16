@@ -28,7 +28,7 @@ public class Navigation {
     public static Handler handler;
 
     public static ArrayList<Node> nodes = new ArrayList<>();
-    public static Layer drawLayer = new Layer("Navigation Nodes", Rendering.Positive);
+    public static Layer drawLayer = new Layer("Navigation Nodes", Layer.Method.FILL_UNOCCLUDED);
 
     static { drawLayer.setDrawPriority(.5f); }
 

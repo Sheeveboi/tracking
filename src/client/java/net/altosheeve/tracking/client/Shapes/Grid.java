@@ -55,9 +55,9 @@ public class Grid extends Shape {
     }
 
     @Override
-    public void draw(BufferBuilder buffer) {
+    public void fill(BufferBuilder buffer) {
 
-        for (int squareZ = 0; squareZ < this.h; squareZ++) {
+        for (int squareZ = 0; squareZ < this.d; squareZ++) {
 
             for (int squareX = 0; squareX < this.w; squareX++) {
 
@@ -74,6 +74,32 @@ public class Grid extends Shape {
                 buffer.vertex(this.activeTransform, this.margins + gridX,               gridY, gridZ + this.zScale - margins).color(this.r, this.g, this.b, this.a); //top left corner
 
             }
+
+        }
+
+    }
+
+    @Override
+    public void line(BufferBuilder buffer) {
+
+        //TODO: enhance this draw method to include vertexes within the grid instead of the perimeter and varying y levels
+        for (int squareX = 0; squareX <= this.w; squareX++) {
+
+            float gridX = this.finalX + squareX * this.xScale;
+
+            buffer.vertex(this.activeTransform, gridX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(this.activeTransform, gridX, this.finalY, this.finalZ + this.d * this.zScale).color(this.r, this.g, this.b, this.a);
+
+        }
+
+        for (int squareZ = 0; squareZ <= this.d; squareZ++) {
+
+            System.out.println("drawing z");
+
+            float gridZ = this.finalZ + squareZ * this.zScale;
+
+            buffer.vertex(this.activeTransform, this.finalX, this.finalY, gridZ).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(this.activeTransform, this.finalX + this.w * this.xScale, this.finalY, gridZ).color(this.r, this.g, this.b, this.a);
 
         }
 
