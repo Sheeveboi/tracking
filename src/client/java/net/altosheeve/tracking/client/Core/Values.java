@@ -16,7 +16,7 @@ public class Values {
     public static float globalSpriteDistance = 1f;
     public static float shaftScale = .5f;
 
-    public static float waypointScale = .03f;
+    public static float waypointScale = .02f;
     public static float goodGuyScale = 1f;
     public static float normalScale = 1f;
     public static float shitterScale = 1f;
