@@ -178,7 +178,7 @@ public class Shape {
 
         this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
 
-        this.activeTransform = this.activeTransform.scaleAround(scalex, 1, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        this.activeTransform = this.activeTransform.scaleAround(scalex, scaley, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
