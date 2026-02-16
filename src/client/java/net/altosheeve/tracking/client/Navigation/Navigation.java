@@ -2,7 +2,6 @@ package net.altosheeve.tracking.client.Navigation;
 
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.Layer;
-import net.altosheeve.tracking.client.Shapes.Shape;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
@@ -30,7 +29,7 @@ public class Navigation {
     public static ArrayList<Node> nodes = new ArrayList<>();
     public static Layer drawLayer = new Layer("Navigation Nodes", Layer.Method.FILL_UNOCCLUDED);
 
-    static { drawLayer.setDrawPriority(.5f); }
+    static { drawLayer.setDrawPriority(9999999999999f); }
 
     public interface Handler {
         void cb();

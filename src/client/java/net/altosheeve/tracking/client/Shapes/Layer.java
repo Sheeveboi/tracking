@@ -96,7 +96,7 @@ public class Layer {
         }
 
         for (Layer layer : layers) {
-            if (layer.drawPriority > this.drawPriority) {
+            if (layer.drawPriority < this.drawPriority) {
                 layers.add(layers.indexOf(layer), this);
                 return;
             }

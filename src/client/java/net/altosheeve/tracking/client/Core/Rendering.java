@@ -9,8 +9,8 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.altosheeve.tracking.client.Mapping.Waypoint;
+import net.altosheeve.tracking.client.Shapes.Box;
 import net.altosheeve.tracking.client.Shapes.Layer;
-import net.altosheeve.tracking.client.Shapes.Shape;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.MappableRingBuffer;
@@ -216,5 +216,6 @@ public class Rendering {
             vertexBuffer = null;
         }
     }
+
 
 }
