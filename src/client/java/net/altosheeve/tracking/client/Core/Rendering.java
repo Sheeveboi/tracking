@@ -198,7 +198,7 @@ public class Rendering {
 
         //TODO: all rendering should be through shapes
 
-        renderWaypoints(Positive);
+        renderWaypoints(fillUnnocluded);
 
         //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();

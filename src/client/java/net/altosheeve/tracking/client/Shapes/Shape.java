@@ -141,6 +141,7 @@ public class Shape {
 
     public void addShape(Shape shape) {
         shape.parentShape = this;
+        shape.setParentLayer(shape.parentLayer);
         this.children.add(shape);
     }
 
@@ -148,7 +149,7 @@ public class Shape {
 
         transform = transform.translate(this.x, this.y, this.z);
 
-        transform = transform.scaleAround(scalex, 1, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+        transform = transform.scaleAround(scalex, scaley, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
         transform = transform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
         transform = transform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
@@ -161,7 +162,7 @@ public class Shape {
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
-        this.draw(buffer);
+        this.activeTransform = null;
 
     }
 

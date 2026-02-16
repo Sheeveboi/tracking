@@ -20,6 +20,13 @@ import java.util.Objects;
 
 public class Layer {
 
+    public enum Method {
+        FILL_UNOCCLUDED,
+        FILL_OCCLUDED,
+        LINE_UNOCCLUDED,
+        LINE_OCCLUDED
+    }
+
     public BuiltBuffer builtBuffer;
     public MappableRingBuffer vertexBuffer;
     public GpuBuffer gpuBuffer;
@@ -29,26 +36,36 @@ public class Layer {
     private final String name;
     public float drawPriority = 0;
     private boolean visible = true;
+
     public RenderPipeline pipeline;
+    public Method pipelineName;
 
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
 
     public static ArrayList<Layer> layers = new ArrayList<>();
     public ArrayList<Shape> shapes = new ArrayList<>();
 
-    public Layer(String name, RenderPipeline pipeline) {
+    public Layer(String name, Method pipeline) {
         for (Layer layer : layers)
             if (Objects.equals(layer.name, name)) throw new RuntimeException("Two layers may not share the same name");
 
         this.name = name;
-        this.pipeline = pipeline;
+
+        switch (pipeline) {
+            case FILL_OCCLUDED -> this.pipeline = Rendering.fillOccluded;
+            case FILL_UNOCCLUDED -> this.pipeline = Rendering.fillUnnocluded;
+            case LINE_OCCLUDED -> this.pipeline = Rendering.lineOccluded;
+            case LINE_UNOCCLUDED -> this.pipeline = Rendering.lineUnoccluded;
+        }
+
+        this.pipelineName = pipeline;
 
         this.update();
 
     }
 
     public void addShape(Shape shape) {
-        shape.parentLayer = this;
+        shape.setParentLayer(this);
         this.shapes.add(shape);
         this.update();
     }
@@ -60,6 +77,11 @@ public class Layer {
 
     public void setDrawPriority(float priority) {
         this.drawPriority = priority;
+        this.update();
+    }
+
+    public void setLineWidth(float width) {
+        this.lineWidth = width;
         this.update();
     }
 
