@@ -115,6 +115,8 @@ public class Layer {
 
         BufferBuilder shapesBuffer = new BufferBuilder(allocator, this.pipeline.getVertexFormatMode(), this.pipeline.getVertexFormat());
 
+        RenderSystem.lineWidth(this.lineWidth);
+
         for (Shape shape : this.shapes) shape.set(shapesBuffer);
 
         this.builtBuffer = shapesBuffer.end();
