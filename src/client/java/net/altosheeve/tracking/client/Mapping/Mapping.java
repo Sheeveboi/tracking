@@ -1,7 +1,5 @@
 package net.altosheeve.tracking.client.Mapping;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.*;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -54,40 +52,44 @@ public class Mapping extends Screen {
     }
 
     static Shape mapContainer = new MapContainer (panX, panY, panZ);
-    static Layer mapLayer = new Layer("Map Layer", Rendering.Positive);
+    static Shape mapGrid      = new MapContainer (panX, panY, panZ);
+    static Layer mapLineLayer = new Layer("Map Line Layer", Layer.Method.LINE_UNOCCLUDED);
+    static Layer mapFillLayer = new Layer("Map Fill Layer", Layer.Method.FILL_UNOCCLUDED);
 
     static {
 
-        Shape map         = new Shape (0, 0, 0);
-        Box   testBox1    = new Box   (0,.1f,0);
-        Shape groundPlane = new Shape (0, 0, 0);
-        Grid  bottomLayer = new Grid  (0, 0, 0);
-        Grid  topLayer    = new Grid  (0, .0001f, 0);
+        Shape map       = new Shape (0, 0, 0);
+        Box   testBox1  = new Box   (0,.1f,0);
+        Grid  mapPlane  = new Grid  (0, 0, 0);
+        Grid  gridSize1 = new Grid  (0, 0, 0);
 
-        mapContainer.transform(Transforms.getHud3dTransform());
-        mapLayer.invisible();
-        mapLayer.setDrawPriority(1f);
+        mapPlane.size(2, 2, 2);
+        mapPlane.cellsize(8, 8);
+        mapPlane.color(0, 0, 1, .5f);
+        mapPlane.setLineInvisible();
 
+        gridSize1.size(2, 2, 2);
+        gridSize1.cellsize(8, 8);
+        gridSize1.color(1, 0, 0, 1f);
+        gridSize1.setFillInvisible();
+
+        map.addShape(mapPlane);
         map.color(0,0,0,0);
 
-        bottomLayer.size(2, 2, 0);
-        bottomLayer.cellsize(8, 8);
-        bottomLayer.color(0, 0, 1, 1);
-
-        topLayer.size(2, 2, 0);
-        topLayer.cellsize(8, 8);
-        topLayer.margins(.05f);
-        topLayer.color(0, 0, 0, 1);
-
-        groundPlane.addShape(bottomLayer);
-        groundPlane.addShape(topLayer);
-
-        map.addShape(groundPlane);
-
-        mapContainer.addShape(testBox1);
         mapContainer.addShape(map);
+        mapContainer.addShape(testBox1);
 
-        mapLayer.addShape(mapContainer);
+        mapGrid.addShape(gridSize1);
+
+        mapLineLayer.addShape(mapGrid);
+        mapLineLayer.setLineWidth(2f);
+        mapLineLayer.invisible();
+        mapLineLayer.setDrawPriority(1f);
+
+        mapFillLayer.addShape(mapContainer);
+        mapFillLayer.invisible();
+        mapFillLayer.setDrawPriority(2f);
+
 
     }
 
@@ -97,7 +99,8 @@ public class Mapping extends Screen {
 
     @Override
     public void init() {
-        mapLayer.visible();
+        mapLineLayer.visible();
+        mapFillLayer.visible();
         renderMap = true;
 
         SliderWidget xWidget = new SliderWidget(
@@ -117,6 +120,7 @@ public class Mapping extends Screen {
             protected void applyValue() {
                 mapRotationX = (float) this.value;
                 mapContainer.rotation(mapRotationX, mapRotationY, mapRotationZ);
+                mapGrid.rotation(mapRotationX, mapRotationY, mapRotationZ);
             }
         };
 
@@ -137,6 +141,7 @@ public class Mapping extends Screen {
             protected void applyValue() {
                 mapRotationY = (float) this.value;
                 mapContainer.rotation(mapRotationX, mapRotationY, mapRotationZ);
+                mapGrid.rotation(mapRotationX, mapRotationY, mapRotationZ);
             }
         };
 
@@ -188,7 +193,7 @@ public class Mapping extends Screen {
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
                 System.out.println(button);
-                return false;
+                return super.mouseClicked(mouseX, mouseY, button);
             }
 
             @Override
@@ -200,6 +205,7 @@ public class Mapping extends Screen {
                     System.out.println();
 
                     mapContainer.scale(zoom, zoom, zoom);
+                    mapGrid.scale(zoom, zoom, zoom);
 
                     System.out.println(zoom);
 
@@ -225,21 +231,25 @@ public class Mapping extends Screen {
             case 87 : //w
                 panZ += panSpeed / zoom;
                 mapContainer.origin(panX, panY, panZ);
+                mapGrid.origin(panX, panY, panZ);
                 break;
 
             case 83 : //s
                 panZ -= panSpeed / zoom;
                 mapContainer.origin(panX, panY, panZ);
+                mapGrid.origin(panX, panY, panZ);
                 break;
 
             case 68 : //d
                 panX -= panSpeed / zoom;
                 mapContainer.origin(panX, panY, panZ);
+                mapGrid.origin(panX, panY, panZ);
                 break;
 
             case 65 : //a
                 panX += panSpeed / zoom;
                 mapContainer.origin(panX, panY, panZ);
+                mapGrid.origin(panX, panY, panZ);
                 break;
         }
 
@@ -250,7 +260,8 @@ public class Mapping extends Screen {
     public void close() {
         super.close();
         renderMap = false;
-        mapLayer.invisible();
+        mapLineLayer.invisible();
+        mapFillLayer.invisible();
     }
 
     @Override
