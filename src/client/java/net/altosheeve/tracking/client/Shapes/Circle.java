@@ -44,8 +44,6 @@ public class Circle {
         this.a = a;
     }
 
-    //TODO: these draw statements are woefully inefficient. Implement triangle strip buffers to save on verts
-
     public void draw(BufferBuilder buffer) {
         for (int i = 0; i <= 359; i++) {
 
@@ -65,6 +63,7 @@ public class Circle {
             buffer.vertex(this.x + outerLeftX, this.y + outerLeftY, 0).color(this.r, this.g, this.b, this.a);
             buffer.vertex(this.x + outerRightX, this.y + outerRightY, 0).color(this.r, this.g, this.b, this.a);
             buffer.vertex(this.x + innerRightX, this.y + innerRightY, 0).color(this.r, this.g, this.b, this.a);
+
         }
     }
 

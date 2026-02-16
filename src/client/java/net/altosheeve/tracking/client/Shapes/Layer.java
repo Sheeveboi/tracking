@@ -102,7 +102,7 @@ public class Layer {
             }
         }
 
-        //sometimes the layer removed might have been the only one to exist and the second for loop wont enter
+        //sometimes the layer removed might have been the only one to exist and the second for loop won't enter
         layers.add(this);
 
     }
@@ -110,8 +110,6 @@ public class Layer {
     public void prepare() {
 
         if (this.shapes.isEmpty() || !this.visible) return;
-        System.out.println("preparing");
-        System.out.println(this.name);
 
         BufferBuilder shapesBuffer = new BufferBuilder(allocator, this.pipeline.getVertexFormatMode(), this.pipeline.getVertexFormat());
 

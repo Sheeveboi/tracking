@@ -1,6 +1,5 @@
 package net.altosheeve.tracking.client.Shapes;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
@@ -50,6 +49,7 @@ public class Shape {
     public Matrix4f activeTransform;
 
     public Shape(float x, float y, float z) {
+
         this.x = x;
         this.y = y;
         this.z = z;
