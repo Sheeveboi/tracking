@@ -2,7 +2,7 @@ package net.altosheeve.tracking.client.Shapes;
 
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
-import net.altosheeve.tracking.client.Mapping.Waypoint;
+import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.client.render.Camera;
 import net.minecraft.util.math.Vec3d;
 import org.joml.*;

@@ -1,7 +1,8 @@
-package net.altosheeve.tracking.client.Mapping;
+package net.altosheeve.tracking.client.Waypoints;
 
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Core.Values;
+import net.altosheeve.tracking.client.Shapes.Box;
 import net.altosheeve.tracking.client.Shapes.Circle;
 import net.altosheeve.tracking.client.Shapes.Transforms;
 import net.minecraft.client.font.TextRenderer;
@@ -184,8 +185,9 @@ public class Waypoint {
     }
 
     public void drawShaft(BufferBuilder buffer, Matrix4f shaftTransform) {
-        //Box shaft = new Box(0, -500, 0, 1, 9000, 1, Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], this.importance / 2);
-        //shaft.draw(buffer, shaftTransform);
+        Box shaft = new Box(0, -500, 0);
+        shaft.color(Values.waypointRegistry(this.type)[0], Values.waypointRegistry(this.type)[1], Values.waypointRegistry(this.type)[2], this.importance / 2);
+        //shaft.set(buffer);
     }
 
     public void drawPoint(BufferBuilder buffer) {

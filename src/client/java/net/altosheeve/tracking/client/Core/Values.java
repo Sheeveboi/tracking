@@ -1,6 +1,6 @@
 package net.altosheeve.tracking.client.Core;
 
-import net.altosheeve.tracking.client.Mapping.Waypoint;
+import net.altosheeve.tracking.client.Waypoints.Waypoint;
 
 public class Values {
 

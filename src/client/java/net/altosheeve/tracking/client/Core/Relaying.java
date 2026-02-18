@@ -3,7 +3,7 @@ package net.altosheeve.tracking.client.Core;
 import net.altosheeve.tracking.client.Networking.TypeGenerators;
 import net.altosheeve.tracking.client.Networking.UDPClient;
 import net.altosheeve.tracking.client.Networking.UDPObject;
-import net.altosheeve.tracking.client.Mapping.Waypoint;
+import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.entity.Entity;
 
 import java.io.IOException;
