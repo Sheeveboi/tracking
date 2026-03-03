@@ -3,89 +3,56 @@ package net.altosheeve.tracking.client.Shapes;
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.Matrix4f;
 
-public class Circle {
-    public int x;
-    public int y;
-    public int z;
+public class Circle extends Shape {
 
     public float innerRadius;
     public float outerRadius;
 
-    public float r;
-    public float g;
-    public float b;
-    public float a;
+    public final int resolution = 15;
 
-    public Circle(int x, int y, int z, float innerRadius, float outerRadius) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public Circle(float x, float y, float z, String UUID, float innerRadius, float outerRadius) {
+        super(x, y, z, UUID);
+        this.color(1f, 0f, 1f, 1f);
 
         this.innerRadius = innerRadius;
         this.outerRadius = outerRadius;
-
-        this.r = 1f;
-        this.g = 0f;
-        this.b = 1f;
-        this.a = 1f;
     }
 
-    public Circle(int x, int y, int z, float r, float g, float b, float a, float innerRadius, float outerRadius) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public Circle(float x, float y, float z, float r, float g, float b, float a, String UUID, float innerRadius, float outerRadius) {
+        super(x, y, z, UUID);
+        this.color(r, g, b, a);
 
         this.innerRadius = innerRadius;
         this.outerRadius = outerRadius;
-
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
     }
 
-    public void draw(BufferBuilder buffer) {
-        for (int i = 0; i <= 359; i++) {
+    @Override
+    public void fill(BufferBuilder buffer) {
 
-            float innerLeftX = (float) Math.sin(i * Math.PI / 180.0D) * this.innerRadius;
-            float innerLeftY = (float) Math.cos(i * Math.PI / 180.0D) * this.innerRadius;
+        float ratio = 360f / resolution;
 
-            float outerLeftX = (float) Math.sin(i * Math.PI / 180.0D) * this.outerRadius;
-            float outerLeftY = (float) Math.cos(i * Math.PI / 180.0D) * this.outerRadius;
+        for (int i = 0; i < resolution; i++) {
 
-            float innerRightX = (float) Math.sin((i + 1) * Math.PI / 180.0D) * this.innerRadius;
-            float innerRightY = (float) Math.cos((i + 1) * Math.PI / 180.0D) * this.innerRadius;
+            float itterPosLeft = (float) (i * ratio * Math.PI / 180.0D);
+            float itterPosRight = (float) ((i + 1) * ratio * Math.PI / 180.0D);
 
-            float outerRightX = (float) Math.sin((i + 1) * Math.PI / 180.0D) * this.outerRadius;
-            float outerRightY = (float) Math.cos((i + 1) * Math.PI / 180.0D) * this.outerRadius;
+            float innerLeftX = (float) Math.sin(itterPosLeft) * this.innerRadius;
+            float innerLeftY = (float) Math.cos(itterPosLeft) * this.innerRadius;
 
-            buffer.vertex(this.x + innerLeftX, this.y + innerLeftY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(this.x + outerLeftX, this.y + outerLeftY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(this.x + outerRightX, this.y + outerRightY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(this.x + innerRightX, this.y + innerRightY, 0).color(this.r, this.g, this.b, this.a);
+            float outerLeftX = (float) Math.sin(itterPosLeft) * this.outerRadius;
+            float outerLeftY = (float) Math.cos(itterPosLeft) * this.outerRadius;
 
-        }
-    }
+            float innerRightX = (float) Math.sin(itterPosRight) * this.innerRadius;
+            float innerRightY = (float) Math.cos(itterPosRight) * this.innerRadius;
 
-    public void draw(BufferBuilder buffer, Matrix4f transform) {
-        for (int i = 0; i <= 359; i++) {
+            float outerRightX = (float) Math.sin(itterPosRight) * this.outerRadius;
+            float outerRightY = (float) Math.cos(itterPosRight) * this.outerRadius;
 
-            float innerLeftX = (float) Math.sin(i * Math.PI / 180.0D) * this.innerRadius;
-            float innerLeftY = (float) Math.cos(i * Math.PI / 180.0D) * this.innerRadius;
+            buffer.vertex(this.activeTransform, this.finalX + innerLeftX, this.finalY + innerLeftY, this.finalZ).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(this.activeTransform,this.finalX + outerLeftX, this.finalY + outerLeftY, this.finalZ).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(this.activeTransform,this.finalX + outerRightX, this.finalY + outerRightY, this.finalZ).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(this.activeTransform,this.finalX + innerRightX, this.finalY + innerRightY, this.finalZ).color(this.r, this.g, this.b, this.a);
 
-            float outerLeftX = (float) Math.sin(i * Math.PI / 180.0D) * this.outerRadius;
-            float outerLeftY = (float) Math.cos(i * Math.PI / 180.0D) * this.outerRadius;
-
-            float innerRightX = (float) Math.sin((i + 1) * Math.PI / 180.0D) * this.innerRadius;
-            float innerRightY = (float) Math.cos((i + 1) * Math.PI / 180.0D) * this.innerRadius;
-
-            float outerRightX = (float) Math.sin((i + 1) * Math.PI / 180.0D) * this.outerRadius;
-            float outerRightY = (float) Math.cos((i + 1) * Math.PI / 180.0D) * this.outerRadius;
-
-            buffer.vertex(transform, this.x + innerLeftX, this.y + innerLeftY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(transform, this.x + outerLeftX, this.y + outerLeftY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(transform, this.x + outerRightX, this.y + outerRightY, 0).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(transform, this.x + innerRightX, this.y + innerRightY, 0).color(this.r, this.g, this.b, this.a);
         }
     }
 }

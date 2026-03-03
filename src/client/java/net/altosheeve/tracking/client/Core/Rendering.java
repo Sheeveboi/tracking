@@ -70,29 +70,6 @@ public class Rendering {
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
     private static MappableRingBuffer vertexBuffer;
 
-    private static GpuBuffer upload3d(BuiltBuffer.DrawParameters drawParameters, VertexFormat format, BuiltBuffer builtBuffer) {
-        // Calculate the size needed for the vertex buffer
-        int vertexBufferSize = drawParameters.vertexCount() * format.getVertexSize();
-
-        // Initialize or resize the vertex buffer as needed
-        if (vertexBuffer == null || vertexBuffer.size() < vertexBufferSize) {
-            if (vertexBuffer != null) {
-                vertexBuffer.close();
-            }
-
-            vertexBuffer = new MappableRingBuffer(() -> "tracking unoccluded pipeline", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
-        }
-
-        // Copy vertex data into the vertex buffer
-        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-
-        try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(vertexBuffer.getBlocking().slice(0, builtBuffer.getBuffer().remaining()), false, true)) {
-            MemoryUtil.memCopy(builtBuffer.getBuffer(), mappedView.data());
-        }
-
-        return vertexBuffer.getBlocking();
-    }
-
     public static void draw3d(MinecraftClient client, RenderPipeline pipeline, BuiltBuffer builtBuffer, BuiltBuffer.DrawParameters drawParameters, GpuBuffer vertices, VertexFormat format) {
         GpuBuffer indices;
         VertexFormat.IndexType indexType;
@@ -136,38 +113,6 @@ public class Rendering {
         builtBuffer.close();
     }
 
-    public static void renderWaypoints(@SuppressWarnings("SameParameterValue") RenderPipeline pipeline) {
-
-        if (!Waypoint.waypoints.isEmpty()) {
-
-            BufferBuilder waypointBuffer = new BufferBuilder(allocator, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-            VertexConsumerProvider.Immediate textBuffer = client.getBufferBuilders().getEntityVertexConsumers();
-
-            for (Waypoint waypoint : new ArrayList<>(Waypoint.waypoints)) {
-                waypoint.drawPoint(waypointBuffer);
-                if (waypoint.importance <= 0) Waypoint.waypoints.remove(waypoint);
-            }
-
-            Waypoint.drawText(textBuffer);
-            textBuffer.draw(); //maybe change where this calls in the future
-
-            assert waypointBuffer != null;
-            BuiltBuffer builtWaypointBuffer = waypointBuffer.end();
-
-            BuiltBuffer.DrawParameters waypointParameters = builtWaypointBuffer.getDrawParameters();
-            VertexFormat waypointFormat = waypointParameters.format();
-
-            GpuBuffer vertices = upload3d(waypointParameters, waypointFormat, builtWaypointBuffer);
-
-            draw3d(client, pipeline, builtWaypointBuffer, waypointParameters, vertices, waypointFormat);
-
-            vertexBuffer.rotate();
-            waypointBuffer = null;
-
-        }
-
-    }
-
     public static void render3d(WorldRenderContext context) {
 
         ClientPlayerEntity player = client.player;
@@ -185,23 +130,16 @@ public class Rendering {
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
-        Waypoint.updateWaypoint(0, -58, 0, Waypoint.Type.GOOD_GUY,    "uuid 1", "good guy");
-        Waypoint.updateWaypoint(1, -58, 0, Waypoint.Type.NORMAL,      "uuid 2", "normal");
-        Waypoint.updateWaypoint(2, -58, 0, Waypoint.Type.SHITTER,     "uuid 3", "shitter");
-        Waypoint.updateWaypoint(3, -58, 0, Waypoint.Type.HITLER,      "uuid 4", "hitler");
-        Waypoint.updateWaypoint(4, -58, 0, Waypoint.Type.SNITCH,      "uuid 5", "snitch");
-        Waypoint.updateWaypoint(5, -58, 0, Waypoint.Type.SNITCH_ALERT,"uuid 6", "snitch alert");
-        Waypoint.updateWaypoint(6, -58, 0, Waypoint.Type.PING,        "uuid 7", "ping");
-        Waypoint.updateWaypoint(7, -58, 0, Waypoint.Type.ALERT,       "uuid 8", "panic");
-        Waypoint.updateWaypoint(8, -58, 0, Waypoint.Type.PERMANENT,   "uuid 18","permanent");
-
         //TODO: all rendering should be through shapes
-
-        renderWaypoints(fillUnnocluded);
 
         //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();
         for (Layer layer : Layer.layers) layer.render();
+
+        //TODO: implement text layers
+        VertexConsumerProvider.Immediate textBuffer = Rendering.client.getBufferBuilders().getEntityVertexConsumers();
+        Waypoint.drawText(textBuffer);
+        textBuffer.draw();
 
         modelViewStack.popMatrix();
 
