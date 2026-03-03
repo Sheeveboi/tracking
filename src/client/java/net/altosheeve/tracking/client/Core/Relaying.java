@@ -21,8 +21,6 @@ public class Relaying {
             return;
         }
 
-        for (int i = 0; i < Waypoint.waypoints.size(); i++) Waypoint.waypoints.get(i).importance -= Waypoint.waypoints.get(i).decayRate;
-
         for (Entity entity : Rendering.client.world.getEntities()) {
             if (entity.isPlayer()) {
 
@@ -64,6 +62,8 @@ public class Relaying {
         if (!buffer.hasNext()) return;
         String UUID = TypeGenerators.decodeUUID(buffer);
 
+        if (UUID.equals(Rendering.client.player.getUuidAsString())) return;
+
         if (!buffer.hasNext()) return;
         String username = TypeGenerators.decodeString(buffer);
 
@@ -87,7 +87,7 @@ public class Relaying {
 
         int threat = buffer.next();
 
-        Waypoint.updateWaypoint(x, (float) Rendering.client.player.getY() + 1.5f, z, Waypoint.Type.values()[threat], UUID, username);
+        Waypoint.updateWaypoint(x, (float) Rendering.client.player.getY() + 1.5f, z, Waypoint.Type.GOOD_GUY, UUID, username);
 
     }
 
