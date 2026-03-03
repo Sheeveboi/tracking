@@ -68,10 +68,10 @@ public class Mapping extends Screen {
         mapPlane.color(0, 0, 1, .5f);
         mapPlane.setLineInvisible();
 
-        gridSize1.size(2, 2, 2);
-        gridSize1.cellsize(8, 8);
-        gridSize1.color(1, 0, 0, 1f);
-        gridSize1.setFillInvisible();
+        coarseGrid.size(2, 2, 2);
+        coarseGrid.cellsize(8, 8);
+        coarseGrid.color(1, 0, 0, 1f);
+        coarseGrid.setFillInvisible();
 
         map.addShape(mapPlane);
         map.color(0,0,0,0);
@@ -79,7 +79,7 @@ public class Mapping extends Screen {
         mapContainer.addShape(map);
         mapContainer.addShape(testBox1);
 
-        mapGrid.addShape(gridSize1);
+        mapGrid.addShape(coarseGrid);
 
         mapLineLayer.addShape(mapGrid);
         mapLineLayer.setLineWidth(2f);
