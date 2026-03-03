@@ -1,4 +1,4 @@
-package net.altosheeve.soprano.client.Networking.old;
+package net.altosheeve.tracking.client.Networking.old;
 
 public class OtherRequest {
     protected interface cb { //generic callback method
