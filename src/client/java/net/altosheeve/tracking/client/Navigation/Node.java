@@ -52,19 +52,19 @@ public class Node extends Box {
     }
 
     public Node(int x, int y, int z) {
-        super(x, y, z);
+        super(x, y, z, String.valueOf(java.util.UUID.randomUUID()));
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type) {
-        super(x, y, z);
+        super(x, y, z, String.valueOf(java.util.UUID.randomUUID()));
         this.type = type;
         this.setColor();
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type, String tag) {
-        super(x, y, z);
+        super(x, y, z, tag);
         this.type = type;
         this.setColor();
         this.tag = tag;
@@ -72,7 +72,7 @@ public class Node extends Box {
     }
 
     public Node(int x, int y, int z, NodeType type, String tag, ArrayList<Integer> connections) {
-        super(x, y, z);
+        super(x, y, z, tag);
         this.type = type;
         this.setColor();
         this.tag = tag;

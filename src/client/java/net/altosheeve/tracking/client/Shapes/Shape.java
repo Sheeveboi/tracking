@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class Shape {
 
+    public String UUID;
+
     public float x;
     public float y;
     public float z;
@@ -62,6 +64,8 @@ public class Shape {
         this.g = 0f;
         this.b = 1f;
         this.a = 1f;
+
+        this.UUID = UUID;
 
     }
 

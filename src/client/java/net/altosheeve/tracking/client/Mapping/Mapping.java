@@ -40,8 +40,8 @@ public class Mapping extends Screen {
     //TODO: make implementation of custom transforms easier than this!!
     public static class MapContainer extends Shape {
 
-        public MapContainer(float x, float y, float z) {
-            super(x, y, z);
+        public MapContainer(float x, float y, float z, String UUID) {
+            super(x, y, z, UUID);
         }
 
         @Override
@@ -51,17 +51,17 @@ public class Mapping extends Screen {
 
     }
 
-    static Shape mapContainer = new MapContainer (panX, panY, panZ);
-    static Shape mapGrid      = new MapContainer (panX, panY, panZ);
+    static Shape mapContainer = new MapContainer (panX, panY, panZ, "Map container");
+    static Shape mapGrid      = new MapContainer (panX, panY, panZ, "Map grid");
     static Layer mapLineLayer = new Layer("Map Line Layer", Layer.Method.LINE_UNOCCLUDED);
     static Layer mapFillLayer = new Layer("Map Fill Layer", Layer.Method.FILL_UNOCCLUDED);
 
     static {
 
-        Shape map       = new Shape (0, 0, 0);
-        Box   testBox1  = new Box   (0,.1f,0);
-        Grid  mapPlane  = new Grid  (0, 0, 0);
-        Grid  gridSize1 = new Grid  (0, 0, 0);
+        Shape map       = new Shape (0, 0, 0, "map");
+        Box   testBox1  = new Box   (0,.1f,0, "test box");
+        Grid  mapPlane  = new Grid  (0, 0, 0, "map plane");
+        Grid coarseGrid = new Grid  (0, 0, 0, "coarse grid");
 
         mapPlane.size(2, 2, 2);
         mapPlane.cellsize(8, 8);

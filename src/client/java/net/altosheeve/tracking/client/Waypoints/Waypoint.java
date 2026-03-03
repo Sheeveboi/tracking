@@ -80,20 +80,9 @@ public class Waypoint {
         this.decayRate = 0;
     }
 
-    public Waypoint(float x, float y, float z, Type type) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public Waypoint(float x, float y, float z, Type type, String UUID, String username) {
 
-        this.type = type;
-        this.importance = 1;
-        this.decayRate = 0;
-    }
-
-    public Waypoint(float x, float y, float z, Type type, String uuid, String username) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super(x, y, z, UUID);
 
         this.type = type;
         this.importance = Values.importanceRegistry(type);
