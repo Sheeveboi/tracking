@@ -3,10 +3,7 @@ package net.altosheeve.tracking.client.Navigation;
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.Box;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Node extends Box {
 
