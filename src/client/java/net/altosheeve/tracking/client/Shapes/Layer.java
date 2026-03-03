@@ -115,7 +115,7 @@ public class Layer {
 
         RenderSystem.lineWidth(this.lineWidth);
 
-        for (Shape shape : this.shapes) shape.set(shapesBuffer);
+        for (Shape shape : this.shapes) if (shape != null) shape.set(shapesBuffer);
 
         this.builtBuffer = shapesBuffer.end();
 
@@ -150,6 +150,7 @@ public class Layer {
 
         this.vertexBuffer.rotate();
         this.builtBuffer = null;
+        this.gpuBuffer = null;
 
     }
 
