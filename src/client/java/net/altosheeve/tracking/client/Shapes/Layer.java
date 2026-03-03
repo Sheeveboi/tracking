@@ -164,4 +164,20 @@ public class Layer {
         this.update();
     }
 
+    public void updateShape(String UUID, Shape newShape) {
+        for (Shape shape : this.shapes) {
+            if (Objects.equals(shape.UUID, UUID)) {
+
+                newShape.parentLayer = this;
+                newShape.parentShape = shape.parentShape;
+                newShape.children = shape.children;
+
+                shape = newShape;
+                newShape = null;
+
+                break;
+            }
+        }
+    }
+
 }
