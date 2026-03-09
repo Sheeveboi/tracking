@@ -95,10 +95,6 @@ public class Waypoint extends Shape {
         this.importance = Values.importanceRegistry(type);
         this.decayRate = Values.decayRateRegistry(type);
         this.username = username;
-
-        Circle testCircle = new Circle(0, 0, 0, this.UUID, .5F, 1);
-        this.addShape(testCircle);
-
     }
 
     public static void drawText(VertexConsumerProvider.Immediate provider) {
@@ -136,9 +132,12 @@ public class Waypoint extends Shape {
     @Override
     public void fill(BufferBuilder buffer) {
 
-        this.importance -= decayRate;
+        org.joml.Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
 
-        this.activeTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
+        Circle testCircle = new Circle(0, 0, 0, this.UUID, .5F, 1);
+        testCircle.parentLayer = this.parentLayer;
+        testCircle.color(this.r, this.g, this.b, this.importance);
+        testCircle.set(buffer, spriteTransform);
 
     }
 
