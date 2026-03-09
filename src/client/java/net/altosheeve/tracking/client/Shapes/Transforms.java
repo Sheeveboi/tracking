@@ -11,9 +11,8 @@ import java.lang.Math;
 
 public class Transforms {
 
-    public static float scalingFunction(float scale, Waypoint.Type type, float x, float y, float z) {
-        float originalScale = scale * Values.scaleRegistry(type);
-        return originalScale * (float) (0.005f * (Rendering.client.player.getEyePos().distanceTo(new Vec3d(x + .5, y - .5, z + .5)) / (Math.E)));
+    public static float scalingFunction(float scale, float x, float y, float z) {
+        return scale * (float) (0.003f * (Rendering.client.player.getEyePos().distanceTo(new Vec3d(x + .5, y - .5, z + .5)) / (Math.E)));
     }
 
     public static float distanceValue(float x, float y, float z) {
