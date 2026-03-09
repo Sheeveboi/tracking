@@ -96,6 +96,8 @@ public class Rendering {
         Waypoint.drawText(textBuffer);
         textBuffer.draw();
 
+        Waypoint.cleanWaypoints();
+
         modelViewStack.popMatrix();
 
     }

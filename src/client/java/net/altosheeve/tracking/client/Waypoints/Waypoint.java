@@ -35,6 +35,25 @@ public class Waypoint extends Shape {
 
     public String username = "";
 
+    public static void cleanWaypoints() {
+
+        ArrayList<Waypoint> remove = new ArrayList<>();
+
+        for (Waypoint waypoint : waypoints) {
+
+            waypoint.importance -= waypoint.decayRate;
+
+            if (waypoint.importance <= 0) {
+                remove.add(waypoint);
+                lineLayer.removeShape(waypoint);
+                fillLayer.removeShape(waypoint);
+            }
+        }
+
+        waypoints.removeAll(remove);
+
+    }
+
     public static void updateWaypoint(float x, float y, float z, Type type, String UUID, String displayName) {
 
         for (Waypoint waypoint : waypoints) {
