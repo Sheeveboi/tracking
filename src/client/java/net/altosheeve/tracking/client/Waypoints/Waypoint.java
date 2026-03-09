@@ -117,7 +117,7 @@ public class Waypoint extends Shape {
             float dist = Transforms.distanceValue(waypoint.x, waypoint.y, waypoint.z);
 
             StringBuilder waypointInfo = new StringBuilder();
-            DecimalFormat df = new DecimalFormat("#.##");
+            DecimalFormat df = new DecimalFormat("#");
             waypointInfo.append(waypoint.username).append(" [").append(df.format(dist)).append("m]");
 
             float distanceStringWidth = -Rendering.client.textRenderer.getWidth(waypointInfo.toString()) / 2f;
