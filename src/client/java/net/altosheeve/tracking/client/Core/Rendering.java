@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.altosheeve.tracking.client.Shapes.Shape;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.altosheeve.tracking.client.Shapes.Layer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -68,50 +69,6 @@ public class Rendering {
     );
 
     private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
-    private static MappableRingBuffer vertexBuffer;
-
-    public static void draw3d(MinecraftClient client, RenderPipeline pipeline, BuiltBuffer builtBuffer, BuiltBuffer.DrawParameters drawParameters, GpuBuffer vertices, VertexFormat format) {
-        GpuBuffer indices;
-        VertexFormat.IndexType indexType;
-
-        if (pipeline.getVertexFormatMode() == VertexFormat.DrawMode.QUADS) {
-            // Sort the quads if there is translucency
-            builtBuffer.sortQuads(allocator, RenderSystem.getProjectionType().getVertexSorter());
-            // Upload the index buffer
-            indices = pipeline.getVertexFormat().uploadImmediateIndexBuffer(builtBuffer.getSortedBuffer());
-            indexType = builtBuffer.getDrawParameters().indexType();
-        } else {
-            // Use the general shape index buffer for non-quad draw modes
-            RenderSystem.ShapeIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-            indices = shapeIndexBuffer.getIndexBuffer(drawParameters.indexCount());
-            indexType = shapeIndexBuffer.getIndexType();
-        }
-
-        // Actually execute the draw
-        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
-                .write(RenderSystem.getModelViewMatrix(), new Vector4f(1f, 1f, 1f, 1f), RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), 1f);
-        try (RenderPass renderPass = RenderSystem.getDevice()
-                .createCommandEncoder()
-                .createRenderPass(() -> "tracking unoccluded pipeline", client.getFramebuffer().getColorAttachmentView(), OptionalInt.empty(), client.getFramebuffer().getDepthAttachmentView(), OptionalDouble.empty())) {
-            renderPass.setPipeline(pipeline);
-
-            RenderSystem.bindDefaultUniforms(renderPass);
-            renderPass.setUniform("DynamicTransforms", dynamicTransforms);
-
-            // Bind texture if applicable:
-            // Sampler0 is used for texture inputs in vertices
-            // renderPass.bindSampler("Sampler0", textureView);
-
-            renderPass.setVertexBuffer(0, vertices);
-            renderPass.setIndexBuffer(indices, indexType);
-
-            // The base vertex is the starting index when we copied the data into the vertex buffer divided by vertex size
-            //noinspection ConstantValue
-            renderPass.drawIndexed(0 / format.getVertexSize(), 0, drawParameters.indexCount(), 1);
-        }
-
-        builtBuffer.close();
-    }
 
     public static void render3d(WorldRenderContext context) {
 
@@ -130,8 +87,6 @@ public class Rendering {
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
-        //TODO: all rendering should be through shapes
-
         //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();
         for (Layer layer : Layer.layers) layer.render();
@@ -143,15 +98,6 @@ public class Rendering {
 
         modelViewStack.popMatrix();
 
-    }
-
-    public void close() {
-        allocator.close();
-
-        if (vertexBuffer != null) {
-            vertexBuffer.close();
-            vertexBuffer = null;
-        }
     }
 
 

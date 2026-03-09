@@ -8,7 +8,7 @@ public class Circle extends Shape {
     public float innerRadius;
     public float outerRadius;
 
-    public final int resolution = 15;
+    public final int resolution = 20;
 
     public Circle(float x, float y, float z, String UUID, float innerRadius, float outerRadius) {
         super(x, y, z, UUID);

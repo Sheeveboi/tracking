@@ -2,6 +2,7 @@ package net.altosheeve.tracking.client.Core;
 
 import net.altosheeve.tracking.client.Navigation.Navigation;
 import net.altosheeve.tracking.client.Navigation.NodeCreation;
+import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -16,50 +17,22 @@ public class TrackingClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        /*try { NodeCreation.loadNodes(); }
-        catch (IOException e) { throw new RuntimeException(e); }
-
-        Execution.setProgram(TestProgram.getProgram());
-
-        try {
-            Relaying.startStream();
-        } catch (IOException e) {
-            System.out.println("whatT???");
-            throw new RuntimeException(e);
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                Waypoint.updateWaypoint(x, y, 0, Waypoint.Type.GOOD_GUY, String.valueOf(x + (y * 10)), String.valueOf(x + (y * 10)));
+            }
         }
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-
-            if (Hotkeys.keys.isEmpty() && client.options != null) Hotkeys.gatherHotkeys();
-            try {
-                Keys.handleKeys();
-                tick ++;
-                tick = tick % 100;
-                Navigation.tick = tick;
-                Navigation.calculateAllNodes();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Execution.execute();
-            try {
-                Relaying.relayInfo();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            if (MinecraftClient.getInstance().player != null) Navigation.playerPrev = MinecraftClient.getInstance().player.getPos().toVector3f();
-        });*/
-
         Keys.registerKeys();
 
         try                   { NodeCreation.loadNodes(); }
         catch (IOException e) { throw new RuntimeException(e); }
 
-        try {
-            Relaying.startStream();
-        } catch (IOException e) {
-            System.out.println("whatT???");
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Relaying.startStream();
+//        } catch (IOException e) {
+//            System.out.println("whatT???");
+//            throw new RuntimeException(e);
+//        }
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
@@ -69,7 +42,7 @@ public class TrackingClient implements ClientModInitializer {
 
             try {
 
-                Relaying.relayInfo();
+                //Relaying.relayInfo();
                 Keys.handleKeys();
 
             } catch (IOException e) {

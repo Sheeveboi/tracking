@@ -14,10 +14,10 @@ import java.net.URISyntaxException;
 public class TitleScreenMixin {
     @Inject(at = @At("HEAD"), method = "init")
     protected void init(CallbackInfo ci) {
-        try {
-            if (!Verification.isVerified()) Verification.setToken();
-        } catch (IOException | InterruptedException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            if (!Verification.isVerified()) Verification.setToken();
+//        } catch (IOException | InterruptedException | URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

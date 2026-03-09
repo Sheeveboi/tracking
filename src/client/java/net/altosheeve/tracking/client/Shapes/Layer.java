@@ -1,11 +1,14 @@
 package net.altosheeve.tracking.client.Shapes;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.altosheeve.tracking.client.Core.Rendering;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.MappableRingBuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BuiltBuffer;
@@ -16,6 +19,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 
 public class Layer {
@@ -27,6 +32,7 @@ public class Layer {
         LINE_OCCLUDED
     }
 
+    public BufferBuilder shapesBuffer;
     public BuiltBuffer builtBuffer;
     public MappableRingBuffer vertexBuffer;
     public GpuBuffer gpuBuffer;
@@ -41,7 +47,9 @@ public class Layer {
     public RenderPipeline pipeline;
     public Method pipelineName;
 
-    private static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
+    public static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);
+
+    public static final BufferAllocator allocator = new BufferAllocator(RenderLayer.CUTOUT_BUFFER_SIZE);
 
     public static ArrayList<Layer> layers = new ArrayList<>();
     public ArrayList<Shape> shapes = new ArrayList<>();
@@ -111,34 +119,17 @@ public class Layer {
 
         if (this.shapes.isEmpty() || !this.visible) return;
 
-        BufferBuilder shapesBuffer = new BufferBuilder(allocator, this.pipeline.getVertexFormatMode(), this.pipeline.getVertexFormat());
+        if (this.shapesBuffer == null) this.shapesBuffer = new BufferBuilder(allocator, this.pipeline.getVertexFormatMode(), this.pipeline.getVertexFormat());
 
         RenderSystem.lineWidth(this.lineWidth);
 
-        for (Shape shape : this.shapes) if (shape != null) shape.set(shapesBuffer);
+        for (Shape shape : this.shapes) if (shape != null) shape.set(this.shapesBuffer);
 
-        this.builtBuffer = shapesBuffer.end();
-
+        this.builtBuffer = this.shapesBuffer.end();
         this.parameters = this.builtBuffer.getDrawParameters();
         this.format = this.parameters.format();
 
-        // Calculate the size needed for the vertex buffer
-        int vertexBufferSize = this.parameters.vertexCount() * this.format.getVertexSize();
-
-        try {
-            this.vertexBuffer = new MappableRingBuffer(() -> this.name, GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        // Copy vertex data into the vertex buffer
-        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-
-        try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(this.vertexBuffer.getBlocking().slice(0, this.builtBuffer.getBuffer().remaining()), false, true)) {
-            MemoryUtil.memCopy(this.builtBuffer.getBuffer(), mappedView.data());
-        }
-
-        this.gpuBuffer = this.vertexBuffer.getBlocking();
+        this.gpuBuffer = this.upload(this.parameters, this.format, this.builtBuffer);
 
     }
 
@@ -146,12 +137,79 @@ public class Layer {
 
         if (this.shapes.isEmpty() || !this.visible) return;
 
-        Rendering.draw3d(Rendering.client, this.pipeline, this.builtBuffer, parameters, this.gpuBuffer, this.format);
+        this.draw3d(Rendering.client, this.pipeline, this.builtBuffer, parameters, this.gpuBuffer, this.format);
 
         this.vertexBuffer.rotate();
+        this.shapesBuffer = null;
         this.builtBuffer = null;
-        this.gpuBuffer = null;
 
+    }
+
+    public GpuBuffer upload(BuiltBuffer.DrawParameters drawParameters, VertexFormat format, BuiltBuffer builtBuffer) {
+        // Calculate the size needed for the vertex buffer
+        int vertexBufferSize = drawParameters.vertexCount() * format.getVertexSize();
+
+        // Initialize or resize the vertex buffer as needed
+        if (this.vertexBuffer == null || this.vertexBuffer.size() < vertexBufferSize) {
+            if (this.vertexBuffer != null) {
+                this.vertexBuffer.close();
+            }
+
+            this.vertexBuffer = new MappableRingBuffer(() -> "test" + " example render pipeline", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
+        }
+
+        // Copy vertex data into the vertex buffer
+        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
+
+        try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(this.vertexBuffer.getBlocking().slice(0, builtBuffer.getBuffer().remaining()), false, true)) {
+            MemoryUtil.memCopy(builtBuffer.getBuffer(), mappedView.data());
+        }
+
+        com.mojang.blaze3d.buffers.GpuBuffer out = this.vertexBuffer.getBlocking();
+        return out;
+    }
+
+    public void draw3d(MinecraftClient client, RenderPipeline pipeline, BuiltBuffer builtBuffer, BuiltBuffer.DrawParameters drawParameters, GpuBuffer vertices, VertexFormat format) {
+        GpuBuffer indices;
+        VertexFormat.IndexType indexType;
+
+        if (pipeline.getVertexFormatMode() == VertexFormat.DrawMode.QUADS) {
+            // Sort the quads if there is translucency
+            builtBuffer.sortQuads(allocator, RenderSystem.getProjectionType().getVertexSorter());
+            // Upload the index buffer
+            indices = pipeline.getVertexFormat().uploadImmediateIndexBuffer(builtBuffer.getSortedBuffer());
+            indexType = builtBuffer.getDrawParameters().indexType();
+        } else {
+            // Use the general shape index buffer for non-quad draw modes
+            RenderSystem.ShapeIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
+            indices = shapeIndexBuffer.getIndexBuffer(drawParameters.indexCount());
+            indexType = shapeIndexBuffer.getIndexType();
+        }
+
+        // Actually execute the draw
+        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
+                .write(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, RenderSystem.getModelOffset(), RenderSystem.getTextureMatrix(), 1f);
+        try (RenderPass renderPass = RenderSystem.getDevice()
+                .createCommandEncoder()
+                .createRenderPass(() -> "test" + " example render pipeline rendering", client.getFramebuffer().getColorAttachmentView(), OptionalInt.empty(), client.getFramebuffer().getDepthAttachmentView(), OptionalDouble.empty())) {
+            renderPass.setPipeline(pipeline);
+
+            RenderSystem.bindDefaultUniforms(renderPass);
+            renderPass.setUniform("DynamicTransforms", dynamicTransforms);
+
+            // Bind texture if applicable:
+            // Sampler0 is used for texture inputs in vertices
+            // renderPass.bindSampler("Sampler0", textureView);
+
+            renderPass.setVertexBuffer(0, vertices);
+            renderPass.setIndexBuffer(indices, indexType);
+
+            // The base vertex is the starting index when we copied the data into the vertex buffer divided by vertex size
+            //noinspection ConstantValue
+            renderPass.drawIndexed(0 / format.getVertexSize(), 0, drawParameters.indexCount(), 1);
+        }
+
+        builtBuffer.close();
     }
 
     public void invisible() {

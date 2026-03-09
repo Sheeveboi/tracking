@@ -105,7 +105,7 @@ public class Waypoint extends Shape {
 
             float distanceStringWidth = -Rendering.client.textRenderer.getWidth(waypointInfo.toString()) / 2f;
 
-            Rendering.client.advanceValidatingTextRenderer.draw(Text.literal(waypointInfo.toString()), distanceStringWidth, y, 0xffffffff, true, spriteTransform, provider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
+            Rendering.client.textRenderer.draw(Text.literal(waypointInfo.toString()), distanceStringWidth, y, 0xffffffff, true, spriteTransform, provider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
 
             y += 10;
 
@@ -117,7 +117,7 @@ public class Waypoint extends Shape {
 
         this.importance -= decayRate;
 
-        //this.activeTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
+        this.activeTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
 
     }
 }
