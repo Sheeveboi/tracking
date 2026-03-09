@@ -123,7 +123,10 @@ public class Layer {
 
         RenderSystem.lineWidth(this.lineWidth);
 
-        for (Shape shape : this.shapes) if (shape != null) shape.set(this.shapesBuffer);
+        for (Shape shape : this.shapes) if (shape != null) {
+            shape.parentLayer = this;
+            shape.set(this.shapesBuffer);
+        }
 
         this.builtBuffer = this.shapesBuffer.end();
         this.parameters = this.builtBuffer.getDrawParameters();

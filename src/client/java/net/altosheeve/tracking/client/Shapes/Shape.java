@@ -161,7 +161,10 @@ public class Shape {
 
         this.activeTransform = transform;
 
-        for (Shape shape : this.children) shape.set(buffer, transform);
+        for (Shape shape : this.children) {
+            shape.parentLayer = this.parentLayer;
+            shape.set(buffer);
+        }
 
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
