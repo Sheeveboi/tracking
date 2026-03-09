@@ -70,17 +70,6 @@ public class Transforms {
         return spriteTransform;
     }
 
-    public static Matrix4f getShaftTransform(float x, float y, float z, float scale, Waypoint.Type type) {
-
-        float shaftScale = scalingFunction(scale, type, x + .5f, y - .5f, z + .5f);
-
-        Matrix4f shaftTransform = new Matrix4f();
-        shaftTransform.translationRotateScale(new Vector3f(x + .5f - shaftScale / 2, y - .5f, z + .5f - shaftScale / 2), new Quaternionf(), new Vector3f(shaftScale, 1, shaftScale));
-
-        return shaftTransform;
-
-    }
-
     public static Matrix4f getHud3dTransform() {
 
         Camera camera = Rendering.client.gameRenderer.getCamera();
