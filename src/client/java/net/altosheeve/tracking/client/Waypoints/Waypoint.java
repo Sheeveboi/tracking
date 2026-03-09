@@ -144,7 +144,7 @@ public class Waypoint extends Shape {
     @Override
     public void line(BufferBuilder buffer) {
 
-        float scale = Transforms.scalingFunction(100, Type.GOOD_GUY, this.x, this.y, this.z);
+        float scale = Transforms.scalingFunction(100, this.x, this.y, this.z);
 
         buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY + scale - 1f, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);
         buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY + 10000, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);

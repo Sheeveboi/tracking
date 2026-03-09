@@ -169,19 +169,19 @@ public class Shape {
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
-        this.activeTransform = null;
-
     }
 
     public void set(BufferBuilder buffer) {
 
-        this.activeTransform = new Matrix4f();
+        if (this.parentShape != null && this.parentShape.activeTransform != null) {
+            this.activeTransform = this.parentShape.activeTransform;
+        }
 
-        if (this.startingTransform != null)
+        else if (this.startingTransform != null)
             this.activeTransform = this.startingTransform;
 
-        else if (this.parentShape != null && this.parentShape.activeTransform != null)
-            this.activeTransform = this.parentShape.activeTransform;
+        else
+            this.activeTransform = new Matrix4f();
 
         this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
 
@@ -191,12 +191,13 @@ public class Shape {
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
         this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
 
-        for (Shape shape : this.children) shape.set(buffer);
+        for (Shape shape : this.children) {
+            shape.parentLayer = this.parentLayer;
+            shape.set(buffer);
+        }
 
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
-
-        this.activeTransform = null;
 
     }
 
