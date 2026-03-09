@@ -27,6 +27,7 @@ public class Waypoint extends Shape {
 
     public static ArrayList<Waypoint> waypoints = new ArrayList<>();
     public static Layer fillLayer = new Layer("waypoint fill layer", Layer.Method.FILL_UNOCCLUDED);
+    public static Layer lineLayer = new Layer("waypoint line layer", Layer.Method.LINE_OCCLUDED);
 
     public Type type;
     public float importance;
@@ -81,6 +82,7 @@ public class Waypoint extends Shape {
         Waypoint newWaypoint = new Waypoint(x, y, z, type, UUID, displayName);
 
         fillLayer.addShape(newWaypoint);
+        lineLayer.addShape(newWaypoint);
         waypoints.add(newWaypoint);
 
     }
@@ -137,6 +139,19 @@ public class Waypoint extends Shape {
         this.importance -= decayRate;
 
         this.activeTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale, Values.scaleRegistry(this.type) * Values.waypointScale);
+
+    }
+
+    @Override
+    public void line(BufferBuilder buffer) {
+
+        float scale = Transforms.scalingFunction(100, Type.GOOD_GUY, this.x, this.y, this.z);
+
+        buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY + scale - 1f, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);
+        buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY + 10000, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);
+
+        buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY - scale, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);
+        buffer.vertex(this.activeTransform, this.finalX + .5f, this.finalY + -10000, this.finalZ + .5f).color(this.r, this.g, this.b, 1f);
 
     }
 }
