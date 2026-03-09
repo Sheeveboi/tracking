@@ -17,22 +17,17 @@ public class TrackingClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
-                Waypoint.updateWaypoint(x, y, 0, Waypoint.Type.GOOD_GUY, String.valueOf(x + (y * 10)), String.valueOf(x + (y * 10)));
-            }
-        }
         Keys.registerKeys();
 
         try                   { NodeCreation.loadNodes(); }
         catch (IOException e) { throw new RuntimeException(e); }
 
-//        try {
-//            Relaying.startStream();
-//        } catch (IOException e) {
-//            System.out.println("whatT???");
-//            throw new RuntimeException(e);
-//        }
+        try {
+            Relaying.startStream();
+        } catch (IOException e) {
+            System.out.println("whatT???");
+            throw new RuntimeException(e);
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
@@ -42,7 +37,7 @@ public class TrackingClient implements ClientModInitializer {
 
             try {
 
-                //Relaying.relayInfo();
+                Relaying.relayInfo();
                 Keys.handleKeys();
 
             } catch (IOException e) {
