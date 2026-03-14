@@ -9,10 +9,6 @@ import net.minecraft.text.Text;
 
 import java.io.IOException;
 
-//TODO: implement actions with a more advanced binding system
-//TODO: actions should be registered by other modules as a callback function
-//TODO: actions should be used to automatically generate GUI windows / components
-
 //TODO: this is short term but this screen could def be improved
 
 public class EditNodeScreen extends Screen {
@@ -85,7 +81,7 @@ public class EditNodeScreen extends Screen {
                         name.getText()
                 );
 
-                Navigation.nodes.add(newNode);
+                Navigation.addNode(newNode);
 
                 if (Navigation.currentNode != null) {
                     newNode.connections.add(Navigation.nodes.indexOf(Navigation.currentNode));
@@ -111,7 +107,7 @@ public class EditNodeScreen extends Screen {
                 }
 
 
-                Navigation.nodes.remove(Navigation.currentNode);
+                Navigation.removeNode(Navigation.currentNode);
 
                 Navigation.currentNode = null;
 
