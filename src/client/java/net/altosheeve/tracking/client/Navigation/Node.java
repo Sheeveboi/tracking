@@ -2,6 +2,7 @@ package net.altosheeve.tracking.client.Navigation;
 
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.Box;
+import net.minecraft.client.render.BufferBuilder;
 
 import java.util.*;
 
@@ -135,6 +136,27 @@ public class Node extends Box {
                 distanceMap.put(distanceKey, finalDistance);
                 Navigation.nodes.get(distanceKey).distanceMap.put(distanceKey, finalDistance);
             }
+
+        }
+
+    }
+
+    @Override
+    public void line(BufferBuilder buffer) {
+
+        for (int i : this.connections) {
+
+            Node connectingNode = Navigation.nodes.get(i);
+
+            buffer.vertex(this.activeTransform, .5f, .5f, .5f).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(connectingNode.activeTransform, .5f, .5f, .5f).color(this.r, this.g, this.b, this.a);
+
+        }
+
+        if (Navigation.currentNode == this) {
+
+            buffer.vertex(this.activeTransform, .5f, .5f, .5f).color(this.r, this.g, this.b, this.a);
+            buffer.vertex((float) Rendering.client.cameraEntity.getX(), (float) Rendering.client.cameraEntity.getY(), (float) Rendering.client.cameraEntity.getZ()).color(this.r, this.g, this.b, this.a);
 
         }
 

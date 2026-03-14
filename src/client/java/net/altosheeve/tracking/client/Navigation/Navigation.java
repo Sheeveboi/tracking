@@ -27,9 +27,8 @@ public class Navigation {
     public static Handler handler;
 
     public static ArrayList<Node> nodes = new ArrayList<>();
-    public static Layer drawLayer = new Layer("Navigation Nodes", Layer.Method.FILL_UNOCCLUDED);
-
-    static { drawLayer.setDrawPriority(9999999999999f); }
+    public static Layer fillLayer = new Layer("Navigation Node Boxes", Layer.Method.FILL_UNOCCLUDED);
+    public static Layer lineLayer = new Layer("Navigation Node Connections", Layer.Method.LINE_UNOCCLUDED);
 
     public interface Handler {
         void cb();
@@ -54,12 +53,14 @@ public class Navigation {
 
     public static void addNode(Node node) {
         nodes.add(node);
-        drawLayer.addShape(node);
+        fillLayer.addShape(node);
+        lineLayer.addShape(node);
     }
 
     public static void removeNode(Node node) {
         nodes.remove(node);
-        drawLayer.removeShape(node);
+        fillLayer.removeShape(node);
+        lineLayer.removeShape(node);
     }
 
     //TODO: make node types and their associated handlers object oriented
