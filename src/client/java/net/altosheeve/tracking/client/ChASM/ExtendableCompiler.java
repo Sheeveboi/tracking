@@ -147,8 +147,6 @@ public class ExtendableCompiler {
 
         tokenizedProgram = tokenize(identifiers, program.toCharArray());
 
-        for (char[] token : tokenizedProgram) System.out.println(new String(token));
-
         for (programPointer = 0; programPointer < tokenizedProgram.size(); programPointer++) {
 
             char[] token = tokenizedProgram.get(programPointer);
@@ -156,7 +154,7 @@ public class ExtendableCompiler {
             for (char[] key : extensions.keySet()) {
 
                 if (Arrays.equals(key, token)){
-                    System.out.println(STR."running extension: \{new String(token)}");
+                    //System.out.println(STR."running extension: \{new String(token)}");
                     StackObject copiedStackProgram = extensions.get(key);
                     copiedStackProgram.selfValue = new String(token);
                     while (!copiedStackProgram.runOperation());

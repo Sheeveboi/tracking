@@ -6,7 +6,7 @@ import net.altosheeve.tracking.client.ChASM.StackObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Extensional extends net.altofeather.ChASM.ExpectationObjects.Expectation {
+public class Extensional extends Expectation {
 
     public Extensional(char[] name, boolean gathered) {
         super(name, gathered);

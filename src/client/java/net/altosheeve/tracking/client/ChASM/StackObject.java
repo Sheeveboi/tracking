@@ -45,12 +45,12 @@ public class StackObject {
 
     public void printStack() {
         if (this.child != null) this.child.printStack();
-        System.out.println(this.operationName);
+        //System.out.println(this.operationName);
     }
 
     public void pushStack(CB operation, char[] token, String operationName) {
 
-        System.out.println(STR."pushing stack on \{this.operationName}");
+        //System.out.println(STR."pushing stack on \{this.operationName}");
 
         this.stackSize++;
 
@@ -58,7 +58,7 @@ public class StackObject {
 
         else {
 
-            System.out.println(STR."ended pushing stack at \{new String(this.token)}");
+            //System.out.println(STR."ended pushing stack at \{new String(this.token)}");
 
             StackObject newStackObject = new StackObject(operation, token, operationName);
 
@@ -69,7 +69,7 @@ public class StackObject {
 
     public void pushStack(StackObject stackObject) {
 
-        System.out.println(STR."pushing stack on \{this.operationName}");
+        //System.out.println(STR."pushing stack on \{this.operationName}");
 
         this.stackSize++;
 
@@ -79,7 +79,7 @@ public class StackObject {
 
         else {
 
-            System.out.println(STR."ended pushing stack at \{new String(this.token)}");
+            //System.out.println(STR."ended pushing stack at \{new String(this.token)}");
 
             this.child = stackObject;
         }

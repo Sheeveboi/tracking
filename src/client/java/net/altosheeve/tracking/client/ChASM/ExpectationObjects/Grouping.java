@@ -2,7 +2,7 @@ package net.altosheeve.tracking.client.ChASM.ExpectationObjects;
 
 import java.util.ArrayList;
 
-public class Grouping extends net.altofeather.ChASM.ExpectationObjects.Expectation {
+public class Grouping extends Expectation {
 
     //we don't imply any extensionals here because a grouping could imply multiple extensionals
     //our target extensional is defined in check()

@@ -23,12 +23,12 @@ public class StandardCompiler extends ExtendableCompiler {
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
         String pattern = new String(currentToken);
 
         currentStackObject.pushStack(() -> {
 
-            System.out.println(currentStackObject.selfValue);
+            //System.out.println(currentStackObject.selfValue);
 
             currentStackObject.selfValue = currentStackObject.selfValue.replaceAll(pattern, "");
 
@@ -74,7 +74,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
         }
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
 
         //parse and build expectations
         for (int expectationIndex = 0; expectationIndex < expectationTokens.size(); expectationIndex++) {
@@ -103,7 +103,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
                 char[] programToken = tokenizedProgram.get(programPointer);
 
-                System.out.println(STR."checking \{new String(programToken)} (expecting \{new String(expectation.name)})");
+                //System.out.println(STR."checking \{new String(programToken)} (expecting \{new String(expectation.name)})");
 
                 if (!expectation.check(programToken)) throw new Exception("Syntax Error: Unexpected Token");
 
@@ -122,11 +122,11 @@ public class StandardCompiler extends ExtendableCompiler {
         extendingToken = currentToken;
         abstractExtension = false;
 
-        if (extensions.containsKey(currentToken)) throw new Exception(STR."Extensional with name '\{new String(currentToken)}' already exists.");
+        if (extensions.containsKey(currentToken)) throw new Exception("Extensional with name '" + new String(currentToken) + "' already exists.");
 
-        if (abstractExtensions.containsKey(currentToken)) throw new Exception(STR."Abstract Extensional with name '\{new String(currentToken)}' already exists.");
+        if (abstractExtensions.containsKey(currentToken)) throw new Exception("Abstract Extensional with name '" + new String(currentToken) + "' already exists.");
 
-        extensions.put(currentToken, new net.altofeather.ChASM.StackObject(() -> true, extendingToken.clone(), "EXTEND"));
+        extensions.put(currentToken, new StackObject(() -> true, extendingToken.clone(), "EXTEND"));
 
     }
 
@@ -138,11 +138,11 @@ public class StandardCompiler extends ExtendableCompiler {
         extendingToken = currentToken;
         abstractExtension = true;
 
-        if (extensions.containsKey(currentToken)) throw new Exception(STR."Extensional with name '\{new String(currentToken)}' already exists.");
+        if (extensions.containsKey(currentToken)) throw new Exception("Extensional with name '" + new String(currentToken) + "' already exists.");
 
-        if (abstractExtensions.containsKey(currentToken)) throw new Exception(STR."Abstract Extensional with name '\{new String(currentToken)}' already exists.");
+        if (abstractExtensions.containsKey(currentToken)) throw new Exception("Abstract Extensional with name '" + new String(currentToken) + "' already exists.");
 
-        abstractExtensions.put(currentToken, new net.altofeather.ChASM.StackObject(() -> true, extendingToken.clone(), "ABSTRACT EXTEND"));
+        abstractExtensions.put(currentToken, new StackObject(() -> true, extendingToken.clone(), "ABSTRACT EXTEND"));
 
     }
 
@@ -151,8 +151,8 @@ public class StandardCompiler extends ExtendableCompiler {
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
-        net.altofeather.ChASM.StackObject abstractStackObject = null;
+        StackObject currentStackObject = getCurrentStackObject();
+        StackObject abstractStackObject = null;
 
         for (char[] key : abstractExtensions.keySet())
             if (Arrays.equals(key, currentToken))
@@ -185,17 +185,17 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_FLOAT() throws Exception {
 
-        System.out.println(STR."\{new String(extendingToken)} will insert a float");
+        //System.out.println(STR."\{new String(extendingToken)} will insert a float");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
 
         final String[] value = {new String(currentToken)};
 
         boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception(STR."SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
 
@@ -219,17 +219,17 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_INTEGER() throws Exception {
 
-        System.out.println(STR."\{new String(extendingToken)} will insert an integer");
+        //System.out.println(STR."\{new String(extendingToken)} will insert an integer");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
 
         final String[] value = {new String(currentToken)};
 
         boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception(STR."SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
             if (self) value[0] = currentStackObject.selfValue;
@@ -244,12 +244,12 @@ public class StandardCompiler extends ExtendableCompiler {
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
 
         final String[] value = {new String(currentToken)};
 
         boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception(STR."SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
             if (self) value[0] = currentStackObject.selfValue;
@@ -261,17 +261,17 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_UTF_8() throws Exception {
 
-        System.out.println("inserting utf8");
+        //System.out.println("inserting utf8");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        net.altofeather.ChASM.StackObject currentStackObject = getCurrentStackObject();
+        StackObject currentStackObject = getCurrentStackObject();
 
         final String[] value = {new String(currentToken)};
 
         boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception(STR."SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
             if (self) value[0] = currentStackObject.selfValue;
@@ -293,7 +293,7 @@ public class StandardCompiler extends ExtendableCompiler {
             out.append(sToken);
             out.append(" ");
         }
-        System.out.println(out);
+        //System.out.println(out);
     }
 
     protected static void _PROGRAM_EXTENSION_NAME() {
