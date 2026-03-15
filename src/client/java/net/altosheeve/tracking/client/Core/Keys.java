@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Kernel.TerminalScreen;
 import net.altosheeve.tracking.client.Mapping.Mapping;
 import net.altosheeve.tracking.client.Navigation.EditNodeScreen;
 import net.altosheeve.tracking.client.Navigation.NodeCreation;
@@ -21,6 +22,7 @@ public class Keys {
     public static KeyBinding loadTestProgram;
     public static KeyBinding mapKey;
     public static KeyBinding outputDistancesKey;
+    public static KeyBinding openTerminal;
 
     public static void registerKeys() {
         nodeScreen = KeyBindingHelper.registerKeyBinding(
@@ -76,9 +78,9 @@ public class Keys {
                 )
         );
 
-        outputDistancesKey = KeyBindingHelper.registerKeyBinding(
+        openTerminal = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
-                        "Output Node Distances",
+                        "Open Terminal",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_PERIOD,
                         "Soprano"
@@ -94,6 +96,8 @@ public class Keys {
         while(selectNode.wasPressed())  NodeCreation.selectNode();
 
         while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
+
+        while(openTerminal.wasPressed()) MinecraftClient.getInstance().setScreen(new TerminalScreen(Text.of("Terminal Screen")));
 
 //        while(connectNode.wasPressed()) NodeCreation.connectNode();
 //        while(selectNode.wasPressed()) NodeCreation.selectNode();
