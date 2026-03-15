@@ -149,7 +149,7 @@ public class Node extends Box {
             Node connectingNode = Navigation.nodes.get(i);
 
             buffer.vertex(this.activeTransform, .5f, .5f, .5f).color(this.r, this.g, this.b, this.a);
-            buffer.vertex(connectingNode.activeTransform, .5f, .5f, .5f).color(this.r, this.g, this.b, this.a);
+            buffer.vertex(connectingNode.activeTransform, .5f, .5f, .5f).color(connectingNode.r, connectingNode.g, connectingNode.b, connectingNode.a);
 
         }
 
