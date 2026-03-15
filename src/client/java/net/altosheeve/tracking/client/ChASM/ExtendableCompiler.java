@@ -4,6 +4,8 @@ import java.util.*;
 
 public class ExtendableCompiler {
 
+    //TODO: make these all non-static!
+
     public static ArrayList<char[]> compilerTokens = new ArrayList<>();
 
     public static Map<char[], StackObject> extensions = new HashMap<>(); //for front end extensionals

@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class StandardCompiler extends ExtendableCompiler {
 
+    //TODO: make these all non-static!
+
     public StandardCompiler(char[] program) throws Exception {
         super(program);
     }
