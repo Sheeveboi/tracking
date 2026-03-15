@@ -13,7 +13,7 @@ public abstract class BasicFunctions {
     private ArrayList<Byte> TBMinstructionPointers = new ArrayList<>(); //This is the program memory. the TBM will read from this list and call the translateInstruction() function to interpret the instruction
 
     protected interface Cb {
-        void cb();
+        void cb() throws Exception;
     } // generic callback method
 
     protected Map<Byte, Cb> instructionMap = new HashMap<>();// this map dictates the Java functions the TBM will execute when the translateInstruction() function is called
@@ -77,7 +77,7 @@ public abstract class BasicFunctions {
     }
 
     // if the current program bytecode is mapped to a callback function, run that function
-    protected void translateInstruction(byte code) {
+    protected void translateInstruction(byte code) throws Exception {
         if (instructionMap.containsKey(code)) {
             instructionMap.get(code).cb();
         }
@@ -141,7 +141,7 @@ public abstract class BasicFunctions {
     }
 
     //iterates forward once on a stack-based execution abstraction
-    public void run() {
+    public void run() throws Exception {
 
         if (!this.finished()) {
             if (childStackObject != null) { //if there are stack objects ahead of this the stack

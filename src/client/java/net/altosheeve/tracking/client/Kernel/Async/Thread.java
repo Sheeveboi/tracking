@@ -11,7 +11,7 @@ public class Thread {
         this.instructionSet = instructionSet;
     }
 
-    public boolean iterateInstructionSet() {
+    public boolean iterateInstructionSet() throws Exception {
         if (!block) instructionSet.run();
         return instructionSet.finished();
     }

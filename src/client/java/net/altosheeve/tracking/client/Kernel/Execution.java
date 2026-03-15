@@ -47,7 +47,7 @@ public class Execution {
 
     public static void toggle() { run = !run; }
 
-    public static void execute() {
+    public static void execute() throws Exception {
 
         if (run) {
 
