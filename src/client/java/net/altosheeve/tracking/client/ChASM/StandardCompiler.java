@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 
 public class StandardCompiler extends ExtendableCompiler {
 
-    //TODO: make these all non-static!
-
     public StandardCompiler(char[] program) throws Exception {
         super(program);
     }
@@ -30,7 +28,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
         currentStackObject.pushStack(() -> {
 
-            //System.out.println(currentStackObject.selfValue);
+            System.out.println(currentStackObject.selfValue);
 
             currentStackObject.selfValue = currentStackObject.selfValue.replaceAll(pattern, "");
 
@@ -104,8 +102,6 @@ public class StandardCompiler extends ExtendableCompiler {
                 if (programPointer >= tokenizedProgram.size()) throw new Exception("Syntax Error: Unexpected end of program");
 
                 char[] programToken = tokenizedProgram.get(programPointer);
-
-                //System.out.println(STR."checking \{new String(programToken)} (expecting \{new String(expectation.name)})");
 
                 if (!expectation.check(programToken)) throw new Exception("Syntax Error: Unexpected Token");
 
@@ -194,18 +190,20 @@ public class StandardCompiler extends ExtendableCompiler {
 
         StackObject currentStackObject = getCurrentStackObject();
 
-        final String[] value = {new String(currentToken)};
+        //TODO: this method of gathering the length is rather clunky. If more attributes of tokens are necessary in the future then I will implement a more complete self-information gathering system"
+        boolean selfValue  = new String(currentToken).equals("SELF");
+        boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
-        boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && (selfValue || selfLength)) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
 
             ArrayList<Byte> out = new ArrayList<>();
+            int intBits = 0;
 
             //encode value
-            if (self) value[0] = currentStackObject.selfValue;
-            int intBits = Float.floatToIntBits(Float.parseFloat(value[0]));
+            if (selfValue)  intBits = Float.floatToIntBits(Float.parseFloat(currentStackObject.selfValue));
+            if (selfLength) intBits = Float.floatToIntBits((float) currentStackObject.selfValue.length());
 
             out.add((byte) (intBits >> 24));
             out.add((byte) (intBits >> 16));
@@ -221,22 +219,26 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_INTEGER() throws Exception {
 
-        //System.out.println(STR."\{new String(extendingToken)} will insert an integer");
+        System.out.println(new String(extendingToken) + " will insert an integer");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
         StackObject currentStackObject = getCurrentStackObject();
 
-        final String[] value = {new String(currentToken)};
+        boolean selfValue  = new String(currentToken).equals("SELF");
+        boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
-        boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && (selfValue || selfLength)) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
-            if (self) value[0] = currentStackObject.selfValue;
-            compiledBytecode.add((byte) Integer.parseInt(value[0]));
+
+            if (selfValue) compiledBytecode.add((byte) Integer.parseInt(currentStackObject.selfValue));
+
+            if (selfLength) compiledBytecode.add((byte) currentStackObject.selfValue.length());
+
             return true;
+
         }, extendingToken, "INSERT_INTEGER");
 
     }
@@ -248,37 +250,51 @@ public class StandardCompiler extends ExtendableCompiler {
 
         StackObject currentStackObject = getCurrentStackObject();
 
-        final String[] value = {new String(currentToken)};
+        boolean selfValue  = new String(currentToken).equals("SELF");
+        boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
-        boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && (selfValue || selfLength)) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
-            if (self) value[0] = currentStackObject.selfValue;
-            compiledBytecode.add((byte) Integer.parseInt(value[0], 16));
+
+            String value = "";
+
+            if (selfValue)  value = currentStackObject.selfValue;
+            if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+
+            compiledBytecode.add((byte) Integer.parseInt(value, 16));
+
             return true;
+
         }, extendingToken, "INSERT_HEX");
 
     }
 
     protected static void _INSERT_UTF_8() throws Exception {
 
-        //System.out.println("inserting utf8");
+        System.out.println("inserting utf8");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
         StackObject currentStackObject = getCurrentStackObject();
 
-        final String[] value = {new String(currentToken)};
+        boolean selfValue  = new String(currentToken).equals("SELF");
+        boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
-        boolean self = value[0].equals("SELF");
-        if (!abstractExtension && self) throw new Exception("SELF may not be referenced in non-abstract extensional.");
+        if (!abstractExtension && (selfValue || selfLength)) throw new Exception("SELF may not be referenced in non-abstract extensional.");
 
         currentStackObject.pushStack(() -> {
-            if (self) value[0] = currentStackObject.selfValue;
-            for (char c : value[0].toCharArray()) compiledBytecode.add((byte) c);
+
+            String value = "";
+
+            if (selfValue)  value = currentStackObject.selfValue;
+            if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+
+            for (char c : value.toCharArray()) compiledBytecode.add((byte) c);
+
             return true;
+
         }, extendingToken, "INSERT_UTF_8");
 
 
@@ -295,7 +311,7 @@ public class StandardCompiler extends ExtendableCompiler {
             out.append(sToken);
             out.append(" ");
         }
-        //System.out.println(out);
+        System.out.println(out);
     }
 
     protected static void _PROGRAM_EXTENSION_NAME() {
