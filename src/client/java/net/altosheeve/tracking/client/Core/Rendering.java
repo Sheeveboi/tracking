@@ -63,7 +63,7 @@ public class Rendering {
     public static final RenderPipeline lineOccluded = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.POSITION_COLOR_SNIPPET)
             .withLocation(Identifier.of("tracking", "pipeline/line"))
             .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.DEBUG_LINES)
-            .withDepthTestFunction(DepthTestFunction.GREATER_DEPTH_TEST)
+            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
             .withCull(false)
             .build()
     );
