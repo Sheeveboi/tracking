@@ -73,7 +73,9 @@ public class TerminalKernel extends BasicFunctions {
 
     public void runCommand(String command) throws Exception {
 
-        Execution.setProgram(terminalImplementation.runCompiler(command));
+        this.clearInstructions();
+        this.addInstructions(terminalImplementation.runCompiler(command));
+        Execution.setKernel(this);
 
     }
 
