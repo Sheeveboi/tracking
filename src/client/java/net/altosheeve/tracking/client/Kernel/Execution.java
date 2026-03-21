@@ -23,6 +23,12 @@ public class Execution {
 
     }
 
+    public static void setKernel(BasicFunctions kernel) {
+
+        threads.put(threads.size(), new Thread(kernel));
+
+    }
+
     public static void blockThread(int id) {
         threads.get(id).block = true;
     }
