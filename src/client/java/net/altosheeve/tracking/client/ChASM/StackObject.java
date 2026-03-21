@@ -37,6 +37,21 @@ public class StackObject {
         this.operationName = operationName;
     }
 
+    @Override
+    public Object clone() {
+
+        StackObject out;
+
+        try { out = (StackObject) super.clone(); }
+
+        catch (CloneNotSupportedException e) { out = new StackObject(this.function, this.token, this.operationName); }
+
+        if (this.child != null) out.child = (StackObject) this.child.clone();
+
+        return out;
+
+    }
+
     public void unfreeze() {
         this.complete = false;
         if (this.parent != null) this.parent.unfreeze();
