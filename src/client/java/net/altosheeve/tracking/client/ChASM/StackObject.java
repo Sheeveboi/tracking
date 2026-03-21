@@ -78,11 +78,11 @@ public class StackObject {
 
         else {
 
-            System.out.println("ended pushing stack at " + this.operationName);
-
             StackObject newStackObject = new StackObject(operation, token, operationName);
 
             newStackObject.parent = this;
+
+            System.out.println("ended pushing stack at " + this.operationName);
 
             this.child = newStackObject;
 
@@ -96,15 +96,16 @@ public class StackObject {
 
         this.stackSize++;
 
-        stackObject.parent = this;
-
         if (this.child != null) this.child.pushStack(stackObject);
 
         else {
 
             System.out.println("ended pushing stack at " + this.operationName);
 
-            this.child = stackObject;
+            StackObject cl = (StackObject) stackObject.clone();
+            cl.parent = this;
+
+            this.child = cl;
         }
     }
 
