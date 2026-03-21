@@ -127,6 +127,8 @@ public abstract class BasicFunctions {
 
     }
 
+    public void clearInstructions() { this.TBMinstructionPointers.clear(); }
+
     public void pushStack(BasicFunctions instructions) {
         this.childStackObject = instructions;
         System.out.println("pushing onto stack");
