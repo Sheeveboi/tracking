@@ -157,11 +157,15 @@ public class ExtendableCompiler {
 
             for (char[] key : extensions.keySet()) {
 
-                if (Arrays.equals(key, token)){
+                if (Arrays.equals(key, token)) {
+
                     //System.out.println(STR."running extension: \{new String(token)}");
-                    StackObject copiedStackProgram = extensions.get(key);
+                    StackObject copiedStackProgram = (StackObject) extensions.get(key).clone();
                     copiedStackProgram.selfValue = new String(token);
+
                     while (!copiedStackProgram.runOperation());
+                    copiedStackProgram.unfreezeFromTop();
+
                     break;
                 }
 
