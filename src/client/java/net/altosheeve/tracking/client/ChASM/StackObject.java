@@ -57,6 +57,12 @@ public class StackObject {
         if (this.parent != null) this.parent.unfreeze();
     }
 
+    public void unfreezeFromTop() {
+        this.complete = false;
+        System.out.println("unfroze " + this.operationName + " in " + new String(this.token));
+        if (this.child != null) this.child.unfreezeFromTop();
+    }
+
     public void printStack() {
         if (this.child != null) this.child.printStack();
         System.out.println(this.operationName + ": " + new String(this.token));
