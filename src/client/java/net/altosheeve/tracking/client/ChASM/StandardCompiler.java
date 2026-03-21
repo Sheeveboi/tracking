@@ -176,12 +176,14 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_FLOAT() throws Exception {
 
-        //System.out.println(STR."\{new String(extendingToken)} will insert a float");
+        System.out.println(new String(extendingToken) + " will insert a float");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
         StackObject currentStackObject = getCurrentStackObject();
+
+        final String[] staticValue = {new String(currentToken)};
 
         //TODO: this method of gathering the length is rather clunky. If more attributes of tokens are necessary in the future then I will implement a more complete self-information gathering system"
         boolean selfValue  = new String(currentToken).equals("SELF");
@@ -192,11 +194,12 @@ public class StandardCompiler extends ExtendableCompiler {
         currentStackObject.pushStack(() -> {
 
             ArrayList<Byte> out = new ArrayList<>();
-            int intBits = 0;
+            int intBits;
 
             //encode value
-            if (selfValue)  intBits = Float.floatToIntBits(Float.parseFloat(currentStackObject.selfValue));
-            if (selfLength) intBits = Float.floatToIntBits((float) currentStackObject.selfValue.length());
+            if      (selfValue)  intBits = Float.floatToIntBits(Float.parseFloat(currentStackObject.selfValue));
+            else if (selfLength) intBits = Float.floatToIntBits((float) currentStackObject.selfValue.length());
+            else                 intBits = Float.floatToIntBits(Float.parseFloat(staticValue[0]));
 
             out.add((byte) (intBits >> 24));
             out.add((byte) (intBits >> 16));
@@ -219,6 +222,8 @@ public class StandardCompiler extends ExtendableCompiler {
 
         StackObject currentStackObject = getCurrentStackObject();
 
+        final String[] staticValue = {new String(currentToken)};
+
         boolean selfValue  = new String(currentToken).equals("SELF");
         boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
@@ -226,9 +231,9 @@ public class StandardCompiler extends ExtendableCompiler {
 
         currentStackObject.pushStack(() -> {
 
-            if (selfValue) compiledBytecode.add((byte) Integer.parseInt(currentStackObject.selfValue));
-
-            if (selfLength) compiledBytecode.add((byte) currentStackObject.selfValue.length());
+            if      (selfValue)  compiledBytecode.add((byte) Integer.parseInt(currentStackObject.selfValue));
+            else if (selfLength) compiledBytecode.add((byte) currentStackObject.selfValue.length());
+            else                 compiledBytecode.add((byte) Integer.parseInt(staticValue[0]));
 
             return true;
 
@@ -243,6 +248,8 @@ public class StandardCompiler extends ExtendableCompiler {
 
         StackObject currentStackObject = getCurrentStackObject();
 
+        final String[] staticValue = {new String(currentToken)};
+
         boolean selfValue  = new String(currentToken).equals("SELF");
         boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
@@ -252,8 +259,9 @@ public class StandardCompiler extends ExtendableCompiler {
 
             String value = "";
 
-            if (selfValue)  value = currentStackObject.selfValue;
-            if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+            if      (selfValue)  value = currentStackObject.selfValue;
+            else if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+            else                 value = staticValue[0];
 
             compiledBytecode.add((byte) Integer.parseInt(value, 16));
 
@@ -265,12 +273,14 @@ public class StandardCompiler extends ExtendableCompiler {
 
     protected static void _INSERT_UTF_8() throws Exception {
 
-        System.out.println("inserting utf8");
+        System.out.println(new String(extendingToken) + " will insert utf 8 bytes");
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
         StackObject currentStackObject = getCurrentStackObject();
+
+        final String[] staticValue = {new String(currentToken)};
 
         boolean selfValue  = new String(currentToken).equals("SELF");
         boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
@@ -279,10 +289,11 @@ public class StandardCompiler extends ExtendableCompiler {
 
         currentStackObject.pushStack(() -> {
 
-            String value = "";
+            String value;
 
-            if (selfValue)  value = currentStackObject.selfValue;
-            if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+            if      (selfValue)  value = currentStackObject.selfValue;
+            else if (selfLength) value = String.valueOf(currentStackObject.selfValue.length());
+            else                 value = staticValue[0];
 
             for (char c : value.toCharArray()) compiledBytecode.add((byte) c);
 
