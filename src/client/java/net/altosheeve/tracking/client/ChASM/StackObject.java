@@ -19,7 +19,6 @@ public class StackObject {
     public Pattern negativeSyntax;
     public String selfValue;
 
-    public ArrayList<char[]> implications = new ArrayList<>();
     public Map<char[], ArrayList<char[]>> capturedBodies = new HashMap<>();
 
     public boolean complete = false;
