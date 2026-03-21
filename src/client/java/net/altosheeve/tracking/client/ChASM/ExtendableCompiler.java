@@ -147,6 +147,8 @@ public class ExtendableCompiler {
         identifiers.add(new char[]{' '});
         identifiers.addAll(extensions.keySet());
 
+        compiledBytecode.clear();
+
         tokenizedProgram = tokenize(identifiers, program.toCharArray());
 
         for (programPointer = 0; programPointer < tokenizedProgram.size(); programPointer++) {
