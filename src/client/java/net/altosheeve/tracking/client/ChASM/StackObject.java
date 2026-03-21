@@ -76,9 +76,12 @@ public class StackObject {
 
             StackObject newStackObject = new StackObject(operation, token, operationName);
 
+            newStackObject.parent = this;
+
             this.child = newStackObject;
 
         }
+
     }
 
     public void pushStack(StackObject stackObject) {
@@ -87,7 +90,7 @@ public class StackObject {
 
         this.stackSize++;
 
-        stackObject.token = this.token;
+        stackObject.parent = this;
 
         if (this.child != null) this.child.pushStack(stackObject);
 
