@@ -149,21 +149,14 @@ public class StandardCompiler extends ExtendableCompiler {
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
 
-        StackObject currentStackObject = getCurrentStackObject();
-        StackObject abstractStackObject = null;
-
-        for (char[] key : abstractExtensions.keySet())
-            if (Arrays.equals(key, currentToken))
-                abstractStackObject = abstractExtensions.get(key);
+        StackObject currentStackObject  = getCurrentStackObject();
+        StackObject abstractStackObject = getAbstractExtension(currentToken);
 
         if (abstractStackObject == null) throw new Exception("Could not find abstract extensional.");
 
-        for (char[] implication : currentStackObject.implications)
-            if (Arrays.equals(implication, currentToken))
-                throw new Exception("Abstract extension may only be implied once per extension");
+        System.out.println(new String(currentStackObject.token) + " will imply " + abstractStackObject);
 
-        currentStackObject.pushStack(abstractStackObject);
-        currentStackObject.implications.add(currentToken);
+        currentStackObject.pushStack((StackObject) abstractStackObject.clone());
 
     }
 
