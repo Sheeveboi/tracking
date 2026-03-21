@@ -12,7 +12,7 @@ public class TerminalKernel extends BasicFunctions {
     public ExtendableCompiler implementation;
     public static ExtendableCompiler terminalImplementation;
 
-    static {
+    public static void loadImplementation() {
 
         File extention = new File("sh.chasm");
         Scanner extentionReader;
