@@ -127,11 +127,16 @@ public class StackObject {
         if (!this.complete) this.complete = this.function.cb();
 
         if (this.child == null) {
+            System.out.println("stack ended. unfreezing..");
             unfreeze();
             return true;
         }
 
-        if (this.complete) return this.child.runOperation();
+        if (this.complete) {
+            boolean out = this.child.runOperation();
+            if (out) this.complete = false;
+            return out;
+        }
 
         return false;
 
