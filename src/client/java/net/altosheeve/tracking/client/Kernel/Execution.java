@@ -47,7 +47,7 @@ public class Execution {
 
     public static void toggle() { run = !run; }
 
-    public static void execute() throws Exception {
+    public static boolean execute() throws Exception {
 
         if (run) {
 
@@ -55,6 +55,8 @@ public class Execution {
                 if (threads.get(id).iterateInstructionSet()) threads.remove(id);
 
         }
+
+        return threads.isEmpty();
 
     }
 }
