@@ -35,6 +35,7 @@ public class TerminalKernel extends BasicFunctions {
 
         this.registerInstruction((byte) 0x0, this::_LOAD_IMPLEMENTATION);
         this.registerInstruction((byte) 0x1, this::_RUN);
+        this.registerInstruction((byte) 0x2, this::_ECHO);
 
     }
 
@@ -64,6 +65,10 @@ public class TerminalKernel extends BasicFunctions {
 
         Execution.setProgram(this.implementation.runCompiler(programData.toString()));
 
+    }
+
+    public void _ECHO() throws Exception {
+        TerminalScreen.lines.add(Typing._PARSE_STRING(this));
     }
 
     public void runCommand(String command) throws Exception {
