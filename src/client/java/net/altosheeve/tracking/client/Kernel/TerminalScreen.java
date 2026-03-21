@@ -14,7 +14,9 @@ import static java.lang.Math.log;
 
 public class TerminalScreen extends Screen {
 
+    //TODO: we might want more terminals open at once. Executing threads should have a reference to a terminal object instead of just adding to a static ArrayList
     public static ArrayList<String> lines = new ArrayList<>();
+
     public static int lineMargin = 12;
     public static int scrollOffset = 0;
 
