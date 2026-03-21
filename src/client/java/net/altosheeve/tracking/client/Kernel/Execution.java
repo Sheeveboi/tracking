@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Execution {
 
-    private static boolean run = false;
+    private static boolean run = true;
     private static Map<Integer, Thread> threads = new HashMap<>();
 
     public static void setProgram(ArrayList<Byte> program) {
