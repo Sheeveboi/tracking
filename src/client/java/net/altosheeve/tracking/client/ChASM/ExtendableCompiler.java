@@ -41,7 +41,7 @@ public class ExtendableCompiler {
         return null;
     }
 
-    public ArrayList<char[]> tokenize(ArrayList<char[]> identifiers, char[] program) {
+    public static ArrayList<char[]> tokenize(ArrayList<char[]> identifiers, char[] program) {
 
         ArrayList<char[]> newTokens = new ArrayList<>();
         char[] newToken = new char[]{};
