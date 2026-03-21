@@ -59,12 +59,12 @@ public class StackObject {
 
     public void printStack() {
         if (this.child != null) this.child.printStack();
-        //System.out.println(this.operationName);
+        System.out.println(this.operationName + ": " + new String(this.token));
     }
 
     public void pushStack(CB operation, char[] token, String operationName) {
 
-        //System.out.println(STR."pushing stack on \{this.operationName}");
+        System.out.println("pushing stack on " + this.operationName);
 
         this.stackSize++;
 
@@ -72,7 +72,7 @@ public class StackObject {
 
         else {
 
-            //System.out.println(STR."ended pushing stack at \{new String(this.token)}");
+            System.out.println("ended pushing stack at " + this.operationName);
 
             StackObject newStackObject = new StackObject(operation, token, operationName);
 
@@ -86,7 +86,7 @@ public class StackObject {
 
     public void pushStack(StackObject stackObject) {
 
-        //System.out.println(STR."pushing stack on \{this.operationName}");
+        System.out.println("pushing stack on " + this.operationName);
 
         this.stackSize++;
 
@@ -96,7 +96,7 @@ public class StackObject {
 
         else {
 
-            //System.out.println(STR."ended pushing stack at \{new String(this.token)}");
+            System.out.println("ended pushing stack at " + this.operationName);
 
             this.child = stackObject;
         }
@@ -113,6 +113,9 @@ public class StackObject {
     }
 
     public boolean runOperation() throws Exception {
+
+        System.out.println(this.operationName);
+        System.out.println(this.token);
 
         if (!this.complete) this.complete = this.function.cb();
 
