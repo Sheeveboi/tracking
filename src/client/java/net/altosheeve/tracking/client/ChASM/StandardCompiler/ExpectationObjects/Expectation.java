@@ -1,4 +1,4 @@
-package net.altosheeve.tracking.client.ChASM.ExpectationObjects;
+package net.altosheeve.tracking.client.ChASM.StandardCompiler.ExpectationObjects;
 
 import net.altosheeve.tracking.client.ChASM.StackObject;
 
@@ -21,11 +21,12 @@ public abstract class Expectation {
 
     public static Expectation generateExpectation(char[] token, boolean gathered) {
 
+        //TODO: Since there are similarities to how Expectation Operations and Insertion Qualifiers are handled, a more complete way of making a syntax tree needed instead of just using maps
         if      (getExtension(token)         != null) return new Extensional         (token, gathered);
         else if (getAbstractExtension(token) != null) return new AbstractExtensional (token, gathered);
         else if (getExtensionalGroup(token)  != null) return new Grouping            (token, gathered);
 
-        else if (Arrays.equals(token, "CAPTURE".toCharArray())) return new net.altosheeve.tracking.client.ChASM.ExpectationObjects.Capture(token, gathered);
+        else if (Arrays.equals(token, "CAPTURE".toCharArray())) return new Capture(token, gathered);
 
         return null;
 

@@ -1,4 +1,4 @@
-package net.altosheeve.tracking.client.ChASM.ExpectationObjects;
+package net.altosheeve.tracking.client.ChASM.StandardCompiler.ExpectationObjects;
 
 import java.util.ArrayList;
 
