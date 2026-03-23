@@ -1,5 +1,7 @@
 package net.altosheeve.tracking.client.ChASM;
 
+import net.altosheeve.tracking.client.ChASM.StandardCompiler.StandardCompiler;
+
 import java.util.*;
 
 public class ExtendableCompiler {
@@ -13,6 +15,11 @@ public class ExtendableCompiler {
     public static Map<char[], ArrayList<char[]>> abstractGroups = new HashMap<>(); //groups back end extensionals to multiple front end extensionals
 
     public static Map<char[], StandardCompiler.StackEdition> operationMap = new HashMap<>(); //maps front end extensionals to back end operations
+
+    public static TreeObject root = new TreeObject() {
+        @Override
+        public boolean check(char[] t) { return true; }
+    };
 
     public static ArrayList<Byte> compiledBytecode = new ArrayList<>(); //stores final result
 
@@ -104,6 +111,15 @@ public class ExtendableCompiler {
         return newTokens;
     }
 
+    public static char[] getCurrentCompilerToken() { return currentToken; }
+
+    public static void getNextCompilerToken() {
+
+        tokenPointer++;
+        currentToken = compilerTokens.get(tokenPointer);
+
+    }
+
     public static StackObject getCurrentStackObject() {
 
         if (!abstractExtension) return extensions.get(extendingToken);
@@ -111,33 +127,15 @@ public class ExtendableCompiler {
 
     }
 
-    public ExtendableCompiler(char[] program) throws Exception {
+    public static void buildCompiler(char[] program) throws Exception {
 
-        StandardCompiler.registerImplementation(";", () -> {});
+        ArrayList<char[]> identifiers = root.getIdentifiers();
 
-        StandardCompiler.registerImplementation("EXPECT", StandardCompiler::_EXPECT);
-        StandardCompiler.registerImplementation("ABSTRACT EXTEND", StandardCompiler::_ABSTRACT_EXTEND);
-        StandardCompiler.registerImplementation("EXTEND", StandardCompiler::_EXTEND);
-        StandardCompiler.registerImplementation("IMPLY", StandardCompiler::_IMPLY);
-        StandardCompiler.registerImplementation("AS", StandardCompiler::_AS);
-        StandardCompiler.registerImplementation("INSERT FLOAT", StandardCompiler::_INSERT_FLOAT);
-        StandardCompiler.registerImplementation("INSERT INTEGER", StandardCompiler::_INSERT_INTEGER);
-        StandardCompiler.registerImplementation("INSERT HEX", StandardCompiler::_INSERT_HEX);
-        StandardCompiler.registerImplementation("INSERT UTF_8", StandardCompiler::_INSERT_UTF_8);
-        StandardCompiler.registerImplementation("PRINT", StandardCompiler::_PRINT);
-        StandardCompiler.registerImplementation("PROGRAM EXTENSION NAME:", StandardCompiler::_PROGRAM_EXTENSION_NAME);
-        StandardCompiler.registerImplementation("POSITIVE SYNTAX", StandardCompiler::_POSITIVE_SYNTAX);
-        StandardCompiler.registerImplementation("NEGATIVE SYNTAX", StandardCompiler::_NEGATIVE_SYNTAX);
-        StandardCompiler.registerImplementation("EXTRACT", StandardCompiler::_EXTRACT);
+        compilerTokens = tokenize(identifiers, program);
 
-        ArrayList<char[]> realTokens = new ArrayList<>(operationMap.keySet());
-
-        compilerTokens = tokenize(realTokens, program);
-
-        for (tokenPointer = 0; tokenPointer < compilerTokens.size() - 1; tokenPointer++) {
-            char[] token = compilerTokens.get(tokenPointer);
-            if (operationMap.containsKey(token)) operationMap.get(token).cb();
-        }
+        for (tokenPointer = 0; tokenPointer < compilerTokens.size() - 1; tokenPointer++)
+            if (!root.runTree(compilerTokens, tokenPointer))
+                throw new Exception("Unexpected token");
 
     }
 

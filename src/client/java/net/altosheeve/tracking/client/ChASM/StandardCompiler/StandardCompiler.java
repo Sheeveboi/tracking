@@ -1,6 +1,8 @@
-package net.altosheeve.tracking.client.ChASM;
+package net.altosheeve.tracking.client.ChASM.StandardCompiler;
 
-import net.altosheeve.tracking.client.ChASM.ExpectationObjects.Expectation;
+import net.altosheeve.tracking.client.ChASM.StandardCompiler.ExpectationObjects.Expectation;
+import net.altosheeve.tracking.client.ChASM.ExtendableCompiler;
+import net.altosheeve.tracking.client.ChASM.StackObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,14 +11,33 @@ import java.util.regex.Pattern;
 public class StandardCompiler extends ExtendableCompiler {
 
     public StandardCompiler(char[] program) throws Exception {
-        super(program);
+
+        root.registerOperation(";", (program1, position) -> {});
+
+        root.registerOperation("EXPECT",                  StandardCompiler::_EXPECT);
+        root.registerOperation("ABSTRACT EXTEND",         StandardCompiler::_ABSTRACT_EXTEND);
+        root.registerOperation("EXTEND",                  StandardCompiler::_EXTEND);
+        root.registerOperation("IMPLY",                   StandardCompiler::_IMPLY);
+        root.registerOperation("AS",                      StandardCompiler::_AS);
+        root.registerOperation("INSERT FLOAT",            StandardCompiler::_INSERT_FLOAT);
+        root.registerOperation("INSERT INTEGER",          StandardCompiler::_INSERT_INTEGER);
+        root.registerOperation("INSERT HEX",              StandardCompiler::_INSERT_HEX);
+        root.registerOperation("INSERT UTF_8",            StandardCompiler::_INSERT_UTF_8);
+        root.registerOperation("PRINT",                   StandardCompiler::_PRINT);
+        root.registerOperation("PROGRAM EXTENSION NAME:", StandardCompiler::_PROGRAM_EXTENSION_NAME);
+        root.registerOperation("POSITIVE SYNTAX",         StandardCompiler::_POSITIVE_SYNTAX);
+        root.registerOperation("NEGATIVE SYNTAX",         StandardCompiler::_NEGATIVE_SYNTAX);
+        root.registerOperation("EXTRACT",                 StandardCompiler::_EXTRACT);
+
+        buildCompiler(program);
+
     }
 
     public interface StackEdition {
         void cb() throws Exception;
     }
 
-    protected static void _EXTRACT() throws Exception {
+    protected static void _EXTRACT(ArrayList<char[]> program, int position) throws Exception {
 
         if (!abstractExtension) throw new Exception("Cannot extract substring from non-abstract extensional.");
 
@@ -37,7 +58,7 @@ public class StandardCompiler extends ExtendableCompiler {
         }, extendingToken, "EXTRACT");
     }
 
-    protected static void _POSITIVE_SYNTAX() throws Exception {
+    protected static void _POSITIVE_SYNTAX(ArrayList<char[]> program, int position) throws Exception {
 
         if (!abstractExtension) throw new Exception("Cannot apply syntax to non-abstract extensional.");
 
@@ -48,7 +69,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _NEGATIVE_SYNTAX() throws Exception {
+    protected static void _NEGATIVE_SYNTAX(ArrayList<char[]> program, int position) throws Exception {
 
         if (!abstractExtension) throw new Exception("Cannot apply syntax to non-abstract extensional.");
 
@@ -59,7 +80,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _EXPECT() throws Exception {
+    protected static void _EXPECT(ArrayList<char[]> program, int position) throws Exception {
 
         ArrayList<char[]> expectationTokens = new ArrayList<>();
 
@@ -87,17 +108,24 @@ public class StandardCompiler extends ExtendableCompiler {
 
             if (fullExpectation.action) expectationIndex += fullExpectation.assignParameters(expectationTokens, expectationIndex);
 
-
             currentStackObject.expectations.add(fullExpectation);
 
         }
 
         currentStackObject.pushStack(() -> {
 
+            System.out.println("expecting");
+            System.out.println(currentStackObject.token);
+            System.out.println(currentStackObject.operationName);
+
             for (int expectationIndex = 0; expectationIndex < currentStackObject.expectations.size(); expectationIndex++) {
 
                 programPointer++;
                 Expectation expectation = currentStackObject.expectations.get(expectationIndex);
+
+                System.out.println(programPointer);
+                System.out.println(tokenizedProgram.size());
+                System.out.println(currentStackObject.expectations.size());
 
                 if (programPointer >= tokenizedProgram.size()) throw new Exception("Syntax Error: Unexpected end of program");
 
@@ -112,7 +140,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _EXTEND() throws Exception {
+    protected static void _EXTEND(ArrayList<char[]> program, int position) throws Exception {
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
@@ -128,7 +156,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _ABSTRACT_EXTEND() throws Exception {
+    protected static void _ABSTRACT_EXTEND(ArrayList<char[]> program, int position) throws Exception {
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
@@ -144,7 +172,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _IMPLY() throws Exception {
+    protected static void _IMPLY(ArrayList<char[]> program, int position) throws Exception {
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
@@ -160,7 +188,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _AS() throws Exception {
+    protected static void _AS(ArrayList<char[]> program, int position) throws Exception {
 
         if (abstractExtension) throw new Exception("Cannot group abstract extensionals to other abstract extensionals.");
 
@@ -174,7 +202,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _INSERT_FLOAT() throws Exception {
+    protected static void _INSERT_FLOAT(ArrayList<char[]> program, int position) throws Exception {
 
         System.out.println(new String(extendingToken) + " will insert a float");
 
@@ -185,7 +213,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
         final String[] staticValue = {new String(currentToken)};
 
-        //TODO: this method of gathering the length is rather clunky. If more attributes of tokens are necessary in the future then I will implement a more complete self-information gathering system"
+        //TODO: this method of gathering the length is rather clunky. If more attributes of tokens are necessary in the future then I will implement a more complete self-information gathering system
         boolean selfValue  = new String(currentToken).equals("SELF");
         boolean selfLength = new String(currentToken).equals("SELF.LENGTH");
 
@@ -208,12 +236,14 @@ public class StandardCompiler extends ExtendableCompiler {
 
             compiledBytecode.addAll(out);
 
+            System.out.println(compiledBytecode);
+
             return true;
         }, extendingToken, "INSERT_NUMBER");
 
     }
 
-    protected static void _INSERT_INTEGER() throws Exception {
+    protected static void _INSERT_INTEGER(ArrayList<char[]> program, int position) throws Exception {
 
         System.out.println(new String(extendingToken) + " will insert an integer");
 
@@ -231,9 +261,13 @@ public class StandardCompiler extends ExtendableCompiler {
 
         currentStackObject.pushStack(() -> {
 
+            System.out.println("Static value: " + staticValue[0]);
+
             if      (selfValue)  compiledBytecode.add((byte) Integer.parseInt(currentStackObject.selfValue));
             else if (selfLength) compiledBytecode.add((byte) currentStackObject.selfValue.length());
             else                 compiledBytecode.add((byte) Integer.parseInt(staticValue[0]));
+
+            System.out.println(compiledBytecode);
 
             return true;
 
@@ -241,7 +275,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _INSERT_HEX() throws Exception {
+    protected static void _INSERT_HEX(ArrayList<char[]> program, int position) throws Exception {
 
         tokenPointer++;
         currentToken = compilerTokens.get(tokenPointer);
@@ -265,13 +299,15 @@ public class StandardCompiler extends ExtendableCompiler {
 
             compiledBytecode.add((byte) Integer.parseInt(value, 16));
 
+            System.out.println(compiledBytecode);
+
             return true;
 
         }, extendingToken, "INSERT_HEX");
 
     }
 
-    protected static void _INSERT_UTF_8() throws Exception {
+    protected static void _INSERT_UTF_8(ArrayList<char[]> program, int position) throws Exception {
 
         System.out.println(new String(extendingToken) + " will insert utf 8 bytes");
 
@@ -297,6 +333,8 @@ public class StandardCompiler extends ExtendableCompiler {
 
             for (char c : value.toCharArray()) compiledBytecode.add((byte) c);
 
+            System.out.println(compiledBytecode);
+
             return true;
 
         }, extendingToken, "INSERT_UTF_8");
@@ -304,7 +342,7 @@ public class StandardCompiler extends ExtendableCompiler {
 
     }
 
-    protected static void _PRINT() { //should only be used for debugging. does not actually compile anything
+    protected static void _PRINT(ArrayList<char[]> program, int position) { //should only be used for debugging. does not actually compile anything
         String sToken = "";
         StringBuilder out = new StringBuilder();
         while (tokenPointer < compilerTokens.size() - 1) {
@@ -318,12 +356,12 @@ public class StandardCompiler extends ExtendableCompiler {
         System.out.println(out);
     }
 
-    protected static void _PROGRAM_EXTENSION_NAME() {
+    protected static void _PROGRAM_EXTENSION_NAME(ArrayList<char[]> program, int position) {
 
-        tokenPointer++;
-        currentToken = compilerTokens.get(tokenPointer);
+        getNextCompilerToken();
+        System.out.println("setting program extension name");
 
-        programExtension = new String(currentToken);
+        programExtension = new String(getCurrentCompilerToken());
 
     }
 
