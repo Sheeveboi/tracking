@@ -1,19 +1,13 @@
 package net.altosheeve.tracking.client.Core;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.altosheeve.tracking.client.Shapes.Shape;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.altosheeve.tracking.client.Shapes.Layer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.MappableRingBuffer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -21,10 +15,6 @@ import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4fStack;
-import org.joml.Vector4f;
-import org.lwjgl.system.MemoryUtil;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
 import java.util.ArrayList;
 
