@@ -40,8 +40,9 @@ public class TrackingClient implements ClientModInitializer {
 
                 Relaying.relayInfo();
                 Keys.handleKeys();
+                Execution.execute();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
