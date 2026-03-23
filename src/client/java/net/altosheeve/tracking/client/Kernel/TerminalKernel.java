@@ -1,6 +1,7 @@
 package net.altosheeve.tracking.client.Kernel;
 
 import net.altosheeve.tracking.client.ChASM.ExtendableCompiler;
+import net.altosheeve.tracking.client.ChASM.StandardCompiler.StandardCompiler;
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Navigation.Navigation;
 import net.altosheeve.tracking.client.Navigation.Node;
@@ -30,7 +31,7 @@ public class TerminalKernel extends BasicFunctions {
         while (extentionReader.hasNextLine()) extentionData.append(extentionReader.nextLine());
         extentionReader.close();
 
-        try                 { terminalImplementation = new ExtendableCompiler(extentionData.toString().toCharArray()); }
+        try                 { terminalImplementation = new StandardCompiler(extentionData.toString().toCharArray()); }
         catch (Exception e) { throw new RuntimeException(e); }
 
     }
@@ -58,7 +59,7 @@ public class TerminalKernel extends BasicFunctions {
         while (extentionReader.hasNextLine()) extentionData.append(extentionReader.nextLine());
         extentionReader.close();
 
-        this.implementation = new ExtendableCompiler(extentionData.toString().toCharArray());
+        this.implementation = new StandardCompiler(extentionData.toString().toCharArray());
 
     }
 
