@@ -30,9 +30,9 @@ public class EditNodeScreen extends Screen {
         assert player != null;
 
         if (Navigation.currentNode != null) {
-            nodeX.setText(String.valueOf(Navigation.currentNode.x));
-            nodeY.setText(String.valueOf(Navigation.currentNode.y));
-            nodeZ.setText(String.valueOf(Navigation.currentNode.z));
+            nodeX.setText(String.valueOf((int) Navigation.currentNode.x));
+            nodeY.setText(String.valueOf((int) Navigation.currentNode.y));
+            nodeZ.setText(String.valueOf((int) Navigation.currentNode.z));
 
             name.setText(Navigation.currentNode.tag);
             type.setText(Navigation.currentNode.type.toString());
