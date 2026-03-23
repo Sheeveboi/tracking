@@ -1,8 +1,9 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Kernel.Execution;
+import net.altosheeve.tracking.client.Kernel.TerminalKernel;
 import net.altosheeve.tracking.client.Navigation.Navigation;
 import net.altosheeve.tracking.client.Navigation.NodeCreation;
-import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;

@@ -1,10 +1,15 @@
 package net.altosheeve.tracking.client.Kernel;
 
 import net.altosheeve.tracking.client.ChASM.ExtendableCompiler;
-
+import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Navigation.Navigation;
+import net.altosheeve.tracking.client.Navigation.Node;
+import net.minecraft.util.math.Vec3d;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class TerminalKernel extends BasicFunctions {
