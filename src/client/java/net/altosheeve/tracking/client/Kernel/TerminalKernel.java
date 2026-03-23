@@ -45,6 +45,7 @@ public class TerminalKernel extends BasicFunctions {
 
         String target = Typing._PARSE_STRING(this);
 
+        //TODO: make these paths work correctly
         File extention = new File("/implementations/" + target + ".chasm");
         Scanner extentionReader = new Scanner(extention);
         StringBuilder extentionData = new StringBuilder();
