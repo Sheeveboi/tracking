@@ -28,6 +28,8 @@ public class Capture extends Expectation {
         this.openingPattern = fullContext.get(location + 2);
         this.closingPattern = fullContext.get(location + 3);
 
+        if (Arrays.equals(this.bodyName, "self".toCharArray())) throw new RuntimeException("body name 'self' is a reserved namespace");
+
         System.out.println(this.bodyName);
         System.out.println(this.openingPattern);
         System.out.println(this.closingPattern);
