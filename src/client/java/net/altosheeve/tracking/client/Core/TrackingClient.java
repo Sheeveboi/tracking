@@ -18,6 +18,7 @@ public class TrackingClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         Keys.registerKeys();
+        TerminalKernel.loadImplementation();
 
         try                   { NodeCreation.loadNodes(); }
         catch (IOException e) { throw new RuntimeException(e); }

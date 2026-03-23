@@ -14,6 +14,7 @@ public class TerminalKernel extends BasicFunctions {
 
     public static void loadImplementation() {
 
+        //TODO: make this automatically download
         File extention = new File("sh.chasm");
         Scanner extentionReader;
 
