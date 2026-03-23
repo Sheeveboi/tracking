@@ -35,10 +35,24 @@ public class TerminalScreen extends Screen {
 
         switch (keyCode) {
 
-            case 257: //shift
+            case 257: //enter
 
-                lines.add(input.getText());
-                input.setText("");
+                String command = input.getText();
+
+                System.out.println(command);
+
+                TerminalKernel kernel = new TerminalKernel(new ArrayList<>(), new ArrayList<>(), null);
+                try {
+                    System.out.println(TerminalKernel.terminalImplementation.runCompiler(command));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                try {
+                    kernel.runCommand(command);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
         }
 
