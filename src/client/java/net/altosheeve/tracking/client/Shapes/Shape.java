@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Shapes;
 
+import net.altosheeve.tracking.client.Core.Debug;
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
@@ -169,6 +170,7 @@ public class Shape {
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
+        Debug.totalShapes++;
     }
 
     public void set(BufferBuilder buffer) {
@@ -199,6 +201,7 @@ public class Shape {
         if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
         if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
 
+        Debug.totalShapes++;
     }
 
     public void fill(BufferBuilder buffer) {};

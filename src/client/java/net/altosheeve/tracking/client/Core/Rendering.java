@@ -72,6 +72,8 @@ public class Rendering {
         modelViewStack.pushMatrix();
         modelViewStack.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 
+        Debug.totalShapes = 0;
+
         //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();
         for (Layer layer : Layer.layers) layer.render();

@@ -28,6 +28,7 @@ public class Keys {
     public static KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("net.altosheeve", "tracking"));
 
     public static KeyBinding waypointScreen;
+    public static KeyBinding debugScreen;
 
     public static void registerKeys() {
 
@@ -36,6 +37,15 @@ public class Keys {
                         "Open waypoint config",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_LEFT_BRACKET,
+                        category
+                )
+        );
+
+        debugScreen = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        "Open debug",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_RIGHT_BRACKET,
                         category
                 )
         );
@@ -106,6 +116,7 @@ public class Keys {
     public static void handleKeys() throws IOException {
 
         while (waypointScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new WaypointConfigScreen());
+        while (debugScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new Debug.DebugScreen(Text.of("debug")));
 
 //        while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Mapping(Text.of("Civ Mapping")));
 //

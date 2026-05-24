@@ -15,6 +15,7 @@ public class UDPClient {
     public static int port;
 
     public static final int packetLength = 1024;
+    public static boolean sending = true;
 
     private static byte[] out = new byte[]{};
 
@@ -89,9 +90,13 @@ public class UDPClient {
         byte[] out = new byte[packetLength];
 
         System.arraycopy(message, 0, out, 0, message.length);
-
         DatagramPacket packet = new DatagramPacket(out, packetLength, ip, port);
-        socket.send(packet);
+
+        sending = true;
+
+        try { socket.send(packet); }
+
+        catch (IOException e) { sending = false; }
     }
 
     public static void queueObject(UDPObject data) throws IOException {
