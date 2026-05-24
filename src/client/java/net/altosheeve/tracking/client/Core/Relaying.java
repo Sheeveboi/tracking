@@ -1,19 +1,17 @@
 package net.altosheeve.tracking.client.Core;
 
 import net.altosheeve.tracking.client.Networking.*;
-import net.altosheeve.tracking.client.Waypoints.Normal;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.Item;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.time.Clock;
 
 public class Relaying {
 
@@ -108,6 +106,9 @@ public class Relaying {
     }
 
     public static void gatherTelemetry(UDPObject udpObject) throws Exception {
+
+        Clock clock = Clock.systemDefaultZone();
+        Debug.incomingTimestamp = clock.instant().getNano();
 
         if (Rendering.client.player == null) return;
 

@@ -17,11 +17,11 @@ public class ScreenUnblurMixin {
 
     @Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
     public void renderBackground(CallbackInfo ci) {
-        //if (Mapping.renderMap) ci.cancel();
+        ci.cancel();
     }
 
     @Inject(method = "setInitialFocus()V", at = @At("HEAD"), cancellable = true)
     public void setInitialFocus(CallbackInfo ci) {
-        //if (Mapping.renderMap) ci.cancel();
+        ci.cancel();
     }
 }
