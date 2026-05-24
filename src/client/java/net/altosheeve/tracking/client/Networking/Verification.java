@@ -76,7 +76,7 @@ public class Verification {
             Text text = Text.of("You are currently not verified by OPPWATCH_ servers!");
 
             int w = Rendering.client.textRenderer.getWidth(text);
-            context.drawText(Rendering.client.textRenderer, text, (width / 2) - (w / 2), height / 2 - 5, 0xffffff, true);
+            context.drawText(Rendering.client.textRenderer, text, (width / 2) - (w / 2), height / 2 - 5, 0xff0000ff, true);
 
             if (verified) Rendering.client.setScreen(parentScreen);
         }
