@@ -27,7 +27,7 @@ public class Waypoint extends Shape {
     public static Map<String, Float> availableYLevels = new HashMap<>();
     public static Map<String, Integer> availableThreatLevels = new HashMap<>();
     public static ArrayList<Waypoint> waypoints = new ArrayList<>();
-    public static ArrayList<Waypoint> waypointQueue = new ArrayList<>();
+    public static List<Waypoint> waypointSync = Collections.synchronizedList(waypoints);
     public static Layer fillLayer = new Layer("waypoint fill layer", Layer.Method.FILL_UNOCCLUDED);
     public static Layer lineLayer = new Layer("waypoint line layer", Layer.Method.LINE_OCCLUDED);
 
@@ -40,52 +40,46 @@ public class Waypoint extends Shape {
 
     public String username = "";
 
-    public static void cleanWaypoints() {
+    public static void pushWaypoints() {
+
+        fillLayer.shapes.clear();
+        lineLayer.shapes.clear();
+
+        fillLayer.addShapes(waypointSync);
+        lineLayer.addShapes(waypointSync);
 
         ArrayList<Waypoint> remove = new ArrayList<>();
 
-        for (Waypoint waypoint : waypoints) {
+        try {
 
-            waypoint.importance -= waypoint.decayRate;
+            for (Waypoint waypoint : waypointSync) {
 
-            if (waypoint.importance <= 0) {
-                remove.add(waypoint);
-                lineLayer.removeShape(waypoint);
-                fillLayer.removeShape(waypoint);
+                waypoint.importance -= waypoint.decayRate;
+
+                if (waypoint.importance <= 0) remove.add(waypoint);
+
             }
 
-            while (true)
-                try {
-                    for (Waypoint queuedWaypoint : waypointQueue)
-                        if (Objects.equals(waypoint.UUID, queuedWaypoint.UUID))
-                            remove.add(waypoint);
+            waypointSync.removeAll(remove);
 
-                    break;
-                } catch (Exception ignored) {}
-
-        }
-
-        removeWaypoints(remove);
-        addWaypoints(waypointQueue);
-
-        waypointQueue.clear();
+        } catch (Exception ignored) {}
 
     }
 
     public static void addWaypoint(Waypoint waypoint) {
 
-        waypoints.add(waypoint);
+        waypointSync.add(waypoint);
 
         fillLayer.addShape(waypoint);
         lineLayer.addShape(waypoint);
 
     }
 
-    public static void addWaypoints(ArrayList<Waypoint> waypointsB) {
+    public static void addWaypoints(List<Waypoint> waypointsB) {
 
         while (true)
             try {
-                waypoints.addAll(waypointsB);
+                waypointSync.addAll(waypointsB);
 
                 for (Shape shape : waypointsB) fillLayer.addShape(shape);
                 for (Shape shape : waypointsB) lineLayer.addShape(shape);
@@ -96,11 +90,11 @@ public class Waypoint extends Shape {
 
     }
 
-    public static void removeWaypoints(ArrayList<Waypoint> waypointsB) {
+    public static void removeWaypoints(List<Waypoint> waypointsB) {
 
         while (true)
             try {
-                waypoints.removeAll(waypointsB);
+                waypointSync.removeAll(waypointsB);
 
                 for (Shape shape : waypointsB) fillLayer.removeShape(shape);
                 for (Shape shape : waypointsB) lineLayer.removeShape(shape);
@@ -112,7 +106,7 @@ public class Waypoint extends Shape {
 
     public static void removeWaypoint(Waypoint waypoint) {
 
-        waypoints.remove(waypoint);
+        waypointSync.remove(waypoint);
 
         fillLayer.removeShape(waypoint);
         lineLayer.removeShape(waypoint);
@@ -157,35 +151,33 @@ public class Waypoint extends Shape {
 
     public static void queueWaypointUpdate(float x, float y, float z, Type type, String UUID, String displayName, boolean ignoreY) {
 
-        while (true) {
+        float legalY = (float) Rendering.client.player.getY();
+        if (!ignoreY) availableYLevels.put(UUID, y);
+        if (availableYLevels.containsKey(UUID)) legalY = availableYLevels.get(UUID);
+        //On civ, you are allowed to see the Y levels of clients that are willingly sending you that information
 
-            try {
+        ArrayList<Waypoint> remove = new ArrayList<>();
 
-                float legalY = (float) Rendering.client.player.getY();
-                if (!ignoreY) availableYLevels.put(UUID, y);
-                if (availableYLevels.containsKey(UUID)) legalY = availableYLevels.get(UUID);
-                //On civ, you are allowed to see the Y levels of clients that are willingly sending you that information
+        for (int i = 0; i < waypointSync.size(); i++) {
 
-                for (Waypoint waypoint : waypoints)
-                    if (waypoint != null && Objects.equals(waypoint.UUID, UUID)) {
+            Waypoint waypoint = waypointSync.get(i);
 
-                        if (waypoint.importance > generateWaypoint(type).importance) return;
+            if (waypoint != null && Objects.equals(waypoint.UUID, UUID)) {
 
-                        break;
+                if (waypoint.importance > generateWaypoint(type).importance) return;
 
-                    }
-
-                for (Waypoint waypoint : waypointQueue) if (Objects.equals(waypoint.UUID, UUID)) return;
-
-                Waypoint newWaypoint = generateWaypoint(x, legalY, z, type, UUID, displayName);
-                waypointQueue.add(newWaypoint);
+                remove.add(waypoint);
 
                 break;
 
             }
 
-            catch (Exception ignored) {}
         }
+
+        waypointSync.removeAll(remove);
+
+        Waypoint newWaypoint = generateWaypoint(x, legalY, z, type, UUID, displayName);
+        waypointSync.add(newWaypoint);
 
     }
 
@@ -197,9 +189,9 @@ public class Waypoint extends Shape {
     //TODO: make text layers in Shapes
     public static void drawText(VertexConsumerProvider.Immediate provider) {
 
-        if (waypoints.isEmpty()) return;
+        if (waypointSync.isEmpty()) return;
 
-        ArrayList<Waypoint> waypointsCopy = new ArrayList<>(waypoints);
+        ArrayList<Waypoint> waypointsCopy = new ArrayList<>(waypointSync);
 
         waypointsCopy.sort((a, b) -> Float.compare(Transforms.facingValue(b.x, b.y, b.z), Transforms.facingValue(a.x, a.y, a.z)));
 
@@ -218,6 +210,7 @@ public class Waypoint extends Shape {
             StringBuilder waypointInfo = new StringBuilder();
             DecimalFormat df = new DecimalFormat("#");
             waypointInfo.append(waypoint.username).append(" [").append(df.format(dist)).append("m]");
+            waypointInfo.append(" importance: " + waypoint.importance);
 
             float distanceStringWidth = -Rendering.client.textRenderer.getWidth(waypointInfo.toString()) / 2f;
 
@@ -226,6 +219,7 @@ public class Waypoint extends Shape {
             y += 10;
 
         }
+
     }
 
     @Override
@@ -237,6 +231,8 @@ public class Waypoint extends Shape {
         circle.parentLayer = this.parentLayer;
         circle.color(this.r, this.g, this.b, this.importance);
         circle.set(buffer, spriteTransform);
+
+        if (this.importance <= 0) waypointSync.remove(this);
 
     }
 
