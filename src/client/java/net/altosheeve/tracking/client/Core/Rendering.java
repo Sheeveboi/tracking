@@ -74,11 +74,11 @@ public class Rendering {
 
         Debug.totalShapes = 0;
 
+        Waypoint.pushWaypoints();
+
         //TODO: Implement Positive and Negative drawing modes
         for (Layer layer : Layer.layers) layer.prepare();
         for (Layer layer : Layer.layers) layer.render();
-
-        Waypoint.cleanWaypoints();
 
         //TODO: implement text layers
         VertexConsumerProvider.Immediate textBuffer = Rendering.client.getBufferBuilders().getEntityVertexConsumers();
