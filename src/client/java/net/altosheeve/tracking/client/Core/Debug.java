@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.util.ArrayList;
 
@@ -65,7 +66,7 @@ public class Debug {
 
         avgPacketDelta = (float) sumDeltas / deltas.size();
 
-        if (deltas.size() > 40) deltas.remove(deltas.getLast());
+        if (deltas.size() > 100) deltas.remove(deltas.getLast());
 
     }
 
