@@ -145,6 +145,9 @@ public class Relaying {
 
         if (Config.getWaypointAllowedEntity("players")) Waypoint.queueWaypointUpdate(x, y, z, Waypoint.Type.values()[threat], UUID, username, false);
 
+        Clock clock = Clock.systemDefaultZone();
+        Debug.incomingTimestamp = clock.instant().getNano();
+
     }
 
     public static void startStream() throws IOException {
