@@ -46,7 +46,10 @@ public class UDPClient {
 
                 Iterator<Byte> bytes = Bytes.asList(receive).iterator();
 
+                Debug.UDPObjectCount = 0;
+
                 while (bytes.hasNext()) {
+
                     int identifier = bytes.next();
 
                     if (identifier == 0) break;
@@ -58,7 +61,11 @@ public class UDPClient {
                     for (int i = 0; i < length && bytes.hasNext(); i++) body.add(bytes.next());
 
                     try {
+
                         this.cb.cb(new UDPObject(identifier, Bytes.toArray(body)));
+
+                        Debug.UDPObjectCount++;
+
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

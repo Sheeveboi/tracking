@@ -17,8 +17,9 @@ public class Debug {
     public static int totalWaypoints = 0;
     public static int incomingTimestamp = 0;
     public static float avgPacketDelta = 0;
+    public static int UDPObjectCount = 0;
 
-    public static ArrayList<Integer> deltas = new ArrayList<>();
+    public static ArrayList<Integer> deltas      = new ArrayList<>();
 
     public static class DebugScreen extends Screen {
 
@@ -38,7 +39,8 @@ public class Debug {
             context.drawText(this.textRenderer, "waypointsLineShapes: " + waypointsLineShapes, 20, 60, 0xffffffff, true);
             context.drawText(this.textRenderer, "totalWaypoints: "      + totalWaypoints,      20, 80, 0xffffffff, true);
             context.drawText(this.textRenderer, "incomingTimestamp: "   + incomingTimestamp,   20, 100,0xffffffff, true);
-            context.drawText(this.textRenderer, "avgPacketDelta: "      + avgPacketDelta,      20, 120,0xffffffff, true);
+            context.drawText(this.textRenderer, "avgPacketDelta: "      + new BigDecimal(avgPacketDelta).toPlainString(),      20, 140,0xffffffff, true);
+            context.drawText(this.textRenderer, "UDPObjectCount: "      + UDPObjectCount,      20, 160,0xffffffff, true);
 
         }
 
