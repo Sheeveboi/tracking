@@ -1,6 +1,8 @@
 package net.altosheeve.tracking.client.Networking;
 
 import com.google.common.primitives.Bytes;
+import net.altosheeve.tracking.client.Core.Config;
+import net.altosheeve.tracking.client.Core.Debug;
 import net.altosheeve.tracking.client.Core.Relaying;
 import java.io.IOException;
 import java.net.*;
@@ -35,6 +37,7 @@ public class UDPClient {
         public void run() {
 
             while (true) {
+
                 byte[] receive = new byte[packetLength];
                 DatagramPacket packet = new DatagramPacket(receive, packetLength);
 
