@@ -88,7 +88,7 @@ public class Layer {
         this.update();
     }
 
-    public void addShapes(ArrayList<Shape> shapes) {
+    public void addShapes(List<Shape> shapes) {
 
         this.shapes.addAll(shapes);
         this.update();
