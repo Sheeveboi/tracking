@@ -12,17 +12,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.MappableRingBuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BuiltBuffer;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import java.util.*;
 
 
 public class Layer {
