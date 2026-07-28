@@ -42,26 +42,32 @@ public class Waypoint extends Shape {
 
     public static void pushWaypoints() {
 
-        fillLayer.shapes.clear();
-        lineLayer.shapes.clear();
+        try
+        {
+            fillLayer.shapes.clear();
+            lineLayer.shapes.clear();
 
-        fillLayer.addShapes(waypointSync);
-        lineLayer.addShapes(waypointSync);
-
-        ArrayList<Waypoint> remove = new ArrayList<>();
-
-        try {
-
-            for (Waypoint waypoint : waypointSync) {
-
-                waypoint.importance -= waypoint.decayRate;
-
-                if (waypoint.importance <= 0) remove.add(waypoint);
-
+            for (int i = 0; i < waypointSync.size(); i++) {
+                Waypoint waypoint = waypointSync.get(i);
+                fillLayer.addShape(waypoint);
+                lineLayer.addShape(waypoint);
             }
 
-            waypointSync.removeAll(remove);
+            ArrayList<Waypoint> remove = new ArrayList<>();
 
+            try {
+
+                for (Waypoint waypoint : waypointSync) {
+
+                    waypoint.importance -= waypoint.decayRate;
+
+                    if (waypoint.importance <= 0) remove.add(waypoint);
+
+                }
+
+                waypointSync.removeAll(remove);
+
+            } catch (Exception ignored) {}
         } catch (Exception ignored) {}
 
     }
@@ -195,7 +201,12 @@ public class Waypoint extends Shape {
 
         waypointsCopy.sort((a, b) -> Float.compare(Transforms.facingValue(b.x, b.y, b.z), Transforms.facingValue(a.x, a.y, a.z)));
 
-        Waypoint focusedWaypoint = waypointsCopy.getFirst();
+        Waypoint focusedWaypoint;
+        try {
+            focusedWaypoint = waypointsCopy.getFirst();
+        } catch (Exception e) {
+            return;
+        }
 
         Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(focusedWaypoint.x, focusedWaypoint.y, focusedWaypoint.z, focusedWaypoint.textSize, -focusedWaypoint.textSize, focusedWaypoint.textSize);
 
