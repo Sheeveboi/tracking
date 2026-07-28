@@ -1,6 +1,10 @@
 package net.altosheeve.tracking.client.Core;
 
 import net.altosheeve.tracking.client.Networking.*;
+import net.altosheeve.tracking.client.Networking2.NetworkObjects.NetworkObject;
+import net.altosheeve.tracking.client.Networking2.NetworkObjects.Player;
+import net.altosheeve.tracking.client.Networking2.Relay;
+import net.altosheeve.tracking.client.Networking2.UDPhelper;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -8,7 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.time.Clock;
@@ -17,11 +24,12 @@ public class Relaying {
 
     public static String host = "170.187.207.133";
     public static int port = 443;
+    private static UDPhelper udpHelper;
+    public static boolean relaying = false;
 
     public static void relayInfo() throws Exception {
 
         if (Rendering.client.world == null) {
-            UDPClient.pushQueue();
             return;
         }
 
@@ -42,15 +50,9 @@ public class Relaying {
 
             if (entity.getUuid() == Rendering.client.player.getUuid()) {
 
-                UDPObject send = new UDPObject((byte) 0x1,
-                        TypeGenerators.encodePlayer(
-                                (float) entity.getX() - .5f,
-                                (float) entity.getY() + 1.5f,
-                                (float) entity.getZ() - .5f,
-                                entity.getUuid(),
-                                username));
+                Player selfOut = new Player(entity.getUuid().toString(), username, (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), entity.getEntity().getHealth());
 
-                UDPClient.queueObject(send);
+                udpHelper.queueObject(selfOut);
 
             }
 
@@ -102,13 +104,12 @@ public class Relaying {
             else                                   { if (Config.getWaypointAllowedEntity("blocks")) Waypoint.queueWaypointUpdate((float) entity.getX() - .5f, (float) entity.getY(), (float) entity.getZ() - .5f, Waypoint.Type.NORMAL, entity.getUuid().toString(), entity.getStringifiedName(), true); }
         }
 
-        UDPClient.pushQueue();
+        udpHelper.send();
+        udpHelper.clearQueue();
+
     }
 
     public static void gatherTelemetry(UDPObject udpObject) throws Exception {
-
-        Clock clock = Clock.systemDefaultZone();
-        Debug.incomingTimestamp = clock.instant().getNano();
 
         if (Rendering.client.player == null) return;
 
@@ -150,10 +151,43 @@ public class Relaying {
 
     }
 
-    public static void startStream() throws IOException {
+    public static void startStream() throws IOException, InterruptedException {
 
-        UDPClient.createConnection(host, port);
-        UDPClient.listen(Relaying::gatherTelemetry);
+        //UDPClient.createConnection(host, port);
+        //UDPClient.listen(Relaying::gatherTelemetry);
+
+        if (udpHelper != null) return;
+
+        HttpResponse<String> req = Request.get("http://170.187.207.133:9000/connect");
+
+        udpHelper = new UDPhelper(host, Relay.UDPport);
+        udpHelper.startRecieving(Relaying::gatherTelemetry);
+
+        relaying = true;
+
+    }
+
+    private static void gatherTelemetry(NetworkObject networkObject) throws Exception {
+
+        if (networkObject.identifier == 1)  {
+
+            Player incomingPlayer = (Player) networkObject;
+
+            if (Config.getWaypointAllowedEntity("players"))
+                Waypoint.queueWaypointUpdate(
+                        incomingPlayer.x - .5f,
+                        incomingPlayer.y,
+                        incomingPlayer.z - .5f,
+                        Waypoint.Type.values()[incomingPlayer.getThreat()],
+                        incomingPlayer.uuid,
+                        incomingPlayer.username,
+                        false
+                );
+
+        }
+
+        Clock clock = Clock.systemDefaultZone();
+        Debug.incomingTimestamp = clock.instant().getNano();
 
     }
 

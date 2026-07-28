@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Mixins;
 
+import net.altosheeve.tracking.client.Core.Relaying;
 import net.altosheeve.tracking.client.Networking.Verification;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,7 @@ public class TitleScreenMixin {
     protected void init(CallbackInfo ci) {
         try {
             if (!Verification.isVerified()) Verification.setToken();
+            else Relaying.startStream();
         } catch (IOException | InterruptedException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

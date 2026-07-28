@@ -27,7 +27,6 @@ public class TrackingClient implements ClientModInitializer {
 
         try {
             Config.loadJson();
-            Relaying.startStream();
         } catch (IOException e) {
             System.out.println("whatT???");
             throw new RuntimeException(e);
