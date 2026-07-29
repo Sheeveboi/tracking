@@ -3,6 +3,7 @@ package net.altosheeve.tracking.client.Soprano;
 import net.altosheeve.tracking.client.Soprano.Async.Request;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +91,7 @@ public abstract class BasicFunctions {
     public ArrayList<Byte> skip(int amount) {
         ArrayList<Byte> out = new ArrayList<>(this.TBMinstructionPointers.subList(this.programPointer, this.programPointer + amount).stream().toList());
         this.programPointer += amount - 1;
+        System.out.println("skipped out: " + out);
         return out;
     }
 
@@ -109,6 +111,10 @@ public abstract class BasicFunctions {
     public void insertInstructions(ArrayList<Byte> bytes, int i) {
         if (i < this.TBMinstructionPointers.size()) this.TBMinstructionPointers.addAll(i, bytes);
         else this.TBMinstructionPointers.addAll(bytes);
+    }
+
+    public void insertInstructions(ArrayList<Byte> bytes) {
+        this.TBMinstructionPointers.addAll(bytes);
     }
 
     //adds an instruction at a floating point based priority index within the program
