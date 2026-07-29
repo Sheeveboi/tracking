@@ -9,6 +9,7 @@ import java.util.Map;
 public class Execution {
 
     private static boolean run = true;
+    public static boolean running = false;
     private static Map<Integer, Thread> threads = new HashMap<>();
 
     public static void setProgram(ArrayList<Byte> program) {
@@ -62,6 +63,7 @@ public class Execution {
 
         }
 
+        running = threads.isEmpty();
         return threads.isEmpty();
 
     }

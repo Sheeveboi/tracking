@@ -63,6 +63,14 @@ public class Navigation {
         lineLayer.removeShape(node);
     }
 
+    public static void clearNodes() {
+
+        nodes.clear();
+        fillLayer.shapes.clear();
+        lineLayer.shapes.clear();
+
+    }
+
     //TODO: make node types and their associated handlers object oriented
 
     public static void basicWalkHandler() {

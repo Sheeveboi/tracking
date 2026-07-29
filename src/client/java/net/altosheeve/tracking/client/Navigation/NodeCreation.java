@@ -14,7 +14,9 @@ import java.util.Scanner;
 //TODO: create dedicated package for static (non realtime) information sharing
 
 public class NodeCreation {
-    private static final File nodeFile = new File("nodeFile.NODE");
+
+    public static String current = System.getProperty("user.dir");
+    public static File nodeFile = new File(current + File.separator + "nodes/default.NODE");
 
     public static void selectNode() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
@@ -80,13 +82,15 @@ public class NodeCreation {
         JSONObject nodesJson = new JSONObject();
         nodesJson.put("nodes", nodesArray);
 
-        FileWriter writer = new FileWriter("nodeFile.NODE");
+        FileWriter writer = new FileWriter(current + File.separator + "nodes/" + nodeFile.getName());
         writer.write(nodesJson.toString());
         writer.close();
     }
 
     public static void loadNodes() throws IOException {
         if (!nodeFile.exists()) {
+            String current = System.getProperty("user.dir");
+            System.out.println(new File(current + File.separator + "nodes").mkdir());
             nodeFile.createNewFile();
             return;
         }

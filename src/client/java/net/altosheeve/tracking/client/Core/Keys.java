@@ -16,9 +16,9 @@ import java.io.IOException;
 
 public class Keys {
 
-//    public static KeyBinding nodeScreen;
-//    public static KeyBinding connectNode;
-//    public static KeyBinding selectNode;
+    public static KeyBinding nodeScreen;
+    public static KeyBinding connectNode;
+    public static KeyBinding selectNode;
 //    public static KeyBinding enableExec;
 //    public static KeyBinding loadTestProgram;
 //    public static KeyBinding mapKey;
@@ -50,25 +50,34 @@ public class Keys {
                 )
         );
 
-        /*nodeScreen = KeyBindingHelper.registerKeyBinding(
+        nodeScreen = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
                         "Add / Edit node",
                         InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_LEFT_BRACKET,
-                        "Soprano"
+                        GLFW.GLFW_KEY_BACKSLASH,
+                        category
                 )
         );
 
         connectNode = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
-                        "Connect Nodes",
+                        "Connect Node",
                         InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_RIGHT_BRACKET,
-                        "Soprano"
+                        GLFW.GLFW_KEY_SEMICOLON,
+                        category
                 )
         );
 
         selectNode = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        "Select Node",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_APOSTROPHE,
+                        category
+                )
+        );
+
+        /*selectNode = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
                         "Select Node",
                         InputUtil.Type.KEYSYM,
@@ -120,10 +129,10 @@ public class Keys {
 
 //        while(mapKey.wasPressed()) MinecraftClient.getInstance().setScreen(new Mapping(Text.of("Civ Mapping")));
 //
-//        while(connectNode.wasPressed()) NodeCreation.connectNode();
-//        while(selectNode.wasPressed())  NodeCreation.selectNode();
+        while(connectNode.wasPressed()) NodeCreation.connectNode();
+        while(selectNode.wasPressed())  NodeCreation.selectNode();
 //
-//        while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
+        while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
 //
 //        while(openTerminal.wasPressed()) MinecraftClient.getInstance().setScreen(new Terminal(Text.of("Terminal Screen")));
 

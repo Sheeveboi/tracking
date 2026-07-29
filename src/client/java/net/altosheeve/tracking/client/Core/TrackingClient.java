@@ -22,8 +22,8 @@ public class TrackingClient implements ClientModInitializer {
         Keys.registerKeys();
         //Shell.loadImplementation();
 
-        /*try                   { NodeCreation.loadNodes(); }
-        catch (IOException e) { throw new RuntimeException(e); }*/
+        try                   { NodeCreation.loadNodes(); }
+        catch (IOException e) { throw new RuntimeException(e); }
 
         try {
             Config.loadJson();
