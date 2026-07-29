@@ -4,6 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.altosheeve.tracking.client.Navigation.Node;
 import net.altosheeve.tracking.client.Shapes.Layer;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
@@ -83,6 +84,7 @@ public class Rendering {
         //TODO: implement text layers
         VertexConsumerProvider.Immediate textBuffer = Rendering.client.getBufferBuilders().getEntityVertexConsumers();
         Waypoint.drawText(textBuffer);
+        Node.drawText(textBuffer);
         textBuffer.draw();
 
         modelViewStack.popMatrix();

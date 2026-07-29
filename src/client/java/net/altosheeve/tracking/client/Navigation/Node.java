@@ -2,7 +2,13 @@ package net.altosheeve.tracking.client.Navigation;
 
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Shapes.Box;
+import net.altosheeve.tracking.client.Shapes.Transforms;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
 
 import java.util.*;
 
@@ -161,4 +167,31 @@ public class Node extends Box {
         }
 
     }
+
+    public static void drawText(VertexConsumerProvider.Immediate provider) {
+
+        if (Navigation.nodes.isEmpty()) return;
+
+        ArrayList<Node> nodesCopy = new ArrayList<>(Navigation.nodes);
+
+        nodesCopy.sort((a, b) -> Float.compare(Transforms.facingValue(b.x, b.y, b.z), Transforms.facingValue(a.x, a.y, a.z)));
+
+        Node focusedNode;
+        try {
+            focusedNode = nodesCopy.getFirst();
+        } catch (Exception e) {
+            return;
+        }
+
+        double distanceTo = Rendering.client.player.getLastRenderPos().distanceTo(new Vec3d(focusedNode.x, focusedNode.y + 1, focusedNode.z));
+
+        if (Transforms.facingValue(focusedNode.x, focusedNode.y + 1, focusedNode.z) <= 1 - .01f && distanceTo <= 60) return;
+
+        Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(focusedNode.x, focusedNode.y + 1, focusedNode.z, 0.005f, -0.005f, 0.005f);
+
+        float distanceStringWidth = -Rendering.client.textRenderer.getWidth(focusedNode.tag + ", " + focusedNode.type) / 2f;
+        Rendering.client.textRenderer.draw(Text.literal(focusedNode.tag + ", " + focusedNode.type), distanceStringWidth, 0, 0xffffffff, true, spriteTransform, provider, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
+
+    }
+
 }
