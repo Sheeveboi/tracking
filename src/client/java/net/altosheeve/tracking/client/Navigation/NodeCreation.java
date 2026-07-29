@@ -96,7 +96,7 @@ public class NodeCreation {
         }
 
         //TODO: implement targeted removal and addition for nodes so we arent rebuilding every time a change to the node system is made
-        for (Node node : Navigation.nodes) Navigation.removeNode(node);
+        Navigation.clearNodes();
 
         Scanner scanner = new Scanner(nodeFile);
         StringBuilder jsonString = new StringBuilder();

@@ -81,15 +81,16 @@ public class EditNodeScreen extends Screen {
 
             NodeCreation.nodeFile = new File(NodeCreation.current + File.separator + "nodes/" + nodefileName.getText() + ".NODE");
 
-            if (!NodeCreation.nodeFile.exists()) {
-                try {
-                    NodeCreation.nodeFile.createNewFile();
-                    NodeCreation.loadNodes();
-                    nodefileName.setMessage(Text.of("Current: " + NodeCreation.nodeFile.getName()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            try {
+
+                if (!NodeCreation.nodeFile.exists()) NodeCreation.nodeFile.createNewFile();
+
+                nodefileName.setMessage(Text.of("Current: " + NodeCreation.nodeFile.getName()));
+
+                NodeCreation.loadNodes();
+
+            } catch (IOException e) { throw new RuntimeException(e); }
+
 
         }).dimensions(10, 190, 150, 20).build();
 
