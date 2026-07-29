@@ -79,7 +79,31 @@ public class Navigation {
         ClientPlayerEntity player = client.player;
         assert player != null;
 
+        double dx = player.getX() - targetNode.x - .5;
+        double dy = player.getY() - targetNode.y;
+        double dz = player.getZ() - targetNode.z - .5;
+
+        double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+        dx /= dist;
+        dy /= dist;
+        dz /= dist;
+
+        float pitch = (float) Math.asin(-dy);
+        float yaw = (float) Math.atan2(dz, dx);
+
+        pitch = (float) (pitch * 180.0 / Math.PI);
+        yaw = (float) (yaw * 180.0 / Math.PI);
+
+        yaw += 90;
+
+        player.setPitch(-pitch);
+        player.setYaw(yaw);
+
         double velocity = player.getVelocity().length();
+
+        System.out.println("velocity: " + velocity);
+        System.out.println("threshold: " + velocityThreshold);
 
         if (velocity > velocityThreshold) return;
 
@@ -317,4 +341,5 @@ public class Navigation {
 
         }
     }
+
 }

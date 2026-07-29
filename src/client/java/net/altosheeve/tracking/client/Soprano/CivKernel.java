@@ -36,6 +36,11 @@ public class CivKernel extends BasicFunctions {
 
         Node targetNode = testing.get();
 
+        System.out.println(targetNode.tag);
+        System.out.println(targetNode.x);
+        System.out.println(targetNode.y);
+        System.out.println(targetNode.z);
+
         player.setYaw(0);
 
         ArrayList<Double> xAveragingBuffer = new ArrayList<>();
@@ -174,32 +179,17 @@ public class CivKernel extends BasicFunctions {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         assert player != null;
 
+        System.out.println("parsing integers");
+
         int blockX = Typing._PARSE_INTEGER(this);
         int blockY = Typing._PARSE_INTEGER(this);
         int blockZ = Typing._PARSE_INTEGER(this);
 
+        System.out.println("blockX: " + blockX);
+        System.out.println("blockY: " + blockY);
+        System.out.println("blockZ: " + blockZ);
+
         float tolerance = Typing._PARSE_FLOAT(this);
-
-        double dx = player.getX() - blockX - .5;
-        double dy = player.getY() - blockY;
-        double dz = player.getZ() - blockZ - .5;
-
-        double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-
-        dx /= dist;
-        dy /= dist;
-        dz /= dist;
-
-        float pitch = (float) Math.asin(-dy);
-        float yaw = (float) Math.atan2(dz, dx);
-
-        pitch = (float) (pitch * 180.0 / Math.PI);
-        yaw = (float) (yaw * 180.0 / Math.PI);
-
-        yaw += 90;
-
-        player.setPitch(-pitch);
-        player.setYaw(yaw);
 
         final boolean[] firstTick = {true};
         this.addRequest(new Request(() -> {
