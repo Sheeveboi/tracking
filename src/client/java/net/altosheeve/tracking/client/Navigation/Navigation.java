@@ -105,6 +105,20 @@ public class Navigation {
         System.out.println("velocity: " + velocity);
         System.out.println("threshold: " + velocityThreshold);
 
+        Vector3f idealVector = new Vector3f(targetNode.x, targetNode.y, targetNode.z).sub(currentNode.x, currentNode.y, currentNode.z);
+        Vector3f idealNormal = new Vector3f(idealVector.z, idealVector.y, -idealVector.x);
+
+        float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
+
+        if (abs(innacuracy) < .9) {
+
+            Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, currentNode.y, currentNode.z);
+            float deviation = idealNormal.dot(currentVector);
+
+            if (deviation > 0) client.options.rightKey.setPressed(true);
+            else client.options.leftKey.setPressed(true);
+        }
+
         if (velocity > velocityThreshold) return;
 
         client.options.jumpKey.setPressed(true);
