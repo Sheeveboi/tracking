@@ -251,7 +251,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) 0x5, origin); origin++; //set basic movement chestHandler
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.008f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -263,7 +263,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstructions(Typing._ENCODE_FLOAT(.3f), origin); origin += Typing.FLOAT_SIZE + 1; //encode door threshold
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.008f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -272,7 +272,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) 0x7, origin); origin++; //set basic movement chestHandler
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.008f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -286,7 +286,7 @@ public class CivKernel extends BasicFunctions {
                     tolerance = 2;
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.008f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
