@@ -1,5 +1,7 @@
 package net.altosheeve.tracking.client.Navigation;
 
+import net.altosheeve.tracking.client.Soprano.Typing;
+
 import java.util.ArrayList;
 
 public class ShellPrograms {
@@ -8,6 +10,17 @@ public class ShellPrograms {
 
         ArrayList<Byte> out = new ArrayList<>();
 
+        //calibrate operation
+        out.add((byte) 0x0);
+
+        //encode target node
+        out.add((byte) Typing.STATIC_EXPRESSION);
+        out.addAll(Typing._ENCODE_STRING(target.tag));
+
+        //encode calibration tolerance
+        out.add((byte) Typing.STATIC_EXPRESSION);
+        out.addAll(Typing._ENCODE_FLOAT(0.2f));
+
         return out;
 
     }
@@ -15,6 +28,17 @@ public class ShellPrograms {
     public static ArrayList<Byte> pathTo(Node target) {
 
         ArrayList<Byte> out = new ArrayList<>();
+
+        //path_to operation
+        out.add((byte) 0x2);
+
+        //encode target node
+        out.add((byte) Typing.STATIC_EXPRESSION);
+        out.addAll(Typing._ENCODE_STRING(target.tag));
+
+        //encode calibration tolerance
+        out.add((byte) Typing.STATIC_EXPRESSION);
+        out.addAll(Typing._ENCODE_FLOAT(0.7f));
 
         return out;
 
