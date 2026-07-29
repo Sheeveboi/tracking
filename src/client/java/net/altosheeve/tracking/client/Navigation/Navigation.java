@@ -107,7 +107,6 @@ public class Navigation {
 
         if (velocity > velocityThreshold) return;
 
-        client.options.useKey.setPressed(true);
         client.options.jumpKey.setPressed(true);
 
     }
