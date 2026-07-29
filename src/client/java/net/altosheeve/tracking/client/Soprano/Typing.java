@@ -19,7 +19,7 @@ public class Typing {
     public static final int ARGUMENTATIVE_EXPRESSION = 2;
     public static final int FUNCTIONAL_EXPRESSION = 3;
 
-    public static final int INTEGER_SIZE = 1;
+    public static final int INTEGER_SIZE = 4;
     public static final int FLOAT_SIZE = 4;
     public static final int NULL_SIZE = 0;
     public static final int XYZ_SIZE = 16;
@@ -73,7 +73,7 @@ public class Typing {
                 instructions.itter();
                 out = instructions.skip(length);
 
-                System.out.println(out);
+                System.out.println("out: " + out);
 
                 break;
 
@@ -98,7 +98,7 @@ public class Typing {
 
                 for (int i = 0; i < length; i++) out.add(instructions.memory.get((byte) (registry + 2 + i)));
 
-                System.out.println(out);
+                System.out.println("out: " + out);
 
                 break;
 
@@ -155,14 +155,14 @@ public class Typing {
 
                     for (int i = 2; i < length + 2; i++) out.add(instructions.exitValues.get(i));
 
-                    System.out.println(out);
+                    System.out.println("out: " + out);
 
                     break;
                 }
 
                 for (int i = 1; i < length + 1; i++) out.add(instructions.exitValues.get(i));
 
-                System.out.println(out);
+                System.out.println("out: " + out);
 
                 break;
 
@@ -179,7 +179,18 @@ public class Typing {
     }
 
     public static int _PARSE_INTEGER(BasicFunctions instructions) {
-        return _GATHER_BODY(instructions, false).getFirst();
+
+        ArrayList<Byte> intBytes = _GATHER_BODY(instructions, false);
+
+        int out = intBytes.get(3) & 0xFF |
+                (intBytes.get(2) & 0xFF) << 8 |
+                (intBytes.get(1) & 0xFF) << 16 |
+                (intBytes.get(0) & 0xFF) << 24;
+
+        System.out.println(out);
+
+        return out;
+
     }
 
     public static String _PARSE_STRING(BasicFunctions instructions) {
@@ -296,7 +307,15 @@ public class Typing {
         ArrayList<Byte> out = new ArrayList<>(); //instantiate out
 
         out.add((byte) INTEGER_IDENTIFIER); //mark as integer
-        out.add((byte) value); //encode value
+
+        byte[] byteValue = new byte[]{
+            (byte) (value >>> 24),
+            (byte) ((value << 8) >>> 24),
+            (byte) ((value << 16) >>> 24),
+            (byte) ((value << 24) >>> 24)
+        };
+
+        for (byte b : byteValue) out.add(b);
 
         return out;
 
