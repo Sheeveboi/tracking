@@ -12,6 +12,8 @@ public class Execution {
     public static boolean running = false;
     private static Map<Integer, Thread> threads = new HashMap<>();
 
+    public static void clearAll() { threads.clear(); }
+
     public static void setProgram(ArrayList<Byte> program) {
 
         threads.put(threads.size(), new Thread(

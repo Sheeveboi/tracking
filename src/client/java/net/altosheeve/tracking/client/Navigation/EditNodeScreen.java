@@ -361,6 +361,12 @@ public class EditNodeScreen extends Screen {
 
         }).dimensions(rightSide, 220, 150, 20).build();
 
+        ButtonWidget killRunning = ButtonWidget.builder(Text.of("Kill Running"), (widget) -> {
+
+            Execution.clearAll();
+
+        }).dimensions(rightSide, 250, 150, 20).build();
+
         addDrawableChild(nodeX);
         addDrawableChild(nodeY);
         addDrawableChild(nodeZ);
@@ -395,6 +401,8 @@ public class EditNodeScreen extends Screen {
         addDrawableChild(store);
         addDrawableChild(storeAll);
         addDrawableChild(make);
+
+        addDrawableChild(killRunning);
 
     }
 
