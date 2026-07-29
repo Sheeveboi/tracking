@@ -18,6 +18,7 @@ public class Navigation {
     public static Node targetNode;
 
     public static double velocityThreshold;
+    public static int velocitySteps = 0;
     public static double interactionThreshold;
 
     public static int tick;
@@ -100,28 +101,39 @@ public class Navigation {
         player.setPitch(-pitch);
         player.setYaw(yaw);
 
-        double velocity = player.getVelocity().length();
+        double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
 
         System.out.println("velocity: " + velocity);
         System.out.println("threshold: " + velocityThreshold);
 
-        Vector3f idealVector = new Vector3f(targetNode.x, targetNode.y, targetNode.z).sub(currentNode.x, currentNode.y, currentNode.z);
-        Vector3f idealNormal = new Vector3f(idealVector.z, idealVector.y, -idealVector.x);
+        if (velocity > velocityThreshold) {
+            velocitySteps = 0;
+            return;
+        }
+
+        Vector3f idealVector = new Vector3f(targetNode.x, (float) player.getY(), targetNode.z).sub(currentNode.x, (float) player.getY(), currentNode.z);
+        Vector3f idealNormal = new Vector3f(idealVector.z, (float) player.getY(), -idealVector.x);
 
         float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
 
-        if (abs(innacuracy) < .9) {
+        System.out.println("innaccuracy: " + innacuracy);
+        System.out.println("velocityTime: " + velocitySteps);
 
-            Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, currentNode.y, currentNode.z);
+        if (abs(innacuracy) < .9 && velocitySteps > 40 && velocitySteps < 100) {
+
+            Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, (float) player.getY(), currentNode.z);
             float deviation = idealNormal.dot(currentVector);
+
+            System.out.println("deviation: " + deviation);
 
             if (deviation > 0) client.options.rightKey.setPressed(true);
             else client.options.leftKey.setPressed(true);
         }
 
-        if (velocity > velocityThreshold) return;
+        if (velocitySteps < 200) client.options.jumpKey.setPressed(true);
+        else client.options.jumpKey.setPressed(false);
 
-        client.options.jumpKey.setPressed(true);
+        velocitySteps ++;
 
     }
 
