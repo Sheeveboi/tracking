@@ -3,7 +3,9 @@ package net.altosheeve.tracking.client.Core;
 import net.altosheeve.tracking.client.Networking.*;
 import net.altosheeve.tracking.client.Networking2.NetworkObjects.NetworkObject;
 import net.altosheeve.tracking.client.Networking2.NetworkObjects.Player;
+import net.altosheeve.tracking.client.Networking2.NetworkObjects.Snitch;
 import net.altosheeve.tracking.client.Networking2.Relay;
+import net.altosheeve.tracking.client.Networking2.TCPHelper;
 import net.altosheeve.tracking.client.Networking2.UDPhelper;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.entity.Entity;
@@ -25,6 +27,7 @@ public class Relaying {
     public static String host = "170.187.207.133";
     public static int port = 443;
     private static UDPhelper udpHelper;
+    private static TCPHelper tcpHelper;
     public static boolean relaying = false;
 
     public static void relayInfo() throws Exception {
@@ -153,15 +156,14 @@ public class Relaying {
 
     public static void startStream() throws IOException, InterruptedException {
 
-        //UDPClient.createConnection(host, port);
-        //UDPClient.listen(Relaying::gatherTelemetry);
-
         if (udpHelper != null) return;
 
         HttpResponse<String> req = Request.get("http://170.187.207.133:9000/connect");
 
         udpHelper = new UDPhelper(host, Relay.UDPport);
         udpHelper.startRecieving(Relaying::gatherTelemetry);
+
+        tcpHelper = TCPHelper.startClient(Relaying::gatherTelemetry, "170.187.207.133", Relay.TCPport);
 
         relaying = true;
 
@@ -184,6 +186,30 @@ public class Relaying {
                         false
                 );
 
+        }
+
+        if (networkObject.identifier == 2) {
+
+            Snitch incomingSnitch = (Snitch) networkObject;
+
+            if (Config.getWaypointAllowedEntity("players")) {
+
+                Waypoint.Type type;
+
+                if (incomingSnitch.alert) type = Waypoint.Type.SNITCH_ALERT;
+                else                      type = Waypoint.Type.SNITCH;
+
+                Waypoint.queueWaypointUpdate(
+                        incomingSnitch.x - .5f,
+                        incomingSnitch.y,
+                        incomingSnitch.z - .5f,
+                        type,
+                        incomingSnitch.uuid,
+                        incomingSnitch.username,
+                        false
+                );
+
+            }
         }
 
         Clock clock = Clock.systemDefaultZone();

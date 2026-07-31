@@ -78,14 +78,16 @@ public class Rendering {
         Waypoint.pushWaypoints();
 
         //TODO: Implement Positive and Negative drawing modes
-        for (Layer layer : Layer.layers) layer.prepare();
-        for (Layer layer : Layer.layers) layer.render();
+        try {
+            for (Layer layer : Layer.layers) layer.prepare();
+            for (Layer layer : Layer.layers) layer.render();
 
-        //TODO: implement text layers
-        VertexConsumerProvider.Immediate textBuffer = Rendering.client.getBufferBuilders().getEntityVertexConsumers();
-        Waypoint.drawText(textBuffer);
-        Node.drawText(textBuffer);
-        textBuffer.draw();
+            //TODO: implement text layers
+            VertexConsumerProvider.Immediate textBuffer = Rendering.client.getBufferBuilders().getEntityVertexConsumers();
+            Waypoint.drawText(textBuffer);
+            Node.drawText(textBuffer);
+            textBuffer.draw();
+        } catch (Exception ignored) {}
 
         modelViewStack.popMatrix();
 
