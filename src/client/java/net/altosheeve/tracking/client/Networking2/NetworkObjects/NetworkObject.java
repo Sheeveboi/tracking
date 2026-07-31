@@ -42,6 +42,11 @@ public class NetworkObject {
                     out.add(newPlayer);
                     break;
 
+                case 2 :
+                    Snitch newSnitch = new Snitch(bytes, newNetworkObject);
+                    out.add(newSnitch);
+                    break;
+
             }
 
         }
