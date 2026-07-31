@@ -46,7 +46,7 @@ public class Player extends NetworkObject {
 
     public Player(String uuid, String username, float x, float y, float z, float health) {
 
-        super(null, 1);
+        super(null, 0);
 
         this.uuid = uuid;
         this.username = username;
