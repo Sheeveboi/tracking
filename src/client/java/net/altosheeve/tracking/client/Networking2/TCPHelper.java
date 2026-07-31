@@ -51,7 +51,15 @@ public class TCPHelper {
 
                 try {
 
-                    byte[] message = Base64.getDecoder().decode(this.connection.TCPsenderClient.in.readLine());
+                    String in = this.connection.TCPsenderClient.in.readLine();
+                    System.out.println("in: " + in);
+
+                    if (in == null) return;
+
+                    byte[] message = Base64.getDecoder().decode(in);
+
+                    System.out.println("data:");
+                    System.out.println(Arrays.toString(message));
 
                     Iterator<Byte> bytes = IntStream.range(0, message.length).
                             mapToObj(i -> message[i])
