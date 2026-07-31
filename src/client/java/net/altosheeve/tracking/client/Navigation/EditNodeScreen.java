@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -191,12 +192,27 @@ public class EditNodeScreen extends Screen {
 
             if (Navigation.currentNode != null) {
 
+                int index = Navigation.nodes.indexOf(Navigation.currentNode);
+
                 for (Node node : Navigation.nodes) {
                     if (node != Navigation.currentNode && node.connections.contains(Navigation.nodes.indexOf(Navigation.currentNode)))
                         node.connections.remove((Integer) Navigation.nodes.indexOf(Navigation.currentNode));
-                    node.distanceMap.remove(Navigation.nodes.indexOf(Navigation.currentNode));
-                }
 
+                    node.distanceMap.remove(Navigation.nodes.indexOf(Navigation.currentNode));
+
+                    ArrayList<Integer> newConnections = new ArrayList<>();
+
+                    for (int connection : node.connections) {
+                        if (connection >= index) {
+                            connection --;
+                            newConnections.add(connection);
+                        }
+                        else newConnections.add(connection);
+                    }
+
+                    node.connections = newConnections;
+
+                }
 
                 Navigation.removeNode(Navigation.currentNode);
 
