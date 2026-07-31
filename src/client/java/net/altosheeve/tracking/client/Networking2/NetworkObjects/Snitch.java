@@ -16,22 +16,19 @@ public class Snitch extends NetworkObject {
     public boolean alert;
 
     public String group;
-    public String room;
 
     public Snitch(Iterator<Byte> bytes, NetworkObject incubator) {
 
         super(new Connection(), 1);
 
         this.username = Typing.decodeString(bytes);
+        this.group    = Typing.decodeString(bytes);
 
         this.x = Typing.decodeFloat(bytes);
         this.y = Typing.decodeFloat(bytes);
         this.z = Typing.decodeFloat(bytes);
 
         this.alert = Typing.decodeInt(bytes) == 1;
-
-        this.room  = Typing.decodeString(bytes);
-        this.group = Typing.decodeString(bytes);
 
         this.identifier = 2;
         this.uuid = incubator.uuid;
@@ -68,6 +65,7 @@ public class Snitch extends NetworkObject {
     public byte[] generateOut() {
 
         byte[] username = Typing.encodeString(this.username);
+        byte[] group    = Typing.encodeString(this.group);
 
         byte[] x = Typing.encodeFloat(this.x);
         byte[] y = Typing.encodeFloat(this.y);
@@ -78,12 +76,13 @@ public class Snitch extends NetworkObject {
         if (this.alert) alert = Typing.encodeInt(1);
         else            alert = Typing.encodeInt(0);
 
-        byte[] room  = Typing.encodeString(this.room);
-        byte[] group = Typing.encodeString(this.group);
+        byte[] body = Typing.combineBuffers(username, group, x, y, z, alert);
 
-        byte[] body = Typing.combineBuffers(username, x, y, z, alert, room, group);
+        byte[] out = createFullObjectData(2, this.uuid, body, this.timestamp);
 
-        return createFullObjectData(2, this.uuid, body, this.timestamp);
+        System.out.println("snitch out: " + Arrays.toString(out));
+
+        return out;
 
     }
 }
