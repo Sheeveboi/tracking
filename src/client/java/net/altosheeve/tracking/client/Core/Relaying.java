@@ -171,6 +171,8 @@ public class Relaying {
 
     private static void gatherTelemetry(NetworkObject networkObject) throws Exception {
 
+        if (Rendering.client.player == null) return;
+
         if (networkObject.identifier == 1)  {
 
             Player incomingPlayer = (Player) networkObject;
