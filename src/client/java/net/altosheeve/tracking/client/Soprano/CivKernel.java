@@ -1082,7 +1082,6 @@ public class CivKernel extends BasicFunctions {
         this.registerInstruction((byte) 0x4, this::_SET_CURRENT_NODE);
 
         this.registerInstruction((byte) 0x5, this::_SET_BASIC_MOVEMENT_HANDLER);
-        this.registerInstruction((byte) 0x6, this::_SET_DOOR_HANDLER);
         this.registerInstruction((byte) 0x7, this::_SET_ICEROAD_HANDLER);
         this.registerInstruction((byte) 0x8, this::_SET_INTERACTION_HANDLER);
 

@@ -3,6 +3,7 @@ package net.altosheeve.tracking.client.Networking2.NetworkObjects;
 import net.altosheeve.tracking.client.Networking2.Connection;
 import net.altosheeve.tracking.client.Networking2.Typing;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class Snitch extends NetworkObject {
@@ -39,6 +40,14 @@ public class Snitch extends NetworkObject {
 
         this.data = generateOut();
 
+        System.out.println(this.uuid);
+        System.out.println(this.timestamp);
+        System.out.println(this.username);
+
+        System.out.println(this.x);
+        System.out.println(this.y);
+        System.out.println(this.z);
+
     }
 
     public Snitch(String uuid, String username, float x, float y, float z, boolean alert, String room, String group) {
@@ -54,7 +63,6 @@ public class Snitch extends NetworkObject {
 
         this.alert = alert;
 
-        this.room  = room;
         this.group = group;
 
         this.data = generateOut();

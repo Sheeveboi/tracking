@@ -17,7 +17,6 @@ public class Node extends Box {
     public enum NodeType {
         NORMAL,
         ICEROAD,
-        DOOR,
         INTERACTABLE
     }
 
@@ -39,12 +38,6 @@ public class Node extends Box {
                 this.r = .5f;
                 this.g = .5f;
                 this.b = 1f;
-            }
-
-            case DOOR -> {
-                this.r = 0f;
-                this.g = 1f;
-                this.b = 0f;
             }
 
             case INTERACTABLE -> {
