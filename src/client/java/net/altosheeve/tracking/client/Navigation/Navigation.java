@@ -186,15 +186,6 @@ public class Navigation {
         }
 
         if (player.getVelocity().length() < velocityThreshold) {
-            double dx = player.getX() - targetNode.x - .5;
-            double dz = player.getZ() - targetNode.z - .5;
-
-            double dist = Math.sqrt(dx*dx + dz*dz);
-
-            dx /= dist;
-            dz /= dist;
-
-            float yaw = (float) Math.atan2(dz, dx);
 
             boolean direction = player.getYaw() - yaw < 0;
 
