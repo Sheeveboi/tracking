@@ -119,6 +119,8 @@ public class Navigation {
         System.out.println("innaccuracy: " + innacuracy);
         System.out.println("velocityTime: " + velocitySteps);
 
+        if (currentNode.type == Node.NodeType.INTERACTABLE) client.options.useKey.setPressed(true);
+
         if (abs(innacuracy) < .9 && velocitySteps > 40 && velocitySteps < 100) {
 
             Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, (float) player.getY(), currentNode.z);
