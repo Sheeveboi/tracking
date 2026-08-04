@@ -216,8 +216,10 @@ public class CivKernel extends BasicFunctions {
     }
 
     public void _PATH_TO() {
+
         String targetTag = Typing._PARSE_STRING(this);
         float tolerance = Typing._PARSE_FLOAT(this);
+        float originalTolerance = tolerance;
 
         int origin = this.programPointer + 1;
 
@@ -234,6 +236,8 @@ public class CivKernel extends BasicFunctions {
 
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
             this.insertInstructions(Typing._ENCODE_INTEGER(i), origin); origin += Typing.INTEGER_SIZE + 1; //encode index
+
+            tolerance = originalTolerance;
 
             switch (node.type) {
                 case NORMAL:
