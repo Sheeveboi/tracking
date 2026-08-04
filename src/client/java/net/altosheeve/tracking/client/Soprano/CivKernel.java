@@ -245,18 +245,6 @@ public class CivKernel extends BasicFunctions {
 
                     break;
 
-                case DOOR:
-
-                    this.insertInstruction((byte) 0x6, origin); origin++; //set basic movement chestHandler
-
-                    this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.3f), origin); origin += Typing.FLOAT_SIZE + 1; //encode door threshold
-
-                    this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
-
-                    break;
-
                 case ICEROAD:
 
                     this.insertInstruction((byte) 0x7, origin); origin++; //set basic movement chestHandler
@@ -325,12 +313,6 @@ public class CivKernel extends BasicFunctions {
     public void _SET_BASIC_MOVEMENT_HANDLER() {
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
         Navigation.handler = Navigation::basicWalkHandler;
-    }
-
-    public void _SET_DOOR_HANDLER() {
-        Navigation.interactionThreshold = Typing._PARSE_FLOAT(this);
-        Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
-        Navigation.handler = Navigation::doorHandler;
     }
 
     public void _SET_ICEROAD_HANDLER() {
