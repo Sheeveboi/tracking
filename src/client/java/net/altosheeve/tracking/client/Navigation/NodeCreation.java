@@ -126,6 +126,9 @@ public class NodeCreation {
 
             Navigation.addNode(newNode);
         }
+
+        Navigation.calculateAllNodes();
+
     }
 
 
