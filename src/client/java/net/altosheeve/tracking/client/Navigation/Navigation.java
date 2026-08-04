@@ -155,6 +155,27 @@ public class Navigation {
 
         float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
 
+        double dx = player.getX() - targetNode.x - .5;
+        double dy = player.getY() - targetNode.y;
+        double dz = player.getZ() - targetNode.z - .5;
+
+        double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+        dx /= dist;
+        dy /= dist;
+        dz /= dist;
+
+        float pitch = (float) Math.asin(-dy);
+        float yaw = (float) Math.atan2(dz, dx);
+
+        pitch = (float) (pitch * 180.0 / Math.PI);
+        yaw = (float) (yaw * 180.0 / Math.PI);
+
+        yaw += 90;
+
+        player.setPitch(-pitch);
+        player.setYaw(yaw);
+
         if (abs(innacuracy) < .9) {
 
             Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, currentNode.y, currentNode.z);
