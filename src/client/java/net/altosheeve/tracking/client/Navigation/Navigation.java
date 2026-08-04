@@ -226,11 +226,12 @@ public class Navigation {
     }
 
     public static void interactionHandler() {
+
         MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
         assert player != null;
 
-        double velocity = player.getVelocity().length();
+        basicWalkHandler();
 
         if (player.getLastRenderPos().distanceTo(new Vec3d(targetNode.x + .5, targetNode.y + .5, targetNode.z + .5)) < interactionThreshold) {
 
@@ -263,23 +264,6 @@ public class Navigation {
         } else {
             client.options.useKey.setPressed(false);
         }
-
-        if (velocity > velocityThreshold) return;
-
-        double dx = player.getX() - targetNode.x - .5;
-        double dz = player.getZ() - targetNode.z - .5;
-
-        double dist = Math.sqrt(dx*dx + dz*dz);
-
-        dx /= dist;
-        dz /= dist;
-
-        float yaw = (float) Math.atan2(dz, dx);
-
-        boolean direction = player.getYaw() - yaw < 0;
-
-        if (direction) client.options.rightKey.setPressed(true);
-        else client.options.leftKey.setPressed(true);
     }
 
     public static void calculateAllNodes() { //potentially expensive with larger systems of nodes. only perform when necessary
