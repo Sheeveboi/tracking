@@ -19,7 +19,7 @@ public class ShellPrograms {
 
         //encode calibration tolerance
         out.add((byte) Typing.STATIC_EXPRESSION);
-        out.addAll(Typing._ENCODE_FLOAT(0.2f));
+        out.addAll(Typing._ENCODE_FLOAT(0.02f));
 
         return out;
 
