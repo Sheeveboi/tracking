@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Soprano.CivKernel;
 import net.altosheeve.tracking.client.Soprano.Execution;
 import net.altosheeve.tracking.client.Soprano.Shell;
 import net.altosheeve.tracking.client.Navigation.Navigation;
@@ -38,6 +39,8 @@ public class TrackingClient implements ClientModInitializer {
             tick = tick % 100;
             Navigation.tick = tick;
 
+            CivKernel.newTick = true;
+
             try {
 
                 Relaying.relayInfo();
@@ -49,6 +52,16 @@ public class TrackingClient implements ClientModInitializer {
             }
         });
 
-        WorldRenderEvents.BEFORE_TRANSLUCENT.register(Rendering::render3d);
+        WorldRenderEvents.BEFORE_TRANSLUCENT.register((context -> {
+
+            try {
+                Execution.execute();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            Rendering.render3d(context);
+
+        }));
     }
 }

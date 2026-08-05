@@ -21,6 +21,21 @@ public class CivKernel extends BasicFunctions {
 
     private static final Logger log = LoggerFactory.getLogger(CivKernel.class);
 
+    public static boolean newTick = false;
+
+    public static boolean getNewTick() {
+
+        if (!newTick) return false;
+
+        else {
+
+            newTick = false;
+            return true;
+
+        }
+
+    }
+
     public void _CALIBRATE() {
         System.out.println("Calibrating");
 
@@ -55,6 +70,8 @@ public class CivKernel extends BasicFunctions {
         final int[] zCorrectionAttempts = {10};
 
         this.addRequest(new Request(() -> {
+
+            if (!getNewTick()) return false;
 
             Navigation.resetControls();
 
@@ -194,6 +211,8 @@ public class CivKernel extends BasicFunctions {
         final boolean[] firstTick = {true};
         this.addRequest(new Request(() -> {
 
+            if (!getNewTick()) return false;
+
             Navigation.resetControls();
 
             boolean out = player.getLastRenderPos().distanceTo(new Vec3d(blockX + .5, blockY + .5, blockZ + .5)) < tolerance;
@@ -272,6 +291,15 @@ public class CivKernel extends BasicFunctions {
 
                     break;
 
+                case LODESTONE:
+
+                    this.insertInstruction((byte) 0x6, origin); origin++; //set basic movement chestHandler
+
+                    this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+
+                    break;
+
             }
 
             this.insertInstruction((byte) 0x1, origin); origin++; //walk to
@@ -328,6 +356,11 @@ public class CivKernel extends BasicFunctions {
         Navigation.interactionThreshold = Typing._PARSE_FLOAT(this);
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
         Navigation.handler = Navigation::interactionHandler;
+    }
+
+    public void _SET_LODESTONE_HANDLER() {
+        Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
+        Navigation.handler = Navigation::lodestoneHandler;
     }
 
     public void _EXIT_INTERACTION() {
@@ -1086,6 +1119,7 @@ public class CivKernel extends BasicFunctions {
         this.registerInstruction((byte) 0x4, this::_SET_CURRENT_NODE);
 
         this.registerInstruction((byte) 0x5, this::_SET_BASIC_MOVEMENT_HANDLER);
+        this.registerInstruction((byte) 0x6, this::_SET_LODESTONE_HANDLER);
         this.registerInstruction((byte) 0x7, this::_SET_ICEROAD_HANDLER);
         this.registerInstruction((byte) 0x8, this::_SET_INTERACTION_HANDLER);
 
