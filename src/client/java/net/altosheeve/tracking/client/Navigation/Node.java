@@ -17,7 +17,8 @@ public class Node extends Box {
     public enum NodeType {
         NORMAL,
         ICEROAD,
-        INTERACTABLE
+        INTERACTABLE,
+        LODESTONE
     }
 
     public String tag;
@@ -44,6 +45,12 @@ public class Node extends Box {
                 this.r = 1f;
                 this.g = 0f;
                 this.b = 0f;
+            }
+
+            case LODESTONE -> {
+                this.r = .5f;
+                this.g = .5f;
+                this.b = 0;
             }
         }
     }
