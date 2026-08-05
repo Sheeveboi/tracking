@@ -5,8 +5,10 @@ import net.altosheeve.tracking.client.Shapes.Layer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.*;
 
@@ -19,7 +21,10 @@ public class Navigation {
 
     public static double velocityThreshold;
     public static int velocitySteps = 0;
+    private static boolean eating = false;
+    private static boolean interacted = false;
     public static double interactionThreshold;
+
 
     public static int tick;
     public static int deepThreshold = 3;
@@ -121,6 +126,19 @@ public class Navigation {
 
         if (currentNode.type == Node.NodeType.INTERACTABLE) client.options.useKey.setPressed(true);
 
+        if (velocitySteps > 10 && velocitySteps < 20) {
+
+            player.setPitch(55);
+            client.options.useKey.setPressed(true);
+
+        }
+
+        if (velocitySteps > 20 && velocitySteps < 50) {
+
+            client.options.sneakKey.setPressed(true);
+
+        }
+
         if (abs(innacuracy) < .9 && velocitySteps > 40 && velocitySteps < 100) {
 
             Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, (float) player.getY(), currentNode.z);
@@ -150,61 +168,82 @@ public class Navigation {
         else client.options.jumpKey.setPressed(false);
         client.options.sprintKey.setPressed(true);
 
-        Vector3f idealVector = new Vector3f(targetNode.x, targetNode.y, targetNode.z).sub(currentNode.x, currentNode.y, currentNode.z);
-        Vector3f idealNormal = new Vector3f(idealVector.z, idealVector.y, -idealVector.x);
+        Vector3f idealVector = new Vector3f(targetNode.x, 0, targetNode.z).sub(currentNode.x, 0, targetNode.z);
+        Vector3f idealNormal = new Vector3f(idealVector.z, 0, -idealVector.x);
 
-        float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
+        Vector3f currentNodeVector = new Vector3f((float) player.getX(), 0, (float) player.getZ()).sub(targetNode.x, 0, targetNode.z);
 
-        double dx = player.getX() - targetNode.x - .5;
-        double dy = player.getY() - targetNode.y;
-        double dz = player.getZ() - targetNode.z - .5;
+        currentNodeVector.normalize();
+        idealVector.normalize();
+        idealNormal.normalize();
 
-        double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        float innacuracy = idealVector.dot(currentNodeVector);
+        float deviation = idealNormal.dot(currentNodeVector);
 
-        dx /= dist;
-        dy /= dist;
-        dz /= dist;
+        System.out.println("ideal vector: " + idealVector);
+        System.out.println("ideal normal: " + idealNormal);
+        System.out.println("current vector: " + currentNodeVector);
 
-        float pitch = (float) Math.asin(-dy);
-        float yaw = (float) Math.atan2(dz, dx);
-
-        pitch = (float) (pitch * 180.0 / Math.PI);
-        yaw = (float) (yaw * 180.0 / Math.PI);
-
-        yaw += 90;
-
-        player.setPitch(-pitch);
-        player.setYaw(yaw);
+        System.out.println("innaccuracy: " + innacuracy);
+        System.out.println("deviation: " + deviation);
 
         if (abs(innacuracy) < .9) {
 
-            Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, currentNode.y, currentNode.z);
-            float deviation = idealNormal.dot(currentVector);
+            if (deviation > 90) client.options.leftKey.setPressed(true);
+            else client.options.rightKey.setPressed(true);
 
-            if (deviation > 0) client.options.rightKey.setPressed(true);
-            else client.options.leftKey.setPressed(true);
-        }
-
-        if (player.getVelocity().length() < velocityThreshold) {
-
-            boolean direction = player.getYaw() - yaw < 0;
-
-            if (direction) client.options.rightKey.setPressed(true);
-            else client.options.leftKey.setPressed(true);
         }
 
         if (player.getHungerManager().getFoodLevel() < 17) {
-            if (!Objects.equals(player.getInventory().getStack(0).getItemName().getString(), "Baked Potato")) {
+            if (!Objects.equals(player.getInventory().getStack(player.getInventory().getSelectedSlot()).getItemName().getString(), "Baked Potato") && !eating) {
                 for (int slot = 0; slot < 36; slot++) {
                     if (Objects.equals(player.getInventory().getStack(slot).getItemName().getString(), "Baked Potato")) {
+
+                        player.playerScreenHandler.enableSyncing();
+                        player.playerScreenHandler.syncState();
+
+                        client.interactionManager.clickSlot(
+                                player.playerScreenHandler.syncId,
+                                slot,
+                                player.getInventory().getSelectedSlot(),
+                                SlotActionType.SWAP,
+                                player
+                        );
+
                         player.getInventory().setSelectedSlot(0);
-                        player.getInventory().swapSlotWithHotbar(slot);
+
                         break;
+
                     }
                 }
             }
+
             client.options.useKey.setPressed(true);
+
+            eating = true;
+
         }
+
+        else eating = false;
+
+        double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
+
+        if (velocity > velocityThreshold) {
+
+            velocitySteps = 0;
+            return;
+
+        }
+
+        if (velocitySteps > 20 && velocitySteps < 40) {
+
+            player.setPitch(55);
+            client.options.useKey.setPressed(true);
+
+        }
+
+        velocitySteps ++;
+
     }
 
     public static void interactionHandler() {
@@ -215,7 +254,7 @@ public class Navigation {
 
         basicWalkHandler();
 
-        if (player.getLastRenderPos().distanceTo(new Vec3d(targetNode.x + .5, targetNode.y + .5, targetNode.z + .5)) < interactionThreshold) {
+        if (player.getLastRenderPos().distanceTo(new Vec3d(targetNode.x + .5, targetNode.y + .5, targetNode.z + .5)) < interactionThreshold && !interacted) {
 
             System.out.println("entering interactable");
 
@@ -242,10 +281,31 @@ public class Navigation {
 
             client.options.useKey.setPressed(true);
 
+            interacted = true;
 
         } else {
+            interacted = false;
             client.options.useKey.setPressed(false);
         }
+    }
+
+    public static void lodestoneHandler() {
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        assert player != null;
+
+        if (targetNode.type != Node.NodeType.LODESTONE) basicWalkHandler();
+
+        else {
+
+            player.setPitch(90);
+
+            if (targetNode.y > currentNode.y) client.options.useKey.setPressed(true);
+            else client.options.attackKey.setPressed(true);
+
+        }
+
     }
 
     public static void calculateAllNodes() { //potentially expensive with larger systems of nodes. only perform when necessary
@@ -310,7 +370,7 @@ public class Navigation {
 
                         testNode = instance;
 
-                        System.out.println(testNode.distanceMap.get(nodes.indexOf(targetNode)));
+                        //System.out.println("distance map: " + testNode.distanceMap);
 
                         break;
 
@@ -324,11 +384,13 @@ public class Navigation {
             //if all the nodes in the testNode's connections have been tested already, jump back one node
             if (deadEnd) {
 
-                closestApproachOut.removeLast();
+                if (closestApproachOut.size() != 1) closestApproachOut.removeLast();
 
                 testNode = nodes.get(closestApproachOut.getLast());
 
             }
+
+            System.out.println(closestApproachOut);
 
         }
     }
