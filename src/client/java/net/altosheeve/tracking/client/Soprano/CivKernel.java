@@ -224,6 +224,30 @@ public class CivKernel extends BasicFunctions {
             else MinecraftClient.getInstance().options.forwardKey.setPressed(true);
 
             if (!firstTick[0] || out) Navigation.handler.cb();
+            else {
+
+                double dx = player.getX() - Navigation.targetNode.x - .5;
+                double dy = player.getY() - Navigation.targetNode.y;
+                double dz = player.getZ() - Navigation.targetNode.z - .5;
+
+                double dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+                dx /= dist;
+                dy /= dist;
+                dz /= dist;
+
+                float pitch = (float) Math.asin(-dy);
+                float yaw = (float) Math.atan2(dz, dx);
+
+                pitch = (float) (pitch * 180.0 / Math.PI);
+                yaw = (float) (yaw * 180.0 / Math.PI);
+
+                yaw += 90;
+
+                player.setPitch(-pitch);
+                player.setYaw(yaw);
+
+            }
 
             firstTick[0] = false;
 
