@@ -159,7 +159,7 @@ public class Navigation {
         }
 
         if (velocitySteps < 200) client.options.jumpKey.setPressed(true);
-        else client.options.jumpKey.setPressed(false);
+        else velocitySteps = 0;
 
         velocitySteps ++;
 
