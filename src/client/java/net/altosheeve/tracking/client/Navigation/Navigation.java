@@ -126,9 +126,16 @@ public class Navigation {
 
         if (currentNode.type == Node.NodeType.INTERACTABLE) client.options.useKey.setPressed(true);
 
-        if (velocitySteps > 10 && velocitySteps < 20) {
+        if (velocitySteps > 10 && velocitySteps < 15) {
 
             player.setPitch(55);
+            client.options.useKey.setPressed(true);
+
+        }
+
+        if (velocitySteps > 15 && velocitySteps < 20) {
+
+            player.setPitch(60);
             client.options.useKey.setPressed(true);
 
         }
