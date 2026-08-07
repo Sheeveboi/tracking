@@ -237,7 +237,7 @@ public class Navigation {
 
         double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
 
-        if (velocity > velocityThreshold) {
+        if (velocity > velocityThreshold || eating) {
 
             velocitySteps = 0;
             return;
@@ -250,6 +250,7 @@ public class Navigation {
             client.options.useKey.setPressed(true);
 
         }
+
 
         velocitySteps ++;
 
