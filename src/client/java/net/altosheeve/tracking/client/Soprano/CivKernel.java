@@ -299,6 +299,8 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
                     this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
+                    tolerance = 1;
+
                     break;
 
                 case INTERACTABLE:
@@ -338,7 +340,7 @@ public class CivKernel extends BasicFunctions {
             this.insertInstructions(Typing._ENCODE_INTEGER((int) node.z), origin); origin += Typing.INTEGER_SIZE + 1;
 
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++;
-            this.insertInstructions(Typing._ENCODE_FLOAT(tolerance), origin); origin += Typing.FLOAT_SIZE + 1; //set door threshold
+            this.insertInstructions(Typing._ENCODE_FLOAT(tolerance), origin); origin += Typing.FLOAT_SIZE + 1; //set tolerace
 
             this.insertInstruction((byte) 0x4, origin); origin++; //set as current node
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++;
