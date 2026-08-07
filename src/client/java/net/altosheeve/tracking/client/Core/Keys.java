@@ -29,6 +29,7 @@ public class Keys {
 
     public static KeyBinding waypointScreen;
     public static KeyBinding debugScreen;
+    public static KeyBinding placeNextNode;
 
     public static void registerKeys() {
 
@@ -54,7 +55,7 @@ public class Keys {
                 new KeyBinding(
                         "Add / Edit node",
                         InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_BACKSLASH,
+                        GLFW.GLFW_KEY_COMMA,
                         category
                 )
         );
@@ -77,49 +78,14 @@ public class Keys {
                 )
         );
 
-        /*selectNode = KeyBindingHelper.registerKeyBinding(
+        placeNextNode = KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(
-                        "Select Node",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_BACKSLASH,
-                        "Soprano"
-                )
-        );
-        enableExec = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        "Enable Execution",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_APOSTROPHE,
-                        "Soprano"
-                )
-        );
-
-        mapKey = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        "Mapping Key",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_SEMICOLON,
-                        "Soprano"
-                )
-        );
-
-        loadTestProgram = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        "Load Test Program",
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_EQUAL,
-                        "Soprano"
-                )
-        );
-
-        openTerminal = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        "Open Terminal",
+                        "Place Next Node",
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_PERIOD,
-                        "Soprano"
+                        category
                 )
-        );*/
+        );
     }
 
     public static void handleKeys() throws IOException {
@@ -133,6 +99,8 @@ public class Keys {
         while(selectNode.wasPressed())  NodeCreation.selectNode();
 //
         while(nodeScreen.wasPressed()) MinecraftClient.getInstance().setScreen(new EditNodeScreen(Text.of("Node Screen")));
+
+        while(placeNextNode.wasPressed()) NodeCreation.addNextNode();
 //
 //        while(openTerminal.wasPressed()) MinecraftClient.getInstance().setScreen(new Terminal(Text.of("Terminal Screen")));
 

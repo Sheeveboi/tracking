@@ -1,7 +1,9 @@
 package net.altosheeve.tracking.client.Navigation;
 
+import net.altosheeve.tracking.client.Core.Rendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.text.StyleSpriteSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -131,5 +133,50 @@ public class NodeCreation {
 
     }
 
+    public static void addNextNode() {
+
+        ClientPlayerEntity player = Rendering.client.player;
+
+        if (Navigation.currentNode == null) {
+
+            Node newNode = new Node(
+
+                    player.getBlockX(),
+                    player.getBlockY(),
+                    player.getBlockZ(),
+
+                    Node.NodeType.NORMAL,
+                    "Name me!"
+
+            );
+
+            Navigation.addNode(newNode);
+
+            Navigation.currentNode = newNode;
+
+            return;
+
+        }
+
+        Node newNode = new Node(
+
+                player.getBlockX(),
+                player.getBlockY(),
+                player.getBlockZ(),
+
+                Navigation.currentNode.type,
+                Navigation.currentNode.tag
+
+        );
+
+        Navigation.addNode(newNode);
+
+        newNode.connections.add(Navigation.nodes.indexOf(Navigation.currentNode));
+
+        Navigation.currentNode.connections.add(Navigation.nodes.indexOf(newNode));
+
+        Navigation.currentNode = newNode;
+
+    }
 
 }
