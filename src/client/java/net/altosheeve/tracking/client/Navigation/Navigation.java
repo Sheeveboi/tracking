@@ -209,6 +209,8 @@ public class Navigation {
                         player.playerScreenHandler.enableSyncing();
                         player.playerScreenHandler.syncState();
 
+                        player.setPitch(0);
+
                         client.interactionManager.clickSlot(
                                 player.playerScreenHandler.syncId,
                                 slot,
