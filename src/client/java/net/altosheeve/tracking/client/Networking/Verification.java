@@ -34,11 +34,11 @@ public class Verification {
     private static File tokenFile = new File("token.file");
     public static String accessToken = "";
     private static String refreshToken = "";
-    private static String sessionToken = "";
+    public static String sessionToken = "";
 
     private static final String headers = "{\"Content-Type\": \"application/x-www-form-urlencoded\"}";
     private static final String endpoint = "https://discord.com/api/v10";
-    public  static final String caligulaEndpoint = "97.199.224.87";
+    public  static final String caligulaEndpoint = "api.nwc.one";
     private static final String id = "1361095535217479772";
     private static final String secret = "pB5g-nwPn76acnJCUxCe8zZHfgCx1TWL";
     private static final String verifyURL = "https://discord.com/oauth2/authorize?client_id=1361095535217479772&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000&scope=identify";
@@ -136,10 +136,16 @@ public class Verification {
 
         HttpResponse<String> caligulaVerificationResponse = Request.post("http://" + caligulaEndpoint + "/verify?token=%s".formatted(accessToken), "{'token_type' : 'Bearer'}");
 
+        System.out.println(caligulaVerificationResponse.statusCode());
+
         if (caligulaVerificationResponse.statusCode() != 200) {
             System.out.println("error in verification (Caligula did not return 200)");
             return;
         }
+
+        sessionToken = caligulaVerificationResponse.headers().map().get("sessionToken").getFirst();
+
+        System.out.println(sessionToken);
 
         verified = true;
 

@@ -158,12 +158,14 @@ public class Relaying {
 
         if (udpHelper != null) return;
 
-        HttpResponse<String> req = Request.get("http://170.187.207.133:9000/connect");
+        String headers = "{'sessionToken' : " + Verification.sessionToken + "}";
+
+        HttpResponse<String> req = Request.get("http://" + host + ":9000/connect", headers);
 
         udpHelper = new UDPhelper(host, Relay.UDPport);
         udpHelper.startRecieving(Relaying::gatherTelemetry);
 
-        tcpHelper = TCPHelper.startClient(Relaying::gatherTelemetry, "170.187.207.133", Relay.TCPport);
+        //tcpHelper = TCPHelper.startClient(Relaying::gatherTelemetry, "170.187.207.133", Relay.TCPport);
 
         relaying = true;
 
@@ -191,6 +193,8 @@ public class Relaying {
         }
 
         if (networkObject.identifier == 2) {
+
+            System.out.println("snitch!");
 
             Snitch incomingSnitch = (Snitch) networkObject;
 

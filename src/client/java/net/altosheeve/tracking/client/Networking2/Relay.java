@@ -20,13 +20,15 @@ public class Relay {
     public static int TCPport = 9001;
     public static int UDPport = 9002;
 
+    public static String oppwatchHost = "170.187.207.133";
+
     public static UDPhelper udpListener;
 
     public static void listen() throws IOException {
 
         RestServer restServer = new RestServer(HTTPPort);
 
-        udpListener = new UDPhelper("170.187.207.133", UDPport);
+        udpListener = new UDPhelper(oppwatchHost, UDPport);
 
         udpListener.startRecieving(Relay::addGlobalObject);
 
