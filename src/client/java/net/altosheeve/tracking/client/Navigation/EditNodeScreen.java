@@ -13,7 +13,6 @@ import net.minecraft.text.Text;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 //TODO: this is short term but this screen could def be improved
@@ -29,30 +28,47 @@ public class EditNodeScreen extends Screen {
 
         TextWidget errorField = new TextWidget(10, 1, 500, 20, Text.of(""), this.textRenderer);
 
-        TextWidget nodeXName = new TextWidget(95, 20, 100, 20, Text.of("Node X"), this.textRenderer);
-        TextWidget nodeYName = new TextWidget(95, 40, 100, 20, Text.of("Node Y"), this.textRenderer);
-        TextWidget nodeZName = new TextWidget(95, 60, 100, 20, Text.of("Node Z"), this.textRenderer);
+        TextWidget nodeXLabel = new TextWidget(105, 20, 100, 20, Text.of("Node X"), this.textRenderer);
+        TextWidget nodeYLabel = new TextWidget(105, 40, 100, 20, Text.of("Node Y"), this.textRenderer);
+        TextWidget nodeZLabel = new TextWidget(105, 60, 100, 20, Text.of("Node Z"), this.textRenderer);
 
-        TextWidget nodeTypeName = new TextWidget(95, 80, 100, 20, Text.of("Node Type"), this.textRenderer);
-        TextWidget nodeNameName = new TextWidget(95, 100, 100, 20, Text.of("Node Name"), this.textRenderer);
+        TextWidget nodeTypeLabel = new TextWidget(105, 105, 100, 20, Text.of("Node Type"), this.textRenderer);
+        TextWidget nodeNameLabel = new TextWidget(105, 125, 100, 20, Text.of("Node Tag"), this.textRenderer);
+        TextWidget waitInLabel = new TextWidget(105, 145, 100, 20, Text.of("Wait In"), this.textRenderer);
+        TextWidget waitOutLabel = new TextWidget(105, 165, 100, 20, Text.of("Wait Out"), this.textRenderer);
 
         TextFieldWidget nodeX = new TextFieldWidget(this.textRenderer, 10, 20, 150, 20, Text.of("Node X"));
         TextFieldWidget nodeY = new TextFieldWidget(this.textRenderer, 10, 40, 150, 20, Text.of("Node Y"));
         TextFieldWidget nodeZ = new TextFieldWidget(this.textRenderer, 10, 60, 150, 20, Text.of("Node Z"));
 
-        TextFieldWidget type = new TextFieldWidget(this.textRenderer, 10, 80, 150, 20, Text.of("Node Type"));
-        TextFieldWidget name = new TextFieldWidget(this.textRenderer, 10, 100, 150, 20, Text.of("Node Name"));
+        TextFieldWidget type = new TextFieldWidget(this.textRenderer, 10, 105, 150, 20, Text.of("Node Type"));
+        TextFieldWidget name = new TextFieldWidget(this.textRenderer, 10, 125, 150, 20, Text.of("Node Tag"));
+        TextFieldWidget waitIn = new TextFieldWidget(this.textRenderer, 10, 145, 150, 20, Text.of("Wait In"));
+        TextFieldWidget waitOut = new TextFieldWidget(this.textRenderer, 10, 165, 150, 20, Text.of("Wait Out"));
 
-        TextFieldWidget nodefileName = new TextFieldWidget(this.textRenderer, 10, 170, 150, 20, Text.of("File Name"));
-        TextWidget currentNodefile = new TextWidget(10, 230, 150, 20, Text.of("Current: " + NodeCreation.nodeFile.getName()), this.textRenderer);
+        TextFieldWidget lookYaw = new TextFieldWidget(this.textRenderer, 160, 20, 150, 20, Text.of("Look Yaw"));
+        TextFieldWidget lookPitch = new TextFieldWidget(this.textRenderer, 160, 40, 150, 20, Text.of("Look Pitch"));
+
+        TextFieldWidget velocityThreshold = new TextFieldWidget(this.textRenderer, 160, 105, 150, 20, Text.of("Vel. Thresh"));
+        TextFieldWidget innacuracyThreshold = new TextFieldWidget(this.textRenderer, 160, 125, 150, 20, Text.of("Inc. Thresh"));
+        TextFieldWidget tolerance = new TextFieldWidget(this.textRenderer, 160, 145, 150, 20, Text.of("Tol"));
+
+        TextWidget lookYawLabel = new TextWidget(245, 20, 150, 20, Text.of("Look Yaw"), this.textRenderer);
+        TextWidget lookPitchLabel = new TextWidget(245, 40, 150, 20, Text.of("Look Pitch"), this.textRenderer);
+        TextWidget velocityThresholdLabel = new TextWidget(245, 105, 150, 20, Text.of("Vel. Thresh"), this.textRenderer);
+        TextWidget innacuracyThresholdLabel = new TextWidget(245, 125, 150, 20, Text.of("Inc. Thresh"), this.textRenderer);
+        TextWidget toleranceLabel = new TextWidget(245, 145, 150, 20, Text.of("Tolerance"), this.textRenderer);
+
+        TextFieldWidget nodefileName = new TextFieldWidget(this.textRenderer, 10, 200, 150, 20, Text.of("File Name"));
+        TextWidget currentNodefile = new TextWidget(10, 260, 150, 20, Text.of("Current: " + NodeCreation.nodeFile.getName()), this.textRenderer);
 
         int rightSide = this.width - 160;
 
         TextFieldWidget nodeTag = new TextFieldWidget(this.textRenderer, rightSide, 60, 150, 20, Text.of("Node Selection"));
         TextFieldWidget itemTag = new TextFieldWidget(this.textRenderer, rightSide, 80, 150, 20, Text.of("Item Selection"));
 
-        TextWidget nodeTagName = new TextWidget(rightSide + 85, 60, 100, 20, Text.of("Dest Node"), this.textRenderer);
-        TextWidget itemTagName = new TextWidget(rightSide + 85, 80, 100, 20, Text.of("Item Tag"), this.textRenderer);
+        TextWidget nodeTagLabel = new TextWidget(rightSide + 85, 60, 100, 20, Text.of("Dest Node"), this.textRenderer);
+        TextWidget itemTagLabel = new TextWidget(rightSide + 85, 80, 100, 20, Text.of("Item Tag"), this.textRenderer);
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         assert player != null;
@@ -64,6 +80,14 @@ public class EditNodeScreen extends Screen {
 
             name.setText(Navigation.currentNode.tag);
             type.setText(Navigation.currentNode.type.toString());
+
+            waitIn.setText(String.valueOf(Navigation.currentNode.waitTimeIn));
+            waitOut.setText(String.valueOf(Navigation.currentNode.waitTimeOut));
+
+            velocityThreshold.setText(String.valueOf(Navigation.currentNode.velocityThreshold));
+            innacuracyThreshold.setText(String.valueOf(Navigation.currentNode.innaccuracyThreshold));
+            tolerance.setText(String.valueOf(Navigation.currentNode.tolerance));
+
         } else {
 
             nodeX.setText(String.valueOf(player.getBlockX()));
@@ -71,6 +95,14 @@ public class EditNodeScreen extends Screen {
             nodeZ.setText(String.valueOf(player.getBlockZ()));
 
             type.setText("NORMAL");
+            name.setText("Name Me!");
+
+            waitIn.setText("0");
+            waitOut.setText("0");
+
+            velocityThreshold.setText("0.09");
+            innacuracyThreshold.setText("0.9");
+            tolerance.setText("0.7");
         }
 
         ButtonWidget createOrLoadNodefile = ButtonWidget.builder(Text.of("Create or load .NODE file"), (widget) -> {
@@ -93,7 +125,7 @@ public class EditNodeScreen extends Screen {
             } catch (IOException e) { throw new RuntimeException(e); }
 
 
-        }).dimensions(10, 190, 150, 20).build();
+        }).dimensions(10, 220, 150, 20).build();
 
         ButtonWidget deleteCurrentNodefile = ButtonWidget.builder(Text.of("Delete Current .NODE File"), (widget) -> {
 
@@ -104,7 +136,7 @@ public class EditNodeScreen extends Screen {
 
             NodeCreation.nodeFile.delete();
 
-        }).dimensions(10, 210, 150, 20).build();
+        }).dimensions(10, 240, 150, 20).build();
 
         ButtonWidget update = ButtonWidget.builder(Text.of("Update"), (widget) -> {
 
@@ -134,13 +166,15 @@ public class EditNodeScreen extends Screen {
                         errorField.setMessage(Text.of("Error: Node Type does not exist"));
                     }
 
+                    node.setColor();
+
                     break;
                 }
             }
 
             try { NodeCreation.dumpNodes(); }
             catch (IOException e) { throw new RuntimeException(e); }
-        }).dimensions(60, 120, 50, 20).build();;
+        }).dimensions(320, 20, 150, 20).build();;
 
         ButtonWidget add = ButtonWidget.builder(Text.of("Add"), (widget) -> {
             try {
@@ -186,7 +220,7 @@ public class EditNodeScreen extends Screen {
 
             try { NodeCreation.dumpNodes(); }
             catch (IOException e) { throw new RuntimeException(e); }
-        }).dimensions(10, 120, 50, 20).build();
+        }).dimensions(320, 40, 150, 20).build();
 
         ButtonWidget delete = ButtonWidget.builder(Text.of("Delete"), (widget) -> {
 
@@ -222,13 +256,18 @@ public class EditNodeScreen extends Screen {
 
             try { NodeCreation.dumpNodes(); }
             catch (IOException e) { throw new RuntimeException(e); }
-        }).dimensions(110, 120, 50, 20).build();
+        }).dimensions(320, 60, 150, 20).build();
 
         ButtonWidget getPlayerCoords = ButtonWidget.builder(Text.of("Apply Player Coords"), (widget) -> {
                     nodeX.setText(String.valueOf(player.getBlockX()));
                     nodeY.setText(String.valueOf(player.getBlockY()));
                     nodeZ.setText(String.valueOf(player.getBlockZ()));
-        }).dimensions(10, 140, 150, 20).build();
+        }).dimensions(10, 80, 150, 20).build();
+
+        ButtonWidget getPlayerLook = ButtonWidget.builder(Text.of("Apply Current Look"), (widget) -> {
+            lookYaw.setText(String.valueOf(player.getYaw()));
+            lookPitch.setText(String.valueOf(player.getPitch()));
+        }).dimensions(160, 80, 150, 20).build();
 
         ButtonWidget calibrate = ButtonWidget.builder(Text.of("Calibrate"), (widget) -> {
 
@@ -386,29 +425,48 @@ public class EditNodeScreen extends Screen {
         addDrawableChild(nodeX);
         addDrawableChild(nodeY);
         addDrawableChild(nodeZ);
+        addDrawableChild(getPlayerCoords);
+
+        addDrawableChild(lookYaw);
+        addDrawableChild(lookPitch);
+        addDrawableChild(lookYawLabel);
+        addDrawableChild(lookPitchLabel);
+        addDrawableChild(getPlayerLook);
+
         addDrawableChild(name);
         addDrawableChild(type);
+        addDrawableChild(waitIn);
+        addDrawableChild(waitOut);
+        addDrawableChild(waitInLabel);
+        addDrawableChild(waitOutLabel);
+
+        addDrawableChild(velocityThreshold);
+        addDrawableChild(velocityThresholdLabel);
+        addDrawableChild(innacuracyThreshold);
+        addDrawableChild(innacuracyThresholdLabel);
+        addDrawableChild(tolerance);
+        addDrawableChild(toleranceLabel);
+
         addDrawableChild(update);
         addDrawableChild(delete);
         addDrawableChild(add);
-        addDrawableChild(getPlayerCoords);
 
         addDrawableChild(nodefileName);
         addDrawableChild(createOrLoadNodefile);
         addDrawableChild(deleteCurrentNodefile);
         addDrawableChild(currentNodefile);
 
-        addDrawableChild(nodeXName);
-        addDrawableChild(nodeYName);
-        addDrawableChild(nodeZName);
-        addDrawableChild(nodeTypeName);
-        addDrawableChild(nodeNameName);
+        addDrawableChild(nodeXLabel);
+        addDrawableChild(nodeYLabel);
+        addDrawableChild(nodeZLabel);
+        addDrawableChild(nodeTypeLabel);
+        addDrawableChild(nodeNameLabel);
         addDrawableChild(errorField);
 
         addDrawableChild(nodeTag);
         addDrawableChild(itemTag);
-        addDrawableChild(nodeTagName);
-        addDrawableChild(itemTagName);
+        addDrawableChild(nodeTagLabel);
+        addDrawableChild(itemTagLabel);
 
         addDrawableChild(calibrate);
         addDrawableChild(pathTo);
