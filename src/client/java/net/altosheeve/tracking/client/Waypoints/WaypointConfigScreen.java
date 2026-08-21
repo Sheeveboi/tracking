@@ -3,12 +3,28 @@ package net.altosheeve.tracking.client.Waypoints;
 import net.altosheeve.tracking.client.Core.Config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
+
+import java.io.IOException;
 
 public class WaypointConfigScreen extends Screen {
 
     public WaypointConfigScreen() {
         super(Text.of("Waypoint config screen"));
+    }
+
+    public static int tickRate = 1;
+    public static double floatrate;
+    public static float sliderRange = 20;
+
+    static {
+        try {
+            floatrate = Config.getPacketRate();
+            tickRate = (int) Math.floor(floatrate * sliderRange);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -40,7 +56,7 @@ public class WaypointConfigScreen extends Screen {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).dimensions(20, 20, 100, 20).build();
+        }).dimensions(20, 20, 150, 20).build();
 
         ButtonWidget toggleMobs = ButtonWidget.builder(Text.of(mobsText), (button) -> {
             try {
@@ -54,7 +70,7 @@ public class WaypointConfigScreen extends Screen {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).dimensions(20, 40, 100, 20).build();
+        }).dimensions(20, 40, 150, 20).build();
 
         ButtonWidget toggleBlocks = ButtonWidget.builder(Text.of(blocksText), (button) -> {
             try {
@@ -68,7 +84,7 @@ public class WaypointConfigScreen extends Screen {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).dimensions(20, 60, 100, 20).build();
+        }).dimensions(20, 60, 150, 20).build();
 
         ButtonWidget toggleItems = ButtonWidget.builder(Text.of(itemsText), (button) -> {
             try {
@@ -82,12 +98,40 @@ public class WaypointConfigScreen extends Screen {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).dimensions(20, 80, 100, 20).build();
+        }).dimensions(20, 80, 150, 20).build();
+
+        SliderWidget telemetryRateSlider = new SliderWidget(20, 110, 150, 20, Text.of("Telemetry Rate: Every " + tickRate + " ticks"), floatrate) {
+
+            @Override
+            protected void updateMessage() {
+
+                floatrate = this.value;
+
+                try {
+                    Config.setPacketRate((float) floatrate);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                tickRate = (int) Math.floor(floatrate * sliderRange);
+                if (tickRate == 0) tickRate = 1;
+
+                this.message = Text.of("Telemetry Rate: Every " + tickRate + " ticks");
+
+            }
+
+            @Override
+            protected void applyValue() {
+
+            }
+        };
 
         addDrawableChild(togglePlayers);
         addDrawableChild(toggleMobs);
         addDrawableChild(toggleBlocks);
         addDrawableChild(toggleItems);
+
+        addDrawableChild(telemetryRateSlider);
 
     }
 

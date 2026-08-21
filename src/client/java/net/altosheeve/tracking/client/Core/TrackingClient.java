@@ -6,6 +6,7 @@ import net.altosheeve.tracking.client.Soprano.Shell;
 import net.altosheeve.tracking.client.Navigation.Navigation;
 import net.altosheeve.tracking.client.Navigation.NodeCreation;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
+import net.altosheeve.tracking.client.Waypoints.WaypointConfigScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
@@ -43,9 +44,10 @@ public class TrackingClient implements ClientModInitializer {
 
             try {
 
-                Relaying.relayInfo();
+                if (WaypointConfigScreen.tickRate == 0) WaypointConfigScreen.tickRate = 1;
+
+                if ((tick % WaypointConfigScreen.tickRate) == 0) Relaying.relayInfo();
                 Keys.handleKeys();
-                Execution.execute();
 
             } catch (Exception e) {
                 throw new RuntimeException(e);

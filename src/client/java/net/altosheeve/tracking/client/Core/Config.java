@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Core;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -21,7 +22,8 @@ public class Config {
                 "           'mobs'    : true," +
                 "           'blocks'  : true," +
                 "           'items'   : true" +
-                "       }" +
+                "       }," +
+                "       'packetRate' : 0" +
                 "   }" +
                 "}";
 
@@ -76,6 +78,22 @@ public class Config {
         if (!allowedEntites.has(entity)) throw new Exception("Entity type '" + entity + "' does not exist");
 
         return allowedEntites.getBoolean(entity);
+
+    }
+
+    public static float getPacketRate() throws IOException {
+
+        if (!configJson.getJSONObject("waypoint").has("packetRate")) setPacketRate(0);
+
+        return configJson.getJSONObject("waypoint").getFloat("packetRate");
+
+    }
+
+    public static void setPacketRate(float rate) throws IOException {
+
+        configJson.getJSONObject("waypoint").put("packetRate", rate);
+
+        updateFile();
 
     }
 
