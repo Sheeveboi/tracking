@@ -126,14 +126,7 @@ public class Navigation {
 
         if (currentNode.type == Node.NodeType.INTERACTABLE) client.options.useKey.setPressed(true);
 
-        if (velocitySteps > 10 && velocitySteps < 15) {
-
-            player.setPitch(55);
-            client.options.useKey.setPressed(true);
-
-        }
-
-        if (velocitySteps > 15 && velocitySteps < 20) {
+        if (velocitySteps > 10 && velocitySteps < 20) {
 
             player.setPitch(60);
             client.options.useKey.setPressed(true);
@@ -237,7 +230,7 @@ public class Navigation {
 
         double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
 
-        if (velocity > velocityThreshold || eating) {
+        if (velocity > velocityThreshold || eating || velocitySteps == 100) {
 
             velocitySteps = 0;
             return;
@@ -246,7 +239,7 @@ public class Navigation {
 
         if (velocitySteps > 20 && velocitySteps < 40) {
 
-            player.setPitch(55);
+            player.setPitch(60);
             client.options.useKey.setPressed(true);
 
         }

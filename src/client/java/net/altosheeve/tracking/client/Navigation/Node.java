@@ -26,6 +26,15 @@ public class Node extends Box {
     public NodeType type;
     public Map<Integer, Integer> distanceMap = new HashMap<>();
 
+    public float velocityThreshold = 0.09f; //enable recovery if bot speed is below this threshold
+    public float innaccuracyThreshold = 0.9f; //enable recovery if bot vector in relation to target node deviates from ideal currentNode to targetNode vector
+    public float tolerance = 0.7f; //completion distance to targetNode
+    public boolean sprint = false; //run fast
+    public float lookYaw;
+    public float lookPitch;
+    public float waitTimeIn = 0; //how many ticks to wait before pathing to this node
+    public float waitTimeOut = 0; //how many ticks to wait after pathing to this node
+
     public void setColor() {
         this.a = .3f;
         switch (this.type) {
