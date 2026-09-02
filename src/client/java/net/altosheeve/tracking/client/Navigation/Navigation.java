@@ -8,10 +8,10 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
 import java.util.*;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 public class Navigation {
@@ -20,8 +20,10 @@ public class Navigation {
     public static Node targetNode;
 
     public static double velocityThreshold;
-    public static int velocitySteps = 0;
+    public static int errorSteps = 0;
+    public static int handleSteps = 0;
     private static boolean eating = false;
+    private static boolean erroring = false;
     private static boolean interacted = false;
     public static double interactionThreshold;
 
@@ -80,6 +82,82 @@ public class Navigation {
 
     //TODO: make node types and their associated handlers object oriented
 
+    public static void errorHandler() {
+
+        System.out.println("running error handling");
+
+        erroring = true;
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        assert player != null;
+
+        Vector3f orientation     = player.getFacing().getUnitVector().normalize();
+        Vector3f currentVelocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).toVector3f();
+
+        float forwardVelocity = orientation.dot(currentVelocity);
+
+        System.out.println("forward velocity: " + forwardVelocity);
+
+        if (forwardVelocity > .05) {
+
+            System.out.println("error handled");
+
+            handler = lastHandler;
+            errorSteps = 0;
+            erroring = false;
+
+            return;
+
+        }
+
+        if (errorSteps < 20) {
+
+            client.options.jumpKey.setPressed(true);
+            errorSteps++;
+
+            lastHandler.cb();
+
+            return;
+        }
+
+
+        Vector3f idealVector = new Vector3f(targetNode.x, (float) player.getY(), targetNode.z).sub(currentNode.x, (float) player.getY(), currentNode.z);
+        Vector3f idealNormal = new Vector3f(idealVector.z, (float) player.getY(), -idealVector.x);
+
+        float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
+
+        System.out.println("innaccuracy: " + innacuracy);
+        System.out.println("velocityTime: " + errorSteps);
+
+        //attempt strafe
+        //TODO: measure forward velocity and general velocity to detect futile strafing
+        if (errorSteps < 100)                     client.options.rightKey.setPressed(true);
+        if (errorSteps > 100 && errorSteps < 200) client.options.leftKey.setPressed(true);
+
+        //attempt door unstick
+        if (errorSteps > 200 && errorSteps < 220) {
+
+            player.setPitch(60);
+            client.options.useKey.setPressed(true);
+
+        }
+
+        //attempt sneak
+        if (errorSteps > 220 && errorSteps < 250) {
+
+            player.setPitch(0);
+            client.options.sneakKey.setPressed(true);
+
+        }
+
+        if (errorSteps > 200) client.options.jumpKey.setPressed(false);
+        if (errorSteps > 250) errorSteps = 0;
+
+        errorSteps++;
+
+    }
+
     public static void basicWalkHandler() {
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -112,50 +190,19 @@ public class Navigation {
         System.out.println("velocity: " + velocity);
         System.out.println("threshold: " + velocityThreshold);
 
-        if (velocity > velocityThreshold) {
-            velocitySteps = 0;
+        if (velocity > velocityThreshold || handleSteps < 20) {
+            errorSteps = 0;
+            handleSteps ++;
             return;
         }
 
-        Vector3f idealVector = new Vector3f(targetNode.x, (float) player.getY(), targetNode.z).sub(currentNode.x, (float) player.getY(), currentNode.z);
-        Vector3f idealNormal = new Vector3f(idealVector.z, (float) player.getY(), -idealVector.x);
+        System.out.println("engaging error handling");
 
-        float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
-
-        System.out.println("innaccuracy: " + innacuracy);
-        System.out.println("velocityTime: " + velocitySteps);
-
-        if (currentNode.type == Node.NodeType.INTERACTABLE) client.options.useKey.setPressed(true);
-
-        if (velocitySteps > 10 && velocitySteps < 20) {
-
-            player.setPitch(60);
-            client.options.useKey.setPressed(true);
-
+        if (!erroring) {
+            lastHandler = handler;
+            handler = Navigation::errorHandler;
+            handleSteps = 0;
         }
-
-        if (velocitySteps > 20 && velocitySteps < 50) {
-
-            client.options.sneakKey.setPressed(true);
-
-        }
-
-        if (abs(innacuracy) < .9 && velocitySteps > 40 && velocitySteps < 100) {
-
-            Vector3f currentVector = new Vector3f((float) player.getX(), (float) player.getY(), (float) player.getZ()).sub(currentNode.x, (float) player.getY(), currentNode.z);
-            float deviation = idealNormal.dot(currentVector);
-
-            System.out.println("deviation: " + deviation);
-
-            if (deviation > 0) client.options.rightKey.setPressed(true);
-            else client.options.leftKey.setPressed(true);
-
-        }
-
-        if (velocitySteps < 200) client.options.jumpKey.setPressed(true);
-        else velocitySteps = 0;
-
-        velocitySteps ++;
 
     }
 
@@ -190,7 +237,7 @@ public class Navigation {
 
         if (abs(innacuracy) < .9) {
 
-            if (deviation > 90) client.options.leftKey.setPressed(true);
+            if (deviation < 0) client.options.leftKey.setPressed(true);
             else client.options.rightKey.setPressed(true);
 
         }
@@ -231,22 +278,19 @@ public class Navigation {
 
         double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
 
-        if (velocity > velocityThreshold || eating || velocitySteps == 100) {
+        if (velocity > velocityThreshold || eating || handleSteps < 20) {
 
-            velocitySteps = 0;
+            handleSteps++;
+            errorSteps = 0;
             return;
 
         }
 
-        if (velocitySteps > 20 && velocitySteps < 40) {
-
-            player.setPitch(60);
-            client.options.useKey.setPressed(true);
-
+        if (!erroring) {
+            lastHandler = handler;
+            handler = Navigation::errorHandler;
+            handleSteps = 0;
         }
-
-
-        velocitySteps ++;
 
     }
 
@@ -256,7 +300,7 @@ public class Navigation {
         ClientPlayerEntity player = client.player;
         assert player != null;
 
-        basicWalkHandler();
+        System.out.println("interaction distance: " + player.getLastRenderPos().distanceTo(new Vec3d(targetNode.x + .5, targetNode.y + .5, targetNode.z + .5)));
 
         if (player.getLastRenderPos().distanceTo(new Vec3d(targetNode.x + .5, targetNode.y + .5, targetNode.z + .5)) < interactionThreshold && !interacted) {
 
@@ -291,6 +335,8 @@ public class Navigation {
             interacted = false;
             client.options.useKey.setPressed(false);
         }
+
+        basicWalkHandler();
     }
 
     public static void lodestoneHandler() {
@@ -319,6 +365,8 @@ public class Navigation {
     public static ArrayList<Integer> generatePathingItinerary(String nodeTag) {
 
         ArrayList<Integer> closestApproachOut = new ArrayList<>();
+        ArrayList<Integer> lastClosestApproachOutSolution = new ArrayList<>();
+        int loopdetection = 0;
 
         Optional<Node> testing = nodes.stream().filter(node -> Objects.equals(nodeTag, node.tag)).findFirst();
         if (testing.isEmpty()) return null;
@@ -393,6 +441,11 @@ public class Navigation {
                 testNode = nodes.get(closestApproachOut.getLast());
 
             }
+
+            if (lastClosestApproachOutSolution == closestApproachOut) loopdetection++;
+            if (loopdetection > 100) return closestApproachOut;
+
+            lastClosestApproachOutSolution = closestApproachOut;
 
             System.out.println(closestApproachOut);
 
