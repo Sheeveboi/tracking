@@ -31,6 +31,7 @@ public class Navigation {
     public static int maxDeepSearchDistance = 5;
     public static Vector3f playerPrev = new Vector3f();
     public static Handler handler;
+    public static Handler lastHandler;
 
     public static ArrayList<Node> nodes = new ArrayList<>();
     public static Layer fillLayer = new Layer("Navigation Node Boxes", Layer.Method.FILL_UNOCCLUDED);

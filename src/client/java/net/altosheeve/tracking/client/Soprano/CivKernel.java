@@ -369,24 +369,37 @@ public class CivKernel extends BasicFunctions {
     }
 
     public void _SET_BASIC_MOVEMENT_HANDLER() {
+
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
+
+        if (Navigation.handler != null) Navigation.lastHandler = Navigation.handler;
         Navigation.handler = Navigation::basicWalkHandler;
     }
 
     public void _SET_ICEROAD_HANDLER() {
+
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
+
+        if (Navigation.handler != null) Navigation.lastHandler = Navigation.handler;
         Navigation.handler = Navigation::iceroadHandler;
     }
 
     public void _SET_INTERACTION_HANDLER() {
+
         Navigation.interactionThreshold = Typing._PARSE_FLOAT(this);
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
+
+        if (Navigation.handler != null) Navigation.lastHandler = Navigation.handler;
         Navigation.handler = Navigation::interactionHandler;
     }
 
     public void _SET_LODESTONE_HANDLER() {
+
         Navigation.velocityThreshold = Typing._PARSE_FLOAT(this);
+
+        if (Navigation.handler != null) Navigation.lastHandler = Navigation.handler;
         Navigation.handler = Navigation::lodestoneHandler;
+
     }
 
     public void _EXIT_INTERACTION() {
