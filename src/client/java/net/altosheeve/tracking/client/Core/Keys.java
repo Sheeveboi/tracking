@@ -23,7 +23,7 @@ public class Keys {
 //    public static KeyBinding loadTestProgram;
 //    public static KeyBinding mapKey;
 //    public static KeyBinding outputDistancesKey;
-//    public static KeyBinding openTerminal;
+    public static KeyBinding openTerminal;
 
     public static KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("net.altosheeve", "tracking"));
 
@@ -86,6 +86,17 @@ public class Keys {
                         category
                 )
         );
+
+        openTerminal = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        "Open Terminal",
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_HOME,
+                        category
+                )
+        );
+
+
     }
 
     public static void handleKeys() throws IOException {
