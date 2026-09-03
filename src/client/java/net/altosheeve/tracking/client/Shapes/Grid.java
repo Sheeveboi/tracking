@@ -57,6 +57,8 @@ public class Grid extends Shape {
     @Override
     public void fill(BufferBuilder buffer) {
 
+        super.fill(buffer);
+
         for (int squareZ = 0; squareZ < this.d; squareZ++) {
 
             for (int squareX = 0; squareX < this.w; squareX++) {
@@ -81,6 +83,8 @@ public class Grid extends Shape {
 
     @Override
     public void line(BufferBuilder buffer) {
+
+        super.line(buffer);
 
         //TODO: enhance this draw method to include vertexes within the grid instead of the perimeter and varying y levels
         for (int squareX = 0; squareX <= this.w; squareX++) {

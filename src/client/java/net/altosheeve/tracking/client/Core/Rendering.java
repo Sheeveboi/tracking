@@ -4,6 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.altosheeve.tracking.client.Mapping.SmartPlane;
 import net.altosheeve.tracking.client.Navigation.Node;
 import net.altosheeve.tracking.client.Shapes.Layer;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
@@ -79,6 +80,7 @@ public class Rendering {
 
         //TODO: Implement Positive and Negative drawing modes
         try {
+
             for (Layer layer : Layer.layers) layer.prepare();
             for (Layer layer : Layer.layers) layer.render();
 
@@ -87,7 +89,9 @@ public class Rendering {
             Waypoint.drawText(textBuffer);
             Node.drawText(textBuffer);
             textBuffer.draw();
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         modelViewStack.popMatrix();
 

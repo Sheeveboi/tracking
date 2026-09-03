@@ -14,6 +14,8 @@ public class Box extends Shape{
     @Override
     public void fill(BufferBuilder buffer) {
 
+        super.fill(buffer);
+
         //left face
         buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
         buffer.vertex(this.activeTransform, this.finalX + this.w, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);
@@ -54,6 +56,8 @@ public class Box extends Shape{
 
     @Override
     public void line(BufferBuilder buffer) {
+
+        super.line(buffer);
 
         //bottom face
         buffer.vertex(this.activeTransform, this.finalX, this.finalY, this.finalZ).color(this.r, this.g, this.b, this.a);

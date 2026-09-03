@@ -205,6 +205,7 @@ public class Relaying {
 
         }
 
+        //TODO: reimplement. improve TCP connections
         if (networkObject.identifier == 2) {
 
             System.out.println("snitch!");

@@ -151,59 +151,70 @@ public class Shape {
     }
 
     public void set(BufferBuilder buffer, Matrix4f transform) {
+        try {
+            transform = transform.translate(this.x, this.y, this.z);
 
-        transform = transform.translate(this.x, this.y, this.z);
+            transform = transform.scaleAround(scalex, scaley, scalez, this.x + this.ox, this.y + this.oy, this.z + this.oz);
 
-        transform = transform.scaleAround(scalex, scaley, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+            transform = transform.rotateAround(new Quaternionf(this.rotationX), this.x + this.ox, this.y + this.oy, this.z + this.oz);
+            transform = transform.rotateAround(new Quaternionf(this.rotationY), this.x + this.ox, this.y + this.oy, this.z + this.oz);
+            transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.x + this.ox, this.y + this.oy, this.z + this.oz);
 
-        transform = transform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-        transform = transform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-        transform = transform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+            this.activeTransform = transform;
 
-        this.activeTransform = transform;
+            for (Shape shape : this.children) {
+                shape.parentLayer = this.parentLayer;
+                shape.set(buffer);
+            }
 
-        for (Shape shape : this.children) {
-            shape.parentLayer = this.parentLayer;
-            shape.set(buffer);
+            if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED))
+                this.fill(buffer);
+            if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED))
+                this.line(buffer);
+
+            Debug.totalShapes++;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
-        if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
-
-        Debug.totalShapes++;
     }
 
     public void set(BufferBuilder buffer) {
+        try {
 
-        if (this.parentShape != null && this.parentShape.activeTransform != null) {
-            this.activeTransform = this.parentShape.activeTransform;
+            if (this.parentShape != null && this.parentShape.activeTransform != null) {
+                this.activeTransform = this.parentShape.activeTransform;
+            }
+
+            else if (this.startingTransform != null)
+                this.activeTransform = this.startingTransform;
+
+            else
+                this.activeTransform = new Matrix4f();
+
+            this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
+
+            this.activeTransform = this.activeTransform.scaleAround(scalex, scaley, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+
+            this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+            this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+            this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
+
+            for (Shape shape : this.children) {
+                shape.parentLayer = this.parentLayer;
+                shape.set(buffer);
+            }
+
+            if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
+            if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
+
+            Debug.totalShapes++;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        else if (this.startingTransform != null)
-            this.activeTransform = this.startingTransform;
-
-        else
-            this.activeTransform = new Matrix4f();
-
-        this.activeTransform = this.activeTransform.translate(this.x, this.y, this.z);
-
-        this.activeTransform = this.activeTransform.scaleAround(scalex, scaley, scalez, this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-
-        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationX), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationY), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-        this.activeTransform = this.activeTransform.rotateAround(new Quaternionf(this.rotationZ), this.x  + this.ox, this.y + this.oy, this.z + this.oz);
-
-        for (Shape shape : this.children) {
-            shape.parentLayer = this.parentLayer;
-            shape.set(buffer);
-        }
-
-        if (this.fillVisible && (this.parentLayer.pipelineName == Layer.Method.FILL_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.FILL_OCCLUDED)) this.fill(buffer);
-        if (this.lineVisible && (this.parentLayer.pipelineName == Layer.Method.LINE_UNOCCLUDED || this.parentLayer.pipelineName == Layer.Method.LINE_OCCLUDED)) this.line(buffer);
-
-        Debug.totalShapes++;
     }
 
-    public void fill(BufferBuilder buffer) {};
-    public void line(BufferBuilder buffer) {};
+    public void fill(BufferBuilder buffer) {this.parentLayer.activeDrawCalls++;};
+    public void line(BufferBuilder buffer) {this.parentLayer.activeDrawCalls++;};
 }

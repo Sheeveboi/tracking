@@ -40,6 +40,7 @@ public class Layer {
     private final String name;
     public float drawPriority = 0;
     public float lineWidth = 1;
+    public int activeDrawCalls = 0;
     private boolean visible = true;
 
     public RenderPipeline pipeline;
@@ -135,10 +136,14 @@ public class Layer {
 
         if (this.shapesBuffer == null) this.shapesBuffer = new BufferBuilder(allocator, this.pipeline.getVertexFormatMode(), this.pipeline.getVertexFormat());
 
+        this.activeDrawCalls = 0;
+
         for (Shape shape : new ArrayList<>(this.shapes)) if (shape != null) {
             shape.parentLayer = this;
             shape.set(this.shapesBuffer);
         }
+
+        if (this.activeDrawCalls == 0) return;
 
         this.builtBuffer = this.shapesBuffer.end();
         this.parameters = this.builtBuffer.getDrawParameters();
@@ -150,7 +155,7 @@ public class Layer {
 
     public void render() {
 
-        if (this.shapes.isEmpty() || !this.visible) return;
+        if (this.shapes.isEmpty() || !this.visible || this.activeDrawCalls == 0) return;
 
         this.draw3d(Rendering.client, this.pipeline, this.builtBuffer, parameters, this.gpuBuffer, this.format);
 

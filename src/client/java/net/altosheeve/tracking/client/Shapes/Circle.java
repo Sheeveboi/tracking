@@ -29,6 +29,8 @@ public class Circle extends Shape {
     @Override
     public void fill(BufferBuilder buffer) {
 
+        super.fill(buffer);
+
         float ratio = 360f / resolution;
 
         for (int i = 0; i < resolution; i++) {

@@ -235,6 +235,8 @@ public class Waypoint extends Shape {
     @Override
     public void fill(BufferBuilder buffer) {
 
+        super.fill(buffer);
+
         org.joml.Matrix4f spriteTransform = Transforms.getWorld3dSpriteTransform(this.x, this.y, this.z, this.scale * .02f, this.scale * .02f, this.scale * .02f);
 
         Circle circle = new Circle(0, 0, 0, this.UUID, .5F, 1);
@@ -248,6 +250,8 @@ public class Waypoint extends Shape {
 
     @Override
     public void line(BufferBuilder buffer) {
+
+        super.line(buffer);
 
         float scale = Transforms.scalingFunction(100, this.x, this.y, this.z);
 
