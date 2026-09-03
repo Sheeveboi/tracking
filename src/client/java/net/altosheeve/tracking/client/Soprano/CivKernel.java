@@ -201,11 +201,6 @@ public class CivKernel extends BasicFunctions {
         int blockX = Typing._PARSE_INTEGER(this);
         int blockY = Typing._PARSE_INTEGER(this);
         int blockZ = Typing._PARSE_INTEGER(this);
-
-        System.out.println("blockX: " + blockX);
-        System.out.println("blockY: " + blockY);
-        System.out.println("blockZ: " + blockZ);
-
         float tolerance = Typing._PARSE_FLOAT(this);
 
         final boolean[] firstTick = {true};
@@ -218,12 +213,14 @@ public class CivKernel extends BasicFunctions {
             boolean out = player.getLastRenderPos().distanceTo(new Vec3d(blockX + .5, blockY + .5, blockZ + .5)) < tolerance;
 
             if (Navigation.targetNode.type == Node.NodeType.INTERACTABLE) {
-                System.out.println(out);
                 MinecraftClient.getInstance().options.forwardKey.setPressed(!out);
             }
             else MinecraftClient.getInstance().options.forwardKey.setPressed(true);
 
-            if (!firstTick[0] || out) Navigation.handler.cb();
+            if (!firstTick[0] || out) {
+                Navigation.handler.cb();
+                Navigation.detectError();
+            }
             else {
 
                 double dx = player.getX() - Navigation.targetNode.x - .5;
@@ -299,7 +296,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
                     this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
-                    tolerance = 1;
+                    tolerance = 1.1f;
 
                     break;
 
