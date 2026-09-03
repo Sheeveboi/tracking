@@ -221,7 +221,6 @@ public class Waypoint extends Shape {
             StringBuilder waypointInfo = new StringBuilder();
             DecimalFormat df = new DecimalFormat("#");
             waypointInfo.append(waypoint.username).append(" [").append(df.format(dist)).append("m]");
-            waypointInfo.append(" importance: " + waypoint.importance);
 
             float distanceStringWidth = -Rendering.client.textRenderer.getWidth(waypointInfo.toString()) / 2f;
 
