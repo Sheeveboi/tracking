@@ -36,9 +36,9 @@ public class ShellPrograms {
         out.add((byte) Typing.STATIC_EXPRESSION);
         out.addAll(Typing._ENCODE_STRING(target.tag));
 
-        //encode calibration tolerance
+        //encode node tolerance
         out.add((byte) Typing.STATIC_EXPRESSION);
-        out.addAll(Typing._ENCODE_FLOAT(0.7f));
+        out.addAll(Typing._ENCODE_FLOAT(0.6f));
 
         return out;
 
