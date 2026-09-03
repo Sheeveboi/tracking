@@ -212,7 +212,7 @@ public class CivKernel extends BasicFunctions {
 
             boolean out = player.getLastRenderPos().distanceTo(new Vec3d(blockX + .5, blockY + .5, blockZ + .5)) < tolerance;
 
-            if (Navigation.targetNode.type == Node.NodeType.INTERACTABLE) {
+            if (Navigation.targetNode.type == Node.NodeType.USE) {
                 MinecraftClient.getInstance().options.forwardKey.setPressed(!out);
             }
             else MinecraftClient.getInstance().options.forwardKey.setPressed(true);
@@ -252,7 +252,7 @@ public class CivKernel extends BasicFunctions {
         }));
 
         //ensure there actually is a screen for the script to use
-        if (Navigation.targetNode.type == Node.NodeType.INTERACTABLE) this.addRequest(new Request(() -> MinecraftClient.getInstance().player.currentScreenHandler != null));
+        if (Navigation.targetNode.type == Node.NodeType.USE) this.addRequest(new Request(() -> MinecraftClient.getInstance().player.currentScreenHandler != null));
     }
 
     public void _PATH_TO() {
@@ -300,7 +300,7 @@ public class CivKernel extends BasicFunctions {
 
                     break;
 
-                case INTERACTABLE:
+                case USE:
 
                     this.insertInstruction((byte) 0x8, origin); origin++; //set basic interaction chestHandler
 
@@ -314,7 +314,7 @@ public class CivKernel extends BasicFunctions {
 
                     break;
 
-                case LODESTONE:
+                case LODE:
 
                     this.insertInstruction((byte) 0x6, origin); origin++; //set basic movement chestHandler
 

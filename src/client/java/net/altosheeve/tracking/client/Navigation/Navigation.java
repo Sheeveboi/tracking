@@ -8,12 +8,10 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.packrat.Term;
 import org.joml.Vector3f;
 
 import java.util.*;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 public class Navigation {
@@ -347,7 +345,7 @@ public class Navigation {
         ClientPlayerEntity player = client.player;
         assert player != null;
 
-        if (targetNode.type != Node.NodeType.LODESTONE) basicWalkHandler();
+        if (targetNode.type != Node.NodeType.LODE) basicWalkHandler();
 
         else {
 

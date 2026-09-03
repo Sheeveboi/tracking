@@ -17,8 +17,8 @@ public class Node extends Box {
     public enum NodeType {
         NORMAL,
         ICEROAD,
-        INTERACTABLE,
-        LODESTONE
+        USE,
+        LODE
     }
 
     public String tag;
@@ -50,13 +50,13 @@ public class Node extends Box {
                 this.b = 1f;
             }
 
-            case INTERACTABLE -> {
+            case USE -> {
                 this.r = 1f;
                 this.g = 0f;
                 this.b = 0f;
             }
 
-            case LODESTONE -> {
+            case LODE -> {
                 this.r = .5f;
                 this.g = .5f;
                 this.b = 0;
