@@ -30,10 +30,11 @@ public class Node extends Box {
     public float innaccuracyThreshold = 0.9f; //enable recovery if bot vector in relation to target node deviates from ideal currentNode to targetNode vector
     public float tolerance = 0.7f; //completion distance to targetNode
     public boolean sprint = false; //run fast
-    public float lookYaw;
-    public float lookPitch;
-    public float waitTimeIn = 0; //how many ticks to wait before pathing to this node
-    public float waitTimeOut = 0; //how many ticks to wait after pathing to this node
+    public float lookx = 0;
+    public float looky = 0;
+    public float lookz = 0;
+    public int waitTimeIn = 0; //how many ticks to wait before pathing to this node
+    public int waitTimeOut = 0; //how many ticks to wait after pathing to this node
 
     public void setColor() {
         this.a = .3f;
@@ -65,27 +66,64 @@ public class Node extends Box {
     }
 
     public Node(int x, int y, int z) {
-        super(x, y, z, String.valueOf(java.util.UUID.randomUUID()));
+        super(x, y, z, "");
+
+        String uuid = String.valueOf(java.util.UUID.randomUUID());
+        this.UUID = uuid;
+
+        System.out.println("created node: " + this.UUID);
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type) {
-        super(x, y, z, String.valueOf(java.util.UUID.randomUUID()));
+        super(x, y, z, "");
+
+        String uuid = String.valueOf(java.util.UUID.randomUUID());
+        this.UUID = uuid;
+
+        System.out.println("created node: " + this.UUID);
         this.type = type;
         this.setColor();
         this.connections = new ArrayList<>();
     }
 
     public Node(int x, int y, int z, NodeType type, String tag) {
-        super(x, y, z, tag);
+        super(x, y, z, "");
+
+        String uuid = String.valueOf(java.util.UUID.randomUUID());
+        this.UUID = uuid;
+
+        System.out.println("created node: " + this.UUID);
         this.type = type;
         this.setColor();
         this.tag = tag;
         this.connections = new ArrayList<>();
     }
 
+    public Node(int x, int y, int z, NodeType type, String tag, boolean sprint, float velocityThreshold, int waitTimeIn, int waitTimeOut) {
+        super(x, y, z, "");
+
+        String uuid = String.valueOf(java.util.UUID.randomUUID());
+        this.UUID = uuid;
+
+        System.out.println("created node: " + this.UUID);
+        this.type = type;
+        this.setColor();
+        this.tag = tag;
+        this.connections = new ArrayList<>();
+        this.velocityThreshold = velocityThreshold;
+        this.sprint = sprint;
+        this.waitTimeIn = waitTimeIn;
+        this.waitTimeOut = waitTimeOut;
+    }
+
     public Node(int x, int y, int z, NodeType type, String tag, ArrayList<Integer> connections) {
-        super(x, y, z, tag);
+        super(x, y, z, "");
+
+        String uuid = String.valueOf(java.util.UUID.randomUUID());
+        this.UUID = uuid;
+
+        System.out.println("created node: " + this.UUID);
         this.type = type;
         this.setColor();
         this.tag = tag;
@@ -167,6 +205,8 @@ public class Node extends Box {
             buffer.vertex(connectingNode.activeTransform, .5f, .5f, .5f).color(connectingNode.r, connectingNode.g, connectingNode.b, connectingNode.a);
 
         }
+
+        if (!this.connections.isEmpty() || Navigation.currentNode == this) this.parentLayer.activeDrawCalls++;
 
         if (Navigation.currentNode == this) {
 
