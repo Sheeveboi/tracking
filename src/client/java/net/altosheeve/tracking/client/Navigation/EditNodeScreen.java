@@ -46,15 +46,17 @@ public class EditNodeScreen extends Screen {
         TextFieldWidget waitIn = new TextFieldWidget(this.textRenderer, 10, 145, 150, 20, Text.of("Wait In"));
         TextFieldWidget waitOut = new TextFieldWidget(this.textRenderer, 10, 165, 150, 20, Text.of("Wait Out"));
 
-        TextFieldWidget lookYaw = new TextFieldWidget(this.textRenderer, 160, 20, 150, 20, Text.of("Look Yaw"));
-        TextFieldWidget lookPitch = new TextFieldWidget(this.textRenderer, 160, 40, 150, 20, Text.of("Look Pitch"));
+        TextFieldWidget lookX = new TextFieldWidget(this.textRenderer, 160, 20, 150, 20, Text.of("Look X"));
+        TextFieldWidget lookY = new TextFieldWidget(this.textRenderer, 160, 40, 150, 20, Text.of("Look Y"));
+        TextFieldWidget lookZ = new TextFieldWidget(this.textRenderer, 160, 60, 150, 20, Text.of("Look Z"));
 
         TextFieldWidget velocityThreshold = new TextFieldWidget(this.textRenderer, 160, 105, 150, 20, Text.of("Vel. Thresh"));
         TextFieldWidget innacuracyThreshold = new TextFieldWidget(this.textRenderer, 160, 125, 150, 20, Text.of("Inc. Thresh"));
         TextFieldWidget tolerance = new TextFieldWidget(this.textRenderer, 160, 145, 150, 20, Text.of("Tol"));
 
-        TextWidget lookYawLabel = new TextWidget(245, 20, 150, 20, Text.of("Look Yaw"), this.textRenderer);
-        TextWidget lookPitchLabel = new TextWidget(245, 40, 150, 20, Text.of("Look Pitch"), this.textRenderer);
+        TextWidget lookXLabel = new TextWidget(245, 20, 150, 20, Text.of("Look X"), this.textRenderer);
+        TextWidget lookYlabel = new TextWidget(245, 40, 150, 20, Text.of("Look Y"), this.textRenderer);
+        TextWidget lookZlabel = new TextWidget(245, 60, 150, 20, Text.of("Look Z"), this.textRenderer);
         TextWidget velocityThresholdLabel = new TextWidget(245, 105, 150, 20, Text.of("Vel. Thresh"), this.textRenderer);
         TextWidget innacuracyThresholdLabel = new TextWidget(245, 125, 150, 20, Text.of("Inc. Thresh"), this.textRenderer);
         TextWidget toleranceLabel = new TextWidget(245, 145, 150, 20, Text.of("Tolerance"), this.textRenderer);
@@ -78,6 +80,10 @@ public class EditNodeScreen extends Screen {
             nodeY.setText(String.valueOf((int) Navigation.currentNode.y));
             nodeZ.setText(String.valueOf((int) Navigation.currentNode.z));
 
+            lookX.setText(String.valueOf(Navigation.currentNode.lookx));
+            lookY.setText(String.valueOf(Navigation.currentNode.looky));
+            lookZ.setText(String.valueOf(Navigation.currentNode.lookz));
+
             name.setText(Navigation.currentNode.tag);
             type.setText(Navigation.currentNode.type.toString());
 
@@ -100,8 +106,8 @@ public class EditNodeScreen extends Screen {
             waitIn.setText("0");
             waitOut.setText("0");
 
-            velocityThreshold.setText("0.09");
-            innacuracyThreshold.setText("0.9");
+            velocityThreshold.setText("0.7");
+            innacuracyThreshold.setText("0.7");
             tolerance.setText("0.7");
         }
 
@@ -160,8 +166,56 @@ public class EditNodeScreen extends Screen {
 
                     node.tag = name.getText();
 
+                    if (!Objects.equals(lookX.getText(), "")) {
+                        try {
+                            node.lookx = Float.parseFloat(lookX.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Look X'"));
+                        }
+                    }
+
+                    if (!Objects.equals(lookY.getText(), "")) {
+                        try {
+                            node.looky = Float.parseFloat(lookY.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Look Y'"));
+                        }
+                    }
+
+                    if (!Objects.equals(lookZ.getText(), "")) {
+                        try {
+                            node.lookz = Float.parseFloat(lookZ.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Look Z'"));
+                        }
+                    }
+
+                    if (!Objects.equals(velocityThreshold.getText(), "")) {
+                        try {
+                            node.velocityThreshold = Float.parseFloat(velocityThreshold.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Vel. Thresh'"));
+                        }
+                    }
+
+                    if (!Objects.equals(waitIn.getText(), "")) {
+                        try {
+                            node.waitTimeIn = Integer.parseInt(waitIn.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Wait In'"));
+                        }
+                    }
+
+                    if (!Objects.equals(waitOut.getText(), "")) {
+                        try {
+                            node.waitTimeOut = Integer.parseInt(waitOut.getText());
+                        } catch (NumberFormatException e) {
+                            errorField.setMessage(Text.of("Error: Cannot parse text for 'Wait Out'"));
+                        }
+                    }
+
                     try {
-                        node.type = Node.NodeType.valueOf(type.getText());
+                        node.type = Node.NodeType.valueOf(type.getText().toUpperCase());
                     } catch (IllegalArgumentException ignored) {
                         errorField.setMessage(Text.of("Error: Node Type does not exist"));
                     }
@@ -192,7 +246,7 @@ public class EditNodeScreen extends Screen {
                 Node.NodeType typeObj;
 
                 try {
-                    typeObj = Node.NodeType.valueOf(type.getText());
+                    typeObj = Node.NodeType.valueOf(type.getText().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     errorField.setMessage(Text.of("Error: Node Type does not exist"));
                     return;
@@ -206,6 +260,54 @@ public class EditNodeScreen extends Screen {
                         typeObj,
                         name.getText()
                 );
+
+                if (!Objects.equals(lookX.getText(), "")) {
+                    try {
+                         newNode.lookx = Float.parseFloat(lookX.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Look X'"));
+                    }
+                }
+
+                if (!Objects.equals(lookY.getText(), "")) {
+                    try {
+                        newNode.looky = Float.parseFloat(lookY.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Look Y'"));
+                    }
+                }
+
+                if (!Objects.equals(lookZ.getText(), "")) {
+                    try {
+                        newNode.lookz = Float.parseFloat(lookZ.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Look Z'"));
+                    }
+                }
+
+                if (!Objects.equals(velocityThreshold.getText(), "")) {
+                    try {
+                        newNode.velocityThreshold = Float.parseFloat(velocityThreshold.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Vel. Thresh'"));
+                    }
+                }
+
+                if (!Objects.equals(waitIn.getText(), "")) {
+                    try {
+                        newNode.waitTimeIn = Integer.parseInt(waitIn.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Wait In'"));
+                    }
+                }
+
+                if (!Objects.equals(waitOut.getText(), "")) {
+                    try {
+                        newNode.waitTimeOut = Integer.parseInt(waitOut.getText());
+                    } catch (NumberFormatException e) {
+                        errorField.setMessage(Text.of("Error: Cannot parse text for 'Wait Out'"));
+                    }
+                }
 
                 Navigation.addNode(newNode);
 
@@ -265,8 +367,7 @@ public class EditNodeScreen extends Screen {
         }).dimensions(10, 80, 150, 20).build();
 
         ButtonWidget getPlayerLook = ButtonWidget.builder(Text.of("Apply Current Look"), (widget) -> {
-            lookYaw.setText(String.valueOf(player.getYaw()));
-            lookPitch.setText(String.valueOf(player.getPitch()));
+            //TODO: generate an X Y Z based on a unit vector of look orientation multiplied by something
         }).dimensions(160, 80, 150, 20).build();
 
         ButtonWidget calibrate = ButtonWidget.builder(Text.of("Calibrate"), (widget) -> {
@@ -427,10 +528,12 @@ public class EditNodeScreen extends Screen {
         addDrawableChild(nodeZ);
         addDrawableChild(getPlayerCoords);
 
-        addDrawableChild(lookYaw);
-        addDrawableChild(lookPitch);
-        addDrawableChild(lookYawLabel);
-        addDrawableChild(lookPitchLabel);
+        addDrawableChild(lookX);
+        addDrawableChild(lookY);
+        addDrawableChild(lookZ);
+        addDrawableChild(lookXLabel);
+        addDrawableChild(lookYlabel);
+        addDrawableChild(lookZlabel);
         addDrawableChild(getPlayerLook);
 
         addDrawableChild(name);
@@ -488,8 +591,8 @@ public class EditNodeScreen extends Screen {
         String currentTag = "None";
         String targetTag = "None";
 
-        if (Navigation.currentNode != null) currentTag = Navigation.currentNode.tag;
-        if (Navigation.targetNode != null) targetTag = Navigation.targetNode.tag;
+        if (Navigation.currentNode != null) currentTag = Navigation.currentNode.tag + " (" + Navigation.currentNode.type + ")";
+        if (Navigation.targetNode != null) targetTag = Navigation.targetNode.tag + " (" + Navigation.targetNode.type + ")";
 
         context.drawText(this.textRenderer, "Current Node: " + currentTag, this.width - 160, 30, 0xffffffff, true);
         context.drawText(this.textRenderer, "Target Node: " + targetTag, this.width - 160, 50, 0xffffffff, true);

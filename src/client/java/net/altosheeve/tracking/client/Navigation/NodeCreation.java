@@ -74,6 +74,16 @@ public class NodeCreation {
             nodeJson.put("y", node.y);
             nodeJson.put("z", node.z);
 
+            nodeJson.put("lookx", node.lookx);
+            nodeJson.put("looky", node.looky);
+            nodeJson.put("lookz", node.lookz);
+
+            nodeJson.put("sprint", node.sprint);
+
+            nodeJson.put("velocityThreshold", node.velocityThreshold);
+            nodeJson.put("waitTimeIn", node.waitTimeIn);
+            nodeJson.put("waitTimeOut", node.waitTimeOut);
+
             nodeJson.put("tag", node.tag);
             nodeJson.put("type", node.type);
             nodeJson.put("connections", node.connections);
@@ -104,12 +114,17 @@ public class NodeCreation {
         StringBuilder jsonString = new StringBuilder();
         while (scanner.hasNextLine()) jsonString.append(scanner.nextLine());
 
+        System.out.println(jsonString);
+
         if (jsonString.isEmpty()) return;
 
         JSONObject nodesJson = new JSONObject(jsonString.toString());
         JSONArray nodes = nodesJson.getJSONArray("nodes");
 
         for (int i = 0; i < nodes.length(); i++) {
+
+            System.out.println("adding node");
+
             Node newNode = new Node(0, 0, 0);
             JSONObject nodeJson = nodes.getJSONObject(i);
 
@@ -119,6 +134,16 @@ public class NodeCreation {
             newNode.y = nodeJson.getInt("y");
             newNode.z = nodeJson.getInt("z");
 
+            newNode.lookx = nodeJson.getFloat("lookx");
+            newNode.looky = nodeJson.getFloat("looky");
+            newNode.lookz = nodeJson.getFloat("lookz");
+
+            newNode.sprint = nodeJson.getBoolean("sprint");
+
+            newNode.velocityThreshold = nodeJson.getFloat("velocityThreshold");
+            newNode.waitTimeIn = nodeJson.getInt("waitTimeIn");
+            newNode.waitTimeOut = nodeJson.getInt("waitTimeOut");
+
             newNode.type = Node.NodeType.valueOf(nodeJson.getString("type"));
             newNode.tag = nodeJson.getString("tag");
 
@@ -127,6 +152,8 @@ public class NodeCreation {
             newNode.setColor();
 
             Navigation.addNode(newNode);
+
+            System.out.println(Navigation.nodes);
         }
 
         Navigation.calculateAllNodes();
@@ -146,7 +173,11 @@ public class NodeCreation {
                     player.getBlockZ(),
 
                     Node.NodeType.NORMAL,
-                    "Name me!"
+                    "Name me!",
+                    false,
+                    .7f,
+                    0,
+                    0
 
             );
 
@@ -165,7 +196,12 @@ public class NodeCreation {
                 player.getBlockZ(),
 
                 Navigation.currentNode.type,
-                Navigation.currentNode.tag
+                Navigation.currentNode.tag,
+
+                Navigation.currentNode.sprint,
+                Navigation.currentNode.velocityThreshold,
+                Navigation.currentNode.waitTimeIn,
+                Navigation.currentNode.waitTimeOut
 
         );
 
