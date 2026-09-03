@@ -113,7 +113,7 @@ public class Keys {
 
         while(placeNextNode.wasPressed()) NodeCreation.addNextNode();
 //
-//        while(openTerminal.wasPressed()) MinecraftClient.getInstance().setScreen(new Terminal(Text.of("Terminal Screen")));
+        while(openTerminal.wasPressed()) MinecraftClient.getInstance().setScreen(new Terminal(Text.of("Terminal Screen")));
 
 //        while(connectNode.wasPressed()) NodeCreation.connectNode();
 //        while(selectNode.wasPressed()) NodeCreation.selectNode();
