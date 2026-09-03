@@ -25,6 +25,13 @@ public class Terminal extends Screen {
         super(title);
     }
 
+    public static void addLine(String line) {
+
+        if (lines.size() > 100) lines.remove(lines.getLast());
+        lines.add(line);
+
+    }
+
     /*@Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 
@@ -85,18 +92,13 @@ public class Terminal extends Screen {
 
             }
 
-            /*@Override
-            public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                return false;
-            }
-
             @Override
             public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-                if (!hasShiftDown() && !hasAltDown() && !hasControlDown()) {
+                if (!client.isShiftPressed() && !client.isAltPressed() && !client.isCtrlPressed()) {
                     scrollOffset += (int) (lineMargin * verticalAmount);
                 }
                 return true;
-            }*/
+            }
         };
 
         addDrawableChild(input);
@@ -109,6 +111,7 @@ public class Terminal extends Screen {
 
         int offset = this.height - (lines.size() * lineMargin);
 
+        //TODO: make it so scrolling offsets the index of the lines instead of physically moving everything
         for (int i = 0; i < lines.size(); i++) {
             context.drawText(this.textRenderer, lines.get(i), 20, offset + (i * lineMargin) + scrollOffset - 20, 0xffffffff, true);
         }
