@@ -36,6 +36,8 @@ public class Relaying {
             return;
         }
 
+        if (udpHelper == null) return;
+
         for (Entity entity : Rendering.client.world.getEntities()) {
 
             String username = entity.getName().getString();
@@ -65,30 +67,39 @@ public class Relaying {
 
                     String headers = "{" +
                             "'Function' : 'get_player'," +
-                            "'Database' : 'oppwatch'" +
-                            "}";
+                            "'Database' : 'oppwatch'," +
+                            "'sessionToken' : '" + Verification.sessionToken + "'}";
 
                     String body = "{" +
                             "'username' : '" + entity.getStringifiedName() + "'" +
                             "}";
 
                     Request.get("http://" + Verification.caligulaEndpoint + "/functions", headers, body, (response) -> {
+
+                        System.out.println("response code");
+
+                        System.out.println(response.headers());
+                        System.out.println(response.body());
+                        System.out.println(response.statusCode());
+
                         if (response.statusCode() == 200) {
 
-                            JSONObject playerJson = new JSONObject(response.body());
+                            try {
 
-                            JSONArray playerDataAg = playerJson.getJSONArray("data");
+                                JSONObject playerJson = new JSONObject(response.body());
 
-                            if (!playerDataAg.isEmpty()) {
+                                JSONArray playerDataAg = playerJson.getJSONArray("data");
 
-                                JSONArray playerData = playerDataAg.getJSONArray(0);
-                                int threat = playerData.getInt(1);
+                                if (!playerDataAg.isEmpty()) {
 
-                                Waypoint.availableThreatLevels.put(entity.getUuid().toString(), threat);
+                                    JSONArray playerData = playerDataAg.getJSONArray(0);
+                                    int threat = playerData.getInt(1);
 
-                            }
+                                    Waypoint.availableThreatLevels.put(entity.getUuid().toString(), threat);
 
-                            else Waypoint.availableThreatLevels.put(entity.getUuid().toString(), 1);
+                                } else Waypoint.availableThreatLevels.put(entity.getUuid().toString(), 1);
+
+                            } catch (Exception ignored) { Waypoint.availableThreatLevels.put(entity.getUuid().toString(), 1); }
 
                         }
 
@@ -162,6 +173,8 @@ public class Relaying {
 
         HttpResponse<String> req = Request.get("http://" + host + ":9000/connect", headers);
 
+        System.out.println(req);
+
         udpHelper = new UDPhelper(host, Relay.UDPport);
         udpHelper.startRecieving(Relaying::gatherTelemetry);
 
@@ -184,7 +197,7 @@ public class Relaying {
                         incomingPlayer.x - .5f,
                         incomingPlayer.y,
                         incomingPlayer.z - .5f,
-                        Waypoint.Type.values()[incomingPlayer.getThreat()],
+                        Waypoint.Type.GOOD_GUY,
                         incomingPlayer.uuid,
                         incomingPlayer.username,
                         false
