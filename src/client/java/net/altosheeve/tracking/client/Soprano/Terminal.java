@@ -27,7 +27,7 @@ public class Terminal extends Screen {
 
     public static void addLine(String line) {
 
-        if (lines.size() > 100) lines.remove(lines.getLast());
+        if (lines.size() > 100) lines.remove(lines.getFirst());
         lines.add(line);
 
     }
@@ -95,7 +95,7 @@ public class Terminal extends Screen {
             @Override
             public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
                 if (!client.isShiftPressed() && !client.isAltPressed() && !client.isCtrlPressed()) {
-                    scrollOffset += (int) (lineMargin * verticalAmount);
+                    scrollOffset += (int) verticalAmount;
                 }
                 return true;
             }
@@ -111,9 +111,11 @@ public class Terminal extends Screen {
 
         int offset = this.height - (lines.size() * lineMargin);
 
+
+
         //TODO: make it so scrolling offsets the index of the lines instead of physically moving everything
-        for (int i = 0; i < lines.size(); i++) {
-            context.drawText(this.textRenderer, lines.get(i), 20, offset + (i * lineMargin) + scrollOffset - 20, 0xffffffff, true);
+        for (int i = scrollOffset; i < lines.size() && i < 50; i++) {
+            context.drawText(this.textRenderer, lines.get(i), 20, 20 + ((i - scrollOffset) * 10), 0xffffffff, true);
         }
 
         super.render(context, mouseX, mouseY, delta);
