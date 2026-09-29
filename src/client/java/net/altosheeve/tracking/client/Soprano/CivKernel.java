@@ -192,7 +192,7 @@ public class CivKernel extends BasicFunctions {
         }));
     }
 
-    public void _MOVE_TO() {
+    public void _GO_TO_NODE() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         assert player != null;
 
