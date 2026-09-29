@@ -1,6 +1,7 @@
 package net.altosheeve.tracking.client.Navigation;
 
 import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.altosheeve.tracking.client.Shapes.Layer;
 import net.altosheeve.tracking.client.Soprano.Terminal;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +11,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
+import java.io.IOException;
 import java.util.*;
 
 import static java.lang.Math.abs;
@@ -20,14 +22,33 @@ public class Navigation {
     public static Node targetNode;
 
     public static double velocityThreshold;
+    public static double interactionThreshold;
+
     public static int errorSteps = 0;
     public static int handleSteps = 0;
+
     private static boolean eating = false;
     private static boolean erroring = false;
     private static boolean interacted = false;
-    public static double interactionThreshold;
-    private static boolean deviationDirection = false;
+    public static boolean deviationDirection = false;
 
+    public static Vector3f idealVector     = new Vector3f();
+    public static Vector3f idealNormal     = new Vector3f();
+    public static Vector3f orientation     = new Vector3f();
+    public static Vector3f currentVelocity = new Vector3f();
+    public static Vector3f normalVelocity  = new Vector3f();
+    public static Vector3f targetVector    = new Vector3f();
+
+
+    public static double currentXPos = 0;
+    public static double currentZPos = 0;
+    public static double currentXVelocity = 0;
+    public static double currentZVelocity = 0;
+    public static double lastXPos = 0;
+    public static double lastZPos = 0;
+
+    public static double forwardVelocity;
+    public static double targetVelocity;
 
     public static int tick;
     public static int deepThreshold = 3;
@@ -42,6 +63,16 @@ public class Navigation {
 
     public interface Handler {
         void cb();
+    }
+
+    public static Node getNodeByUUID(String UUID) {
+
+        for (Node testNode : Navigation.nodes)
+            if (Objects.equals(testNode.UUID, UUID))
+                return testNode;
+
+        return null;
+
     }
 
     public static void resetControls() {
@@ -62,142 +93,26 @@ public class Navigation {
     }
 
     public static void addNode(Node node) {
+
         nodes.add(node);
         fillLayer.addShape(node);
         lineLayer.addShape(node);
+
+        try {
+
+            if (!node.connections.isEmpty())
+                for (String connection : node.connections)
+                    for (Node testNode : nodes)
+                        if (Objects.equals(testNode.UUID, connection))
+                            testNode.connections.add(node.UUID);
+
+        } catch (Exception ignored) {}
+
+        try { NodeCreation.dumpNodes(); }
+        catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public static void removeNode(Node node) {
-        nodes.remove(node);
-        fillLayer.removeShape(node);
-        lineLayer.removeShape(node);
-    }
-
-    public static void clearNodes() {
-
-        nodes.clear();
-        fillLayer.shapes.clear();
-        lineLayer.shapes.clear();
-
-    }
-
-    public static void detectError() {
-
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientPlayerEntity player = client.player;
-        assert player != null;
-
-        double velocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).length();
-
-        Vector3f currentNodeVector = new Vector3f((float) player.getX(), 0, (float) player.getZ()).sub(targetNode.x, 0, targetNode.z);
-        Vector3f idealVector = new Vector3f(currentNode.x, 0, currentNode.z).sub(targetNode.x, 0, targetNode.z);
-
-        deviationDirection = idealVector.dot(currentNodeVector) < 0;
-
-        if ((velocity < velocityThreshold && handleSteps > 20)) {
-            lastHandler = handler;
-            handler = Navigation::errorHandler;
-        }
-
-        else {
-            errorSteps = 0;
-            handleSteps ++;
-        }
-
-    }
-
-    //TODO: make node types and their associated handlers object oriented
-
-    public static void errorHandler() {
-
-        Terminal.addLine("running error handling");
-
-        erroring = true;
-
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientPlayerEntity player = client.player;
-        assert player != null;
-
-        Vector3f orientation     = player.getFacing().getUnitVector().normalize();
-        Vector3f currentVelocity = new Vec3d(player.getVelocity().x, 0, player.getVelocity().z).toVector3f();
-
-        double forwardVelocity = orientation.dot(currentVelocity);
-
-        Terminal.addLine("forward velocity: " + forwardVelocity);
-
-        if (currentVelocity.length() > velocityThreshold) {
-
-            Terminal.addLine("error handled");
-
-            handler = lastHandler;
-            errorSteps = 0;
-            erroring = false;
-
-            Terminal.addLine(handler.toString());
-
-            return;
-
-        }
-
-        if (errorSteps < 20) {
-
-            client.options.jumpKey.setPressed(true);
-            errorSteps++;
-
-            lastHandler.cb();
-
-            return;
-        }
-
-
-        Vector3f idealVector = new Vector3f(targetNode.x, (float) player.getY(), targetNode.z).sub(currentNode.x, (float) player.getY(), currentNode.z);
-        Vector3f idealNormal = new Vector3f(idealVector.z, (float) player.getY(), -idealVector.x);
-
-        float innacuracy = idealVector.dot(player.getVelocity().toVector3f());
-
-        Terminal.addLine("innaccuracy: " + innacuracy);
-        Terminal.addLine("velocityTime: " + errorSteps);
-
-        //attempt strafe
-        //TODO: measure forward velocity and general velocity to detect futile strafing
-        if (errorSteps < 100) {
-            if (deviationDirection) client.options.rightKey.setPressed(true);
-            else                    client.options.leftKey.setPressed(true);
-        }
-
-        if (errorSteps > 100 && errorSteps < 200) {
-            if (!deviationDirection) client.options.rightKey.setPressed(true);
-            else                     client.options.leftKey.setPressed(true);
-        }
-
-        //attempt door unstick
-        if (errorSteps > 200 && errorSteps < 220) {
-
-            player.setPitch(60);
-            client.options.useKey.setPressed(true);
-
-        }
-
-        //attempt sneak
-        if (errorSteps > 220 && errorSteps < 250) {
-
-            player.setPitch(0);
-            client.options.sneakKey.setPressed(true);
-
-        }
-
-        if (errorSteps > 200) client.options.jumpKey.setPressed(false);
-        if (errorSteps > 250) errorSteps = 0;
-
-        errorSteps++;
-
-    }
-
-    public static void basicWalkHandler() {
-
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientPlayerEntity player = client.player;
-        assert player != null;
+    public static void stareAtTarget(ClientPlayerEntity player) {
 
         double dx = player.getX() - targetNode.x - .5;
         double dy = player.getY() - targetNode.y;
@@ -222,6 +137,192 @@ public class Navigation {
 
     }
 
+    public static void removeNode(Node target) {
+
+        for (Node node : Navigation.nodes) {
+
+            if (node != target)
+                node.connections.remove(target.UUID);
+
+            node.distanceMap.remove(target.UUID);
+
+            for (String connection : node.connections)
+                for (Node testNode : nodes)
+                    if (Objects.equals(testNode.UUID, connection))
+                        testNode.connections.remove(node.UUID);
+
+        }
+
+        nodes.remove(target);
+        fillLayer.removeShape(target);
+        lineLayer.removeShape(target);
+
+        try { NodeCreation.dumpNodes(); }
+        catch (IOException e) { throw new RuntimeException(e); }
+
+    }
+
+    public static void clearNodes() {
+
+        nodes.clear();
+        fillLayer.shapes.clear();
+        lineLayer.shapes.clear();
+
+    }
+
+    public static void detectError() {
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        assert player != null;
+
+        currentXPos = player.getX();
+        currentZPos = player.getX();
+
+        idealVector     = new Vector3f(currentNode.x, 0, currentNode.z).sub(targetNode.x, 0, targetNode.z);
+        idealNormal     = new Vector3f(-idealVector.z, 0, idealVector.x);
+        orientation     = player.getFacing().getUnitVector().normalize();
+        targetVector    = new Vector3f(targetNode.x, 0, targetNode.z).sub((float) player.getX(), 0, (float) player.getZ()).normalize();
+
+        //TODO: currentVelocity NaNs out when getting stopped in corners. Probably a good idea to abandon vector3f all together
+        currentXVelocity = Math.abs(currentXPos - lastXPos);
+        currentZVelocity = Math.abs(currentZPos - lastZPos);
+
+        currentVelocity = new Vector3f((float) player.getVelocity().x, 0, (float) player.getVelocity().z);
+
+        normalVelocity  = currentVelocity.normalize();
+
+        lastXPos = currentXPos;
+        lastZPos = currentZPos;
+
+        forwardVelocity = orientation.dot(normalVelocity);
+        targetVelocity  = Math.abs(targetVector.dot(normalVelocity) * forwardVelocity);
+
+        Terminal.addLine("target velocity: " + targetVelocity);
+        Terminal.addLine("forwardVelocity: " + forwardVelocity);
+        Terminal.addLine("regularVelocity: " + currentVelocity);
+        Terminal.addLine("Nanning?: " + Double.isNaN(forwardVelocity));
+        Terminal.addLine("Nanning?: " + Double.isNaN(targetVelocity));
+        Terminal.addLine("threshold: " + velocityThreshold);
+        Terminal.addLine("erroring: " + erroring);
+        Terminal.addLine("handleSteps: " + handleSteps);
+        Terminal.addLine("currentXVelocity: " + currentXVelocity);
+        Terminal.addLine("currentZVelocity: " + currentZVelocity);
+
+        if (targetVelocity < velocityThreshold || Double.isNaN(targetVelocity)) {
+
+            Terminal.addLine("bot stalled. handling error");
+
+            if (!targetNode.erroring) deviationDirection = idealNormal.dot(targetVector) < 0;
+
+            targetNode.erroring = true;
+
+            erroring = true;
+
+        }
+
+        if (targetVelocity >= velocityThreshold) {
+
+            if (erroring) handler = lastHandler;
+
+            targetNode.erroring = false;
+            targetNode.errorSteps = 0;
+
+            handleSteps ++;
+            errorSteps = 0;
+            erroring = false;
+        }
+
+    }
+
+    //TODO: make node types and their associated handlers object oriented
+
+    public static void errorHandler() {
+
+        Terminal.addLine("running error handling");
+
+        erroring = true;
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        assert player != null;
+
+        Vector3f idealVector = new Vector3f(targetNode.x, (float) player.getY(), targetNode.z).sub(currentNode.x, (float) player.getY(), currentNode.z);
+
+        double innacuracy = idealVector.dot(player.getVelocity().toVector3f());
+
+        Terminal.addLine("innaccuracy: " + innacuracy);
+        Terminal.addLine("velocityTime: " + errorSteps);
+
+        //attempt door unstick
+        //TODO: swap to non-placeable in the event of a door unstick attempt
+        if (errorSteps < 5) {
+
+            player.setPitch(60);
+            client.options.useKey.setPressed(true);
+
+        }
+
+        if (errorSteps < 20) {
+
+            //System.out.println("jumping, " + errorSteps);
+
+            client.options.jumpKey.setPressed(true);
+
+            lastHandler.cb();
+
+        }
+
+        stareAtTarget(player);
+
+        //TODO: use a kernel for sequencing action, that's what its there for. And make it time based
+
+        //attempt strafe
+        //TODO: measure forward velocity and general velocity to detect futile strafing
+        if (errorSteps >= 20 && errorSteps < 120) {
+
+            System.out.println("attempting strafe, " + deviationDirection);
+
+            client.options.jumpKey.setPressed(true);
+
+            if (deviationDirection) client.options.rightKey.setPressed(true);
+            else                    client.options.leftKey.setPressed(true);
+        }
+
+        if (errorSteps >= 120 && errorSteps < 220) {
+
+            client.options.jumpKey.setPressed(true);
+
+            if (deviationDirection) client.options.leftKey.setPressed(true);
+            else                    client.options.rightKey.setPressed(true);
+
+        }
+
+        //attempt sneak
+        if (errorSteps >= 240 && errorSteps < 260) {
+
+            player.setPitch(0);
+            client.options.sneakKey.setPressed(true);
+
+        }
+
+        if (errorSteps >= 220) client.options.jumpKey.setPressed(false);
+        if (errorSteps >= 260) errorSteps = 0;
+
+        errorSteps++;
+
+    }
+
+    public static void basicWalkHandler() {
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        assert player != null;
+
+        stareAtTarget(player);
+
+    }
+
     public static void iceroadHandler() {
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -232,6 +333,8 @@ public class Navigation {
         else client.options.jumpKey.setPressed(false);
         client.options.sprintKey.setPressed(true);
 
+        stareAtTarget(player);
+
         Vector3f idealVector = new Vector3f(targetNode.x, 0, targetNode.z).sub(currentNode.x, 0, targetNode.z);
         Vector3f idealNormal = new Vector3f(idealVector.z, 0, -idealVector.x);
 
@@ -241,8 +344,8 @@ public class Navigation {
         idealVector.normalize();
         idealNormal.normalize();
 
-        float innacuracy = idealVector.dot(currentNodeVector);
-        float deviation = idealNormal.dot(currentNodeVector);
+        double innacuracy = idealVector.dot(currentNodeVector);
+        double deviation = idealNormal.dot(currentNodeVector);
 
         Terminal.addLine("ideal vector: " + idealVector);
         Terminal.addLine("ideal normal: " + idealNormal);
@@ -362,10 +465,10 @@ public class Navigation {
         for (Node node : nodes) node.calculateDistances();
     }
 
-    public static ArrayList<Integer> generatePathingItinerary(String nodeTag) {
+    public static ArrayList<String> generatePathingItinerary(String nodeTag) {
 
-        ArrayList<Integer> closestApproachOut = new ArrayList<>();
-        ArrayList<Integer> lastClosestApproachOutSolution = new ArrayList<>();
+        ArrayList<String> closestApproachOut = new ArrayList<>();
+        ArrayList<String> lastClosestApproachOutSolution = new ArrayList<>();
         int loopdetection = 0;
 
         Optional<Node> testing = nodes.stream().filter(node -> Objects.equals(nodeTag, node.tag)).findFirst();
@@ -374,20 +477,20 @@ public class Navigation {
         Node targetNode = testing.get();
         Node testNode = currentNode;
 
-        ArrayList<Integer> searched = new ArrayList<>();
+        ArrayList<String> searched = new ArrayList<>();
 
         class key implements Comparator {
             @Override
             public int compare(Object o1, Object o2) {
 
-                Node node1 = nodes.get((Integer) o1);
-                Node node2 = nodes.get((Integer) o2);
+                Node node1 = Navigation.getNodeByUUID((String) o1);
+                Node node2 = Navigation.getNodeByUUID((String) o2);
 
                 int node1Dist = 99999;
                 int node2Dist = 99999;
 
-                if (node1.distanceMap.containsKey(nodes.indexOf(targetNode))) node1Dist = node1.distanceMap.get(nodes.indexOf(targetNode));
-                if (node2.distanceMap.containsKey(nodes.indexOf(targetNode))) node2Dist = node2.distanceMap.get(nodes.indexOf(targetNode));
+                if (node1.distanceMap.containsKey(targetNode.UUID)) node1Dist = node1.distanceMap.get(targetNode.UUID);
+                if (node2.distanceMap.containsKey(targetNode.UUID)) node2Dist = node2.distanceMap.get(targetNode.UUID);
 
                 if (node1Dist > node2Dist) return 1;
                 else if (node1Dist == node2Dist) return 0;
@@ -398,27 +501,27 @@ public class Navigation {
         //gather based on closest approach
         while (true) {
 
-            ArrayList<Integer> sorted = testNode.connections;
+            ArrayList<String> sorted = testNode.connections;
             sorted.sort(new key());
 
             boolean deadEnd = true;
 
-            if (testNode.connections.contains(nodes.indexOf(targetNode))) {
-                closestApproachOut.add(nodes.indexOf(targetNode));
+            if (testNode.connections.contains(targetNode.UUID)) {
+                closestApproachOut.add(targetNode.UUID);
                 return closestApproachOut;
             }
 
             if (!searched.containsAll(testNode.connections)) {
-                for (int i : sorted) {
+                for (String uuid : sorted) {
 
-                    Node instance = nodes.get(i);
+                    Node instance = getNodeByUUID(uuid);
 
-                    if (!searched.contains(i)) {
+                    if (!searched.contains(uuid)) {
 
                         deadEnd = false;
 
-                        searched.add(i);
-                        closestApproachOut.add(i);
+                        searched.add(uuid);
+                        closestApproachOut.add(uuid);
 
                         testNode = instance;
 
@@ -438,7 +541,7 @@ public class Navigation {
 
                 if (closestApproachOut.size() != 1) closestApproachOut.removeLast();
 
-                testNode = nodes.get(closestApproachOut.getLast());
+                testNode = getNodeByUUID(closestApproachOut.getLast());
 
             }
 

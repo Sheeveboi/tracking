@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Navigation;
 
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.altosheeve.tracking.client.Soprano.Execution;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -216,18 +217,20 @@ public class EditNodeScreen extends Screen {
 
                     try {
                         node.type = Node.NodeType.valueOf(type.getText().toUpperCase());
+
                     } catch (IllegalArgumentException ignored) {
                         errorField.setMessage(Text.of("Error: Node Type does not exist"));
                     }
 
-                    node.setColor();
+                    node = Node.mutate(node);
+
+                    Navigation.currentNode = node;
+
+                    try { NodeCreation.dumpNodes(); } catch (IOException ignored) {}
 
                     break;
                 }
             }
-
-            try { NodeCreation.dumpNodes(); }
-            catch (IOException e) { throw new RuntimeException(e); }
         }).dimensions(320, 20, 150, 20).build();;
 
         ButtonWidget add = ButtonWidget.builder(Text.of("Add"), (widget) -> {
@@ -261,6 +264,7 @@ public class EditNodeScreen extends Screen {
                         name.getText()
                 );
 
+                //TODO: turn these if statements into a dedicated function
                 if (!Objects.equals(lookX.getText(), "")) {
                     try {
                          newNode.lookx = Float.parseFloat(lookX.getText());
@@ -309,55 +313,33 @@ public class EditNodeScreen extends Screen {
                     }
                 }
 
-                Navigation.addNode(newNode);
-
                 if (Navigation.currentNode != null) {
-                    newNode.connections.add(Navigation.nodes.indexOf(Navigation.currentNode));
-                    Navigation.currentNode.connections.add(Navigation.nodes.indexOf(newNode));
+                    newNode.connections.add(Navigation.currentNode.UUID);
+                    Navigation.currentNode.connections.add(newNode.UUID);
                 }
 
                 Navigation.currentNode = newNode;
 
-            } catch (IllegalArgumentException ignored) { System.out.println(ignored); }
+                Navigation.addNode(Node.mutate(newNode));
 
-            try { NodeCreation.dumpNodes(); }
-            catch (IOException e) { throw new RuntimeException(e); }
+            } catch (IllegalArgumentException ignored) { System.out.println(ignored); }
         }).dimensions(320, 40, 150, 20).build();
 
         ButtonWidget delete = ButtonWidget.builder(Text.of("Delete"), (widget) -> {
 
             if (Navigation.currentNode != null) {
 
-                int index = Navigation.nodes.indexOf(Navigation.currentNode);
+                for (String connection : Navigation.currentNode.connections) {
 
-                for (Node node : Navigation.nodes) {
-                    if (node != Navigation.currentNode && node.connections.contains(Navigation.nodes.indexOf(Navigation.currentNode)))
-                        node.connections.remove((Integer) Navigation.nodes.indexOf(Navigation.currentNode));
-
-                    node.distanceMap.remove(Navigation.nodes.indexOf(Navigation.currentNode));
-
-                    ArrayList<Integer> newConnections = new ArrayList<>();
-
-                    for (int connection : node.connections) {
-                        if (connection >= index) {
-                            connection --;
-                            newConnections.add(connection);
-                        }
-                        else newConnections.add(connection);
-                    }
-
-                    node.connections = newConnections;
+                    Node connectedNode = Navigation.getNodeByUUID(connection);
+                    connectedNode.connections.remove(Navigation.currentNode.UUID);
 
                 }
 
                 Navigation.removeNode(Navigation.currentNode);
 
-                Navigation.currentNode = null;
-
             }
 
-            try { NodeCreation.dumpNodes(); }
-            catch (IOException e) { throw new RuntimeException(e); }
         }).dimensions(320, 60, 150, 20).build();
 
         ButtonWidget getPlayerCoords = ButtonWidget.builder(Text.of("Apply Player Coords"), (widget) -> {

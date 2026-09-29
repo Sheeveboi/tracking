@@ -4,7 +4,7 @@ import net.altosheeve.tracking.client.ChASM.ExtendableCompiler;
 import net.altosheeve.tracking.client.ChASM.Syntax.StandardCompiler;
 import net.altosheeve.tracking.client.Core.Rendering;
 import net.altosheeve.tracking.client.Navigation.Navigation;
-import net.altosheeve.tracking.client.Navigation.Node;
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.minecraft.util.math.Vec3d;
 import java.io.File;
 import java.io.FileNotFoundException;

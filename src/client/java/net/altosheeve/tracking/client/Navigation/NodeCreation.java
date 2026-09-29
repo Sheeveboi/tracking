@@ -1,9 +1,9 @@
 package net.altosheeve.tracking.client.Navigation;
 
 import net.altosheeve.tracking.client.Core.Rendering;
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.StyleSpriteSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,16 +41,8 @@ public class NodeCreation {
         for (Node node : Navigation.nodes) {
             if (node.x == player.getBlockX() && node.y == player.getBlockY() && node.z == player.getBlockZ()) {
 
-                if (Navigation.currentNode.connections.contains(Navigation.nodes.indexOf(node)) || node.connections.contains(Navigation.nodes.indexOf(Navigation.currentNode))) {
-                    node.connections.remove((Object) Navigation.nodes.indexOf(Navigation.currentNode));
-                    Navigation.currentNode.connections.remove((Object) Navigation.nodes.indexOf(node));
-                    //these need to be cast to Object, because the remove function will treat these like actual indexes instead
-
-                    break;
-                }
-
-                node.connections.add(Navigation.nodes.indexOf(Navigation.currentNode));
-                Navigation.currentNode.connections.add(Navigation.nodes.indexOf(node));
+                if (node.connections.contains(Navigation.currentNode.UUID)) node.connections.remove(Navigation.currentNode.UUID);
+                else node.connections.add(Navigation.currentNode.UUID);
 
                 break;
             }
@@ -86,6 +78,7 @@ public class NodeCreation {
 
             nodeJson.put("tag", node.tag);
             nodeJson.put("type", node.type);
+            nodeJson.put("uuid", node.UUID);
             nodeJson.put("connections", node.connections);
 
             nodesArray.put(nodeJson);
@@ -147,9 +140,12 @@ public class NodeCreation {
             newNode.type = Node.NodeType.valueOf(nodeJson.getString("type"));
             newNode.tag = nodeJson.getString("tag");
 
-            for (Object connection : nodeJson.getJSONArray("connections").toList()) newNode.connections.add((int) connection);
+            //TODO: node connections should be hash/uuid based, not index based
+            for (Object connection : nodeJson.getJSONArray("connections").toList()) newNode.connections.add((String) connection);
 
-            newNode.setColor();
+            newNode = Node.mutate(newNode);
+
+            newNode.UUID = nodeJson.getString("uuid");
 
             Navigation.addNode(newNode);
 
@@ -181,6 +177,8 @@ public class NodeCreation {
 
             );
 
+            newNode = Node.mutate(newNode);
+
             Navigation.addNode(newNode);
 
             Navigation.currentNode = newNode;
@@ -205,13 +203,16 @@ public class NodeCreation {
 
         );
 
+        newNode = Node.mutate(newNode);
+
+        newNode.connections.add(Navigation.currentNode.UUID);
+
         Navigation.addNode(newNode);
 
-        newNode.connections.add(Navigation.nodes.indexOf(Navigation.currentNode));
-
-        Navigation.currentNode.connections.add(Navigation.nodes.indexOf(newNode));
-
         Navigation.currentNode = newNode;
+
+        try { dumpNodes(); }
+        catch (IOException e) { throw new RuntimeException(e); }
 
     }
 

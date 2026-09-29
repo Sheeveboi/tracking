@@ -1,5 +1,6 @@
 package net.altosheeve.tracking.client.Navigation;
 
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.altosheeve.tracking.client.Soprano.Typing;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ShellPrograms {
 
         //encode node tolerance
         out.add((byte) Typing.STATIC_EXPRESSION);
-        out.addAll(Typing._ENCODE_FLOAT(0.6f));
+        out.addAll(Typing._ENCODE_FLOAT(0.7f));
 
         return out;
 

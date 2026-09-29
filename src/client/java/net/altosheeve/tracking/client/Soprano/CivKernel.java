@@ -1,7 +1,7 @@
 package net.altosheeve.tracking.client.Soprano;
 
 import net.altosheeve.tracking.client.Navigation.Navigation;
-import net.altosheeve.tracking.client.Navigation.Node;
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.altosheeve.tracking.client.Soprano.Async.Request;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -203,6 +203,8 @@ public class CivKernel extends BasicFunctions {
         int blockZ = Typing._PARSE_INTEGER(this);
         float tolerance = Typing._PARSE_FLOAT(this);
 
+        Navigation.targetNode.init();
+
         final boolean[] firstTick = {true};
         this.addRequest(new Request(() -> {
 
@@ -210,16 +212,16 @@ public class CivKernel extends BasicFunctions {
 
             Navigation.resetControls();
 
-            boolean out = player.getLastRenderPos().distanceTo(new Vec3d(blockX + .5, blockY + .5, blockZ + .5)) < tolerance;
-
-            if (Navigation.targetNode.type == Node.NodeType.USE) {
-                MinecraftClient.getInstance().options.forwardKey.setPressed(!out);
-            }
-            else MinecraftClient.getInstance().options.forwardKey.setPressed(true);
+            boolean out = Navigation.targetNode.isFinished();
 
             if (!firstTick[0] || out) {
-                Navigation.handler.cb();
-                Navigation.detectError();
+                try {
+                    Navigation.detectError();
+                    if (Navigation.targetNode.erroring) Navigation.targetNode.error();
+                    else                                Navigation.targetNode.handle();
+                } catch (Exception e) {
+                    Terminal.addLine("handling error 500");
+                }
             }
             else {
 
@@ -263,21 +265,23 @@ public class CivKernel extends BasicFunctions {
 
         int origin = this.programPointer + 1;
 
-        ArrayList<Integer> itinerary = Navigation.generatePathingItinerary(targetTag);
+        ArrayList<String> itinerary = Navigation.generatePathingItinerary(targetTag);
         assert itinerary != null;
 
         System.out.println("itinerary: " + itinerary);
 
-        for (int i : itinerary) {
+        for (String uuid : itinerary) {
 
-            Node node = Navigation.nodes.get(i);
+            Node node = Navigation.getNodeByUUID(uuid);
 
             this.insertInstruction((byte) 0x3, origin); origin++; //set as target node
 
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-            this.insertInstructions(Typing._ENCODE_INTEGER(i), origin); origin += Typing.INTEGER_SIZE + 1; //encode index
+            this.insertInstructions(Typing._ENCODE_STRING(uuid), origin); origin += uuid.length() + 2; //encode index
 
             tolerance = originalTolerance;
+
+            //TODO: remove _set_handler operations and add _set_value operations instead for changing things like velocity threshold, tolerance, etc
 
             switch (node.type) {
                 case NORMAL:
@@ -285,7 +289,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) 0x5, origin); origin++; //set basic movement chestHandler
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.7f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -294,7 +298,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) 0x7, origin); origin++; //set basic movement chestHandler
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.7f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     tolerance = 1.1f;
 
@@ -310,7 +314,7 @@ public class CivKernel extends BasicFunctions {
                     tolerance = 2;
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.7f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -319,7 +323,7 @@ public class CivKernel extends BasicFunctions {
                     this.insertInstruction((byte) 0x6, origin); origin++; //set basic movement chestHandler
 
                     this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++; //set as static expression
-                    this.insertInstructions(Typing._ENCODE_FLOAT(.09f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
+                    this.insertInstructions(Typing._ENCODE_FLOAT(.7f), origin); origin += Typing.FLOAT_SIZE + 1; //encode velocity threshold
 
                     break;
 
@@ -337,11 +341,11 @@ public class CivKernel extends BasicFunctions {
             this.insertInstructions(Typing._ENCODE_INTEGER((int) node.z), origin); origin += Typing.INTEGER_SIZE + 1;
 
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++;
-            this.insertInstructions(Typing._ENCODE_FLOAT(tolerance), origin); origin += Typing.FLOAT_SIZE + 1; //set tolerace
+            this.insertInstructions(Typing._ENCODE_FLOAT(tolerance), origin); origin += Typing.FLOAT_SIZE + 1; //set tolerance
 
             this.insertInstruction((byte) 0x4, origin); origin++; //set as current node
             this.insertInstruction((byte) Typing.STATIC_EXPRESSION, origin); origin++;
-            this.insertInstructions(Typing._ENCODE_INTEGER(i), origin); origin += Typing.INTEGER_SIZE + 1; //encode static integer
+            this.insertInstructions(Typing._ENCODE_STRING(uuid), origin); origin += uuid.length() + 2; //encode static integer
 
         }
 
@@ -355,13 +359,15 @@ public class CivKernel extends BasicFunctions {
     }
 
     public void _SET_CURRENT_NODE() {
-        int index = Typing._PARSE_INTEGER(this);
-        Navigation.currentNode = Navigation.nodes.get(index);
+        String uuid = Typing._PARSE_STRING(this);
+        Navigation.currentNode = Navigation.getNodeByUUID(uuid);
+        Navigation.handleSteps = 0;
     }
 
     public void _SET_TARGET_NODE() {
-        int index = Typing._PARSE_INTEGER(this);
-        Navigation.targetNode = Navigation.nodes.get(index);
+        String uuid = Typing._PARSE_STRING(this);
+        System.out.println("finding uuid: " + uuid);
+        Navigation.targetNode = Navigation.getNodeByUUID(uuid);
         System.out.println(Navigation.targetNode.tag);
     }
 
@@ -1147,7 +1153,7 @@ public class CivKernel extends BasicFunctions {
 
         this.registerInstruction((byte) 0x0, this::_CALIBRATE);
 
-        this.registerInstruction((byte) 0x1, this::_MOVE_TO);
+        this.registerInstruction((byte) 0x1, this::_GO_TO_NODE);
         this.registerInstruction((byte) 0x2, this::_PATH_TO);
         this.registerInstruction((byte) 0x2aa, this::_RESET_CONTROLS);
 
