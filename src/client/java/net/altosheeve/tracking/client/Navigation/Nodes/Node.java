@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static net.altosheeve.tracking.client.Navigation.Navigation.stareAtTarget;
@@ -60,19 +61,8 @@ public class Node extends Box {
 
         }
 
-        newNode.tag                  = node.tag;
-        newNode.connections          = node.connections;
-        newNode.type                 = node.type;
-        newNode.distanceMap          = node.distanceMap;
-        newNode.velocityThreshold    = node.velocityThreshold;
-        newNode.innaccuracyThreshold = node.innaccuracyThreshold;
-        newNode.tolerance            = node.tolerance;
-        newNode.sprint               = node.sprint;
-        newNode.lookx                = node.lookx;
-        newNode.looky                = node.looky;
-        newNode.lookz                = node.lookz;
-        newNode.waitTimeIn           = node.waitTimeIn;
-        newNode.waitTimeOut          = node.waitTimeOut;
+        Field[] allFields = Node.class.getDeclaredFields();
+        for (Field field : allFields) newNode.setField(field.getName(), node.getField(field.getName()));
 
         return newNode;
 
@@ -137,6 +127,61 @@ public class Node extends Box {
         this.type = type;
         this.tag = tag;
         this.connections = connections;
+    }
+
+    //From Alex Burdusel on StackOverflow (Modified to not be static)
+    public boolean setField(String fieldName, Object fieldValue) {
+
+        Field field;
+        Class superClass = this.getClass().getSuperclass();
+
+        try {
+            field = this.getClass().getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            field = null;
+        }
+
+        while (field == null && superClass != null) {
+
+            try {
+                field = superClass.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                superClass = superClass.getSuperclass();
+            }
+
+        }
+
+        if (field == null) {
+            return false;
+        }
+
+        field.setAccessible(true);
+
+        try {
+            field.set(this, fieldValue);
+            return true;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+
+    }
+
+    public Object getField(String fieldName) {
+
+        Object value = null;
+
+        try {
+
+            Field field = Node.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            value = field.get(this);
+
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        return value;
+
     }
 
     public void calculateDistances() {

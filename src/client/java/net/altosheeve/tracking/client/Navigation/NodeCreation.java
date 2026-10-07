@@ -10,6 +10,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 //TODO: this class is purely for local storage
@@ -52,6 +55,7 @@ public class NodeCreation {
     }
 
     public static void dumpNodes() throws IOException {
+
         if (!nodeFile.exists()) {
             nodeFile.createNewFile();
             return;
@@ -59,29 +63,17 @@ public class NodeCreation {
 
         JSONArray nodesArray = new JSONArray();
 
+        List<Field> allFields = Arrays.asList(Node.class.getDeclaredFields());
+
+        System.out.println(allFields);
+
         for (Node node : Navigation.nodes) {
+
             JSONObject nodeJson = new JSONObject();
 
-            nodeJson.put("x", node.x);
-            nodeJson.put("y", node.y);
-            nodeJson.put("z", node.z);
-
-            nodeJson.put("lookx", node.lookx);
-            nodeJson.put("looky", node.looky);
-            nodeJson.put("lookz", node.lookz);
-
-            nodeJson.put("sprint", node.sprint);
-
-            nodeJson.put("velocityThreshold", node.velocityThreshold);
-            nodeJson.put("waitTimeIn", node.waitTimeIn);
-            nodeJson.put("waitTimeOut", node.waitTimeOut);
-
-            nodeJson.put("tag", node.tag);
-            nodeJson.put("type", node.type);
-            nodeJson.put("uuid", node.UUID);
-            nodeJson.put("connections", node.connections);
-
+            for (Field field : allFields) nodeJson.put(field.getName(), node.getField(field.getName())); //I love reflection!
             nodesArray.put(nodeJson);
+
         }
 
         JSONObject nodesJson = new JSONObject();
@@ -123,24 +115,7 @@ public class NodeCreation {
 
             System.out.println(nodeJson.toString());
 
-            newNode.x = nodeJson.getInt("x");
-            newNode.y = nodeJson.getInt("y");
-            newNode.z = nodeJson.getInt("z");
-
-            newNode.lookx = nodeJson.getFloat("lookx");
-            newNode.looky = nodeJson.getFloat("looky");
-            newNode.lookz = nodeJson.getFloat("lookz");
-
-            newNode.sprint = nodeJson.getBoolean("sprint");
-
-            newNode.velocityThreshold = nodeJson.getFloat("velocityThreshold");
-            newNode.waitTimeIn = nodeJson.getInt("waitTimeIn");
-            newNode.waitTimeOut = nodeJson.getInt("waitTimeOut");
-
-            newNode.type = Node.NodeType.valueOf(nodeJson.getString("type"));
-            newNode.tag = nodeJson.getString("tag");
-
-            //TODO: node connections should be hash/uuid based, not index based
+            for (String field : nodeJson.keySet()) newNode.setField(field, nodeJson.get(field));
             for (Object connection : nodeJson.getJSONArray("connections").toList()) newNode.connections.add((String) connection);
 
             newNode = Node.mutate(newNode);
