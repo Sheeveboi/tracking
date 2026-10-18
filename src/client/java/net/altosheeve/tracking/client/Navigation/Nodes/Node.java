@@ -14,8 +14,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.json.JSONArray;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static net.altosheeve.tracking.client.Navigation.Navigation.stareAtTarget;
