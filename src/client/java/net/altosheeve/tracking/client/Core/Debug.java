@@ -1,5 +1,7 @@
 package net.altosheeve.tracking.client.Core;
 
+import net.altosheeve.tracking.client.Navigation.Navigation;
+import net.altosheeve.tracking.client.Navigation.Nodes.Node;
 import net.altosheeve.tracking.client.Shapes.Shape;
 import net.altosheeve.tracking.client.Waypoints.Waypoint;
 import net.minecraft.client.gui.DrawContext;
@@ -9,6 +11,8 @@ import net.minecraft.text.Text;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Debug {
 
@@ -20,7 +24,8 @@ public class Debug {
     public static float avgPacketDelta = 0;
     public static int UDPObjectCount = 0;
 
-    public static ArrayList<Integer> deltas      = new ArrayList<>();
+    public static ArrayList<Integer> deltas = new ArrayList<>();
+    public static ArrayList<String> waypointIDs = new ArrayList<>();
 
     public static class DebugScreen extends Screen {
 
@@ -42,6 +47,17 @@ public class Debug {
             context.drawText(this.textRenderer, "incomingTimestamp: "   + incomingTimestamp,   20, 100,0xffffffff, true);
             context.drawText(this.textRenderer, "avgPacketDelta: "      + new BigDecimal(avgPacketDelta).toPlainString(),      20, 140,0xffffffff, true);
             context.drawText(this.textRenderer, "UDPObjectCount: "      + UDPObjectCount,      20, 160,0xffffffff, true);
+            context.drawText(this.textRenderer, "waypoint IDs: "        ,                      20, 180, 0xffffffff, true);
+
+            ArrayList<String> sortedWaypoints = new ArrayList<>();
+            for (Waypoint waypoint : Waypoint.waypointSync) sortedWaypoints.add(waypoint.UUID);
+            Collections.sort(sortedWaypoints);
+
+            int i = 0;
+            for (String waypointUUID : sortedWaypoints) {
+                context.drawText(this.textRenderer, waypointUUID, 20, 200 + (i * 20), 0xffffffff, true);
+                i++;
+            }
 
         }
 
@@ -67,6 +83,8 @@ public class Debug {
         avgPacketDelta = (float) sumDeltas / deltas.size();
 
         if (deltas.size() > 100) deltas.remove(deltas.getLast());
+
+        for (Waypoint waypoint : Waypoint.waypoints) waypointIDs.add(waypoint.UUID);
 
     }
 
