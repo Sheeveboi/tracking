@@ -192,6 +192,12 @@ public class Relaying {
 
             Player incomingPlayer = (Player) networkObject;
 
+            ArrayList<Waypoint> remove = new ArrayList<>();
+            for (Waypoint waypoint : Waypoint.waypointSync)
+                if (waypoint.UUID == incomingPlayer.uuid)
+                    remove.add(waypoint);
+            Waypoint.waypointSync.removeAll(remove);
+
             if (Config.getWaypointAllowedEntity("players"))
                 Waypoint.queueWaypointUpdate(
                         incomingPlayer.x - .5f,
