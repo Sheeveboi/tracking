@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class NodeCreation {
 
     public static String current = System.getProperty("user.dir");
-    public static File nodeFile = new File(current + File.separator + "nodes/default.NODE");
+    public static File nodeFile = new File(current + File.separator + "nodes/default.json");
 
     public static void selectNode() {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;

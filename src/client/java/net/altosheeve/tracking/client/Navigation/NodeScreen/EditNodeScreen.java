@@ -1,6 +1,9 @@
-package net.altosheeve.tracking.client.Navigation;
+package net.altosheeve.tracking.client.Navigation.NodeScreen;
 
+import net.altosheeve.tracking.client.Navigation.Navigation;
+import net.altosheeve.tracking.client.Navigation.NodeCreation;
 import net.altosheeve.tracking.client.Navigation.Nodes.Node;
+import net.altosheeve.tracking.client.Navigation.ShellPrograms;
 import net.altosheeve.tracking.client.Soprano.Execution;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +16,6 @@ import net.minecraft.text.Text;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 
 //TODO: this is short term but this screen could def be improved
@@ -112,14 +114,14 @@ public class EditNodeScreen extends Screen {
             tolerance.setText("0.7");
         }
 
-        ButtonWidget createOrLoadNodefile = ButtonWidget.builder(Text.of("Create or load .NODE file"), (widget) -> {
+        ButtonWidget createOrLoadNodefile = ButtonWidget.builder(Text.of("Create or load .json file"), (widget) -> {
 
             if (Objects.equals(nodefileName.getText(), "")) {
-                errorField.setMessage(Text.of("Error: .NODE file Name field not set"));
+                errorField.setMessage(Text.of("Error: .json file Name field not set"));
                 return;
             }
 
-            NodeCreation.nodeFile = new File(NodeCreation.current + File.separator + "nodes/" + nodefileName.getText() + ".NODE");
+            NodeCreation.nodeFile = new File(NodeCreation.current + File.separator + "nodes/" + nodefileName.getText() + ".json");
 
             try {
 
@@ -134,10 +136,10 @@ public class EditNodeScreen extends Screen {
 
         }).dimensions(10, 220, 150, 20).build();
 
-        ButtonWidget deleteCurrentNodefile = ButtonWidget.builder(Text.of("Delete Current .NODE File"), (widget) -> {
+        ButtonWidget deleteCurrentNodefile = ButtonWidget.builder(Text.of("Delete Current .json File"), (widget) -> {
 
             if (!NodeCreation.nodeFile.exists()) {
-                errorField.setMessage(Text.of("Error: No current .NODE file to delete"));
+                errorField.setMessage(Text.of("Error: No current .json file to delete"));
 
             }
 
