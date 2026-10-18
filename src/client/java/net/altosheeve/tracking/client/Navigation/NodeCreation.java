@@ -80,6 +80,11 @@ public class NodeCreation {
             JSONObject nodeJson = new JSONObject();
 
             for (Field field : allFields) nodeJson.put(field.getName(), node.getField(field.getName())); //I love reflection!
+
+            nodeJson.put("uuid", node.UUID);
+            nodeJson.put("x", node.x);
+            nodeJson.put("y", node.y);
+            nodeJson.put("z", node.z);
             nodesArray.put(nodeJson);
 
         }
@@ -100,7 +105,7 @@ public class NodeCreation {
             return;
         }
 
-        //TODO: implement targeted removal and addition for nodes so we arent rebuilding every time a change to the node system is made
+        //TODO: implement targeted removal and addition for nodes so we arent rebuilding every time a change is made to the node system
         Navigation.clearNodes();
 
         Scanner scanner = new Scanner(nodeFile);
