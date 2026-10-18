@@ -137,6 +137,14 @@ public class Node extends Box {
         Field field;
         Class superClass = this.getClass().getSuperclass();
 
+        if (fieldValue instanceof BigDecimal) fieldValue = ((BigDecimal) fieldValue).floatValue();
+        if (Objects.equals(fieldName, "type") && fieldValue instanceof String) {
+            System.out.println("yay");
+            this.type = NodeType.valueOf((String) fieldValue);
+            return true;
+        }
+        if (fieldValue instanceof JSONArray) fieldValue = new ArrayList<>(((JSONArray) fieldValue).toList());
+
         try {
             field = this.getClass().getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
