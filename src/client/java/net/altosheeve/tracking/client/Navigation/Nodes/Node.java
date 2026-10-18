@@ -319,6 +319,16 @@ public class Node extends Box {
 
     }
 
+    public static ArrayList<String> ignoredFields = new ArrayList<String>(List.of(new String[]{
+            "errorSteps",
+            "handleSteps",
+            "erroring",
+            "eating",
+            "finished",
+            "distanceMap",
+            "ignoredFields"
+    }));
+
     public int errorSteps = 0;
     public int handleSteps = 0;
     public boolean erroring = false;

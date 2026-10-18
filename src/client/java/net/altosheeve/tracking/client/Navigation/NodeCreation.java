@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -63,7 +64,14 @@ public class NodeCreation {
 
         JSONArray nodesArray = new JSONArray();
 
-        List<Field> allFields = Arrays.asList(Node.class.getDeclaredFields());
+        ArrayList<Field> allFields = new ArrayList<>(Arrays.asList(Node.class.getDeclaredFields()));
+
+        try { //remove ignored fields
+            for (String fieldName : Node.ignoredFields){
+                Field f = Node.class.getField(fieldName);
+                allFields.remove(f);
+            }
+        } catch (NoSuchFieldException e) { throw new RuntimeException(e); }
 
         System.out.println(allFields);
 
