@@ -116,7 +116,7 @@ public class NodeCreation {
             System.out.println(nodeJson.toString());
 
             for (String field : nodeJson.keySet()) newNode.setField(field, nodeJson.get(field));
-            for (Object connection : nodeJson.getJSONArray("connections").toList()) newNode.connections.add((String) connection);
+            //for (Object connection : nodeJson.getJSONArray("connections").toList()) newNode.connections.add((String) connection);
 
             newNode = Node.mutate(newNode);
 

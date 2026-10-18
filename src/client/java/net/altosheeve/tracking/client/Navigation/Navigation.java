@@ -103,7 +103,7 @@ public class Navigation {
             if (!node.connections.isEmpty())
                 for (String connection : node.connections)
                     for (Node testNode : nodes)
-                        if (Objects.equals(testNode.UUID, connection))
+                        if (Objects.equals(testNode.UUID, connection) && !testNode.connections.contains(node.UUID))
                             testNode.connections.add(node.UUID);
 
         } catch (Exception ignored) {}
